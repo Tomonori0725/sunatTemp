@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>記事編集画面</title>
+        <link rel="stylesheet" href="/css/base.css">
+        <link rel="stylesheet" href="/css/common.css">
+        <link rel="stylesheet" href="/css/widget.css">
+        <link rel="stylesheet" href="/css/page_admin.css">
+    </head>
+
+<body class="pageArticle list">
+  <header class="header">
+    <div class="contents">
+      <h1 class="logo">ブログ管理画面</h1>
+      <ul class="gnav">
+        <li><a href="/admin/edit/add">新規記事作成</a></li>
+        <li><a href="/admin/edit/">記事一覧</a></li>
+      </ul>
+    </div>
+  </header>
+      
+  <div class="wallBelt column">
+    <div class="contents">
+      <h2 class="pageTitle">記事編集画面</h2>
+
+        <form action="index.php" enctype="multipart/form-data" method="post">
+          <!--errors--><div class="error">入力エラーの箇所があります。</div><!--/errors-->
+          <table>
+
+              <tr>
+                  <th class="required">タイトル</th>
+                  <td>
+                  <input name="title" type="text" id="title" value="${title}" size="50">
+                  <!--title:error-->
+                      <!--is_null--><br><span class="error">タイトルを入力してください。</span><!--/is_null-->
+                  <!--/title:error-->
+                  </td>
+              </tr>
+          
+              <tr>
+                <th class="required">カテゴリー</th>
+                <td>
+                    <select name="category_id">
+                        <!--cate_list-->
+                        <option value="${id}" ${id=${category_id}? selected:}>${category_name}</option>
+                        <!--/cate_list-->
+                    </select>
+                </td>
+              </tr>
+          
+              <tr>
+                <th>meta description</th>
+                <td><label for="description"></label>
+                <textarea name="description" id="description" cols="50" rows="5">${description}</textarea></td>
+              </tr>
+                          
+              <tr>
+                <th class="required">本文</th>
+                <td>
+                  <label for="contents"></label>
+                  <textarea name="contents" id="contents" cols="50" rows="5">${contents}</textarea>
+                  <!--contents:error-->
+                      <!--is_null--><br><span class="error">本文を入力してください。</span><!--/is_null-->
+                  <!--/contents:error-->
+                </td>
+              </tr>
+
+              <tr>
+                <th class="required">投稿日時</th>
+                <td>
+                    <!--post_date-->
+                    <input type="text" id="date_year" name="date[year]"  value="${year}" size="4" />年
+                    <input type="text" id="date_month" name="date[month]" value="${month}"size="2" />月
+                    <input type="text" id="date_day" name="date[day]"   value="${day}"  size="2" />日
+                    <!--/post_date-->
+                                      
+                    <!--post_date:error-->
+                      <!--is_null--><br /><span class="error">投稿日時を入力してください。</span><!--/is_null-->
+                      <!--bad_format--><br /><span class="error">投稿日時が正しくありません。</span><!--/bad_format-->
+                    <!--/post_date:error-->
+                  </td>
+              </tr>
+                  
+              <tr>
+                  <th class="required">ライター</th>
+                  <td>
+                      <select name="writer_id">
+                          <!--writer_list-->
+                          <option value="${id}" ${id=${writer_list}? selected:}>${name}</option>
+                          <!--/writer_list-->
+                      </select>
+                  </td>
+                </tr>
+                
+                <tr>
+                  <th class="required">画像</th>
+                  <td>
+                    ${htmlImage#direct}
+                    <input type="checkbox" id="ImgDel" name="imgDel" value="true">
+                    <label for="ImgDel">削除</label>
+                    <input type="file" name="image" id="image">
+                  </td>
+                </tr>
+                  
+                </table>
+              <div class="buttonBox">
+                <ul>
+                  <li class="next"><button type="submit" class="button next">確認画面へ</button></li>
+                  <li class="back"><a href="/admin/edit/" class="button back">戻る</a></li>
+                </ul>
+              </div>
+        </form>
+
+    </div>
+  </div>
+</body>
+</html>

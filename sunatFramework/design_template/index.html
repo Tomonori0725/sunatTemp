@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>記事一覧</title>
+        <link rel="stylesheet" href="/css/base.css">
+        <link rel="stylesheet" href="/css/common.css">
+        <link rel="stylesheet" href="/css/widget.css">
+        <link rel="stylesheet" href="/css/page.css">
+    </head>
+
+<body class="pageArticle list">
+
+<div class="wallBelt column">
+  <div class="contents">
+    <h1 class="pageTitle">記事一覧</h1>
+    <!--list_section-->    
+    <div class="columnList">
+      <!--article_list-->
+        <dl>
+          <dt>${date}</dt>
+          <dd>${category_name}</dd>
+          <dd><a href="/detail.php?id=${id}">${title}</a></dd>
+        </dl>
+      <!--/article_list-->
+    </div>
+      
+    <!--/list_section-->
+        
+    </div>
+  </div>
+</body>
+</html>

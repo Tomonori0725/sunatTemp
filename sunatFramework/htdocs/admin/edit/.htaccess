@@ -1,0 +1,5 @@
+DirectoryIndex index.php
+
+
+php_value include_path ".:../../../inc:../../../env:../../../design_template:../../../default_template"
+

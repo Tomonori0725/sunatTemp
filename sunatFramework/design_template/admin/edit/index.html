@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>記事一覧</title>
+        <link rel="stylesheet" href="/css/base.css">
+        <link rel="stylesheet" href="/css/common.css">
+        <link rel="stylesheet" href="/css/widget.css">
+        <link rel="stylesheet" href="/css/page_admin.css">
+    </head>
+
+<body class="pageAdmin edit index">
+  <header class="header">
+    <div class="contents">
+      <h1 class="logo">ブログ管理画面</h1>
+      <ul class="gnav">
+        <li><a href="/admin/edit/add">新規記事作成</a></li>
+        <li><a href="/admin/edit/">記事一覧</a></li>
+      </ul>
+    </div>
+  </header>
+  
+  <div class="wallBelt narrow">
+    <div class="contents">
+      <div class="searchBox">
+
+        <form action="index.php" enctype="multipart/form-data" method="post">
+          <table>
+            <tr>
+              <th>投稿者</th>
+              <td>
+                <label class="select">
+                  <select name="writer_id">
+                    <option value="">-</option>
+                    <!--writer_list-->
+                    <option value="${id}" ${id=${search_writer}? selected:}>${name}</option>
+                    <!--/writer_list-->
+                  </select>
+              </label>
+              </td>
+            </tr>
+            <tr>
+              <th>カテゴリー</th>
+              <td>
+                <label class="select">
+                  <select name="category_id">
+                      <option value="">-</option>
+                      <!--cate_list-->
+                      <option value="${id}" ${id=${search_cate}? selected:}>${category_name}</option>
+                      <!--/cate_list-->
+                  </select>
+               </label>
+            </td>
+            </tr>
+            <tr class="term">
+              <th>投稿日</th>
+              <td>
+                  <!--serch_date-->
+                  <input name="term_start_y" type="text" id="term_start_y" class="year" value="${term_start_y}">年
+                  <input name="term_start_m" type="text" id="term_start_m" value="${term_start_m}">月
+                  <input name="term_start_d" type="text" id="term_start_d" value="${term_start_d}">日
+                  ～
+                  <input name="term_end_y" type="text" id="term_end_y" class="year" value="${term_end_y}">年
+                  <input name="term_end_m" type="text" id="term_end_m" value="${term_end_m}">月
+                  <input name="term_end_d" type="text" id="term_end_d" value="${term_end_d}">日
+                  <!--serch_date-->
+              </td>
+            </tr>
+          </table>
+          <div class="buttonBox">
+              <ul>
+                <li class="single"><button type="submit" class="button next">検索</button></li>
+              </ul>
+          </div>
+        </form>
+
+      </div>
+
+
+      <!--list_section-->
+      <h2 class="pageTitle">記事一覧</h2>
+      <table class="greenTable">
+        <tr>
+          <th class="date">日付</th>
+          <th>タイトル</th>
+          <th class="edit">編集</th>
+      </tr>
+      <!--article_list-->
+      <tr>
+        <td>${date}</td>
+        <td>${title}</td>
+        <td class="edit">
+          <ul>
+            <li><a href="/admin/edit/edit.php?id=${id}">編集</a></li>
+            <li><a href="/admin/edit/delete.php?id=${id}">削除</a></li>
+          </ul>
+        </td>
+      </tr>
+      <!--/article_list-->
+      </table>      
+      <!--/list_section-->
+          
+    </div>
+  </div>
+
+</body>
+</html>
