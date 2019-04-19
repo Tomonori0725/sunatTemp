@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>新規投稿者登録</title>
+        <link rel="stylesheet" href="/css/base.css">
+        <link rel="stylesheet" href="/css/common.css">
+        <link rel="stylesheet" href="/css/widget.css">
+        <link rel="stylesheet" href="/css/page_admin.css">
+    </head>
+
+<body class="pageArticle list">
+  <header class="header">
+    <div class="contents">
+      <h1 class="logo">ブログ管理画面</h1>
+      <ul class="gnav">
+        <li><a href="/admin/writer/add">新規投稿者作成</a></li>
+        <li><a href="/admin/writer/">投稿者一覧</a></li>
+      </ul>
+    </div>
+  </header>
+      
+  <div class="wallBelt column">
+    <div class="contents">
+      <h2 class="pageTitle">新規投稿者登録</h2>
+
+        <form action="add.php" enctype="multipart/form-data" method="post">
+          <!--errors--><div class="error">入力エラーの箇所があります。</div><!--/errors-->
+          <table>
+
+              <tr>
+                  <th class="required">投稿者名</th>
+                  <td>
+                  <input name="name" type="text" id="name" value="${name}" size="50">
+                  <!--name:error-->
+                      <!--is_null--><br><span class="error">投稿者名を入力してください。</span><!--/is_null-->
+                  <!--/name:error-->
+                  </td>
+              </tr>
+                                    
+              <tr>
+                <th class="required">プロフィール</th>
+                <td>
+                  <label for="profile"></label>
+                  <textarea name="profile" id="profile" cols="50" rows="5">${profile}</textarea>
+                  <!--profile:error-->
+                      <!--is_null--><br><span class="error">プロフィールを入力してください。</span><!--/is_null-->
+                  <!--/profile:error-->
+                </td>
+              </tr>
+                
+              <tr>
+                <th class="required">プロフィール画像</th>
+                <td>
+                  <input type="file" name="image" id="image">
+                  <!--image:error-->
+                      <!--is_null--><br><span class="error">プロフィール画像が登録されていません。</span><!--/is_null-->
+                  <!--/image:error-->
+                </td>
+              </tr>
+                  
+          </table>
+
+          <div class="buttonBox">
+            <ul>
+              <li class="next"><button type="submit" class="button next">確認画面へ</button></li>
+              <li class="back"><a href="/admin/writer/" class="button back">戻る</a></li>
+            </ul>
+          </div>
+
+        </form>
+
+    </div>
+  </div>
+</body>
+</html>

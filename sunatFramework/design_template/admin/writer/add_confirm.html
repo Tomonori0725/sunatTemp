@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>新規投稿者確認</title>
+        <link rel="stylesheet" href="/css/base.css">
+        <link rel="stylesheet" href="/css/common.css">
+        <link rel="stylesheet" href="/css/widget.css">
+        <link rel="stylesheet" href="/css/page_admin.css">
+    </head>
+
+<body class="pageArticle list">
+  <header class="header">
+    <div class="contents">
+      <h1 class="logo">ブログ管理画面</h1>
+      <ul class="gnav">
+        <li><a href="/admin/writer/add">新規投稿者作成</a></li>
+        <li><a href="/admin/writer/">投稿者一覧</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <div class="wallBelt column">
+    <div class="contents">
+      <h2 class="pageTitle">新規投稿者確認</h2>
+      <table class="borderBox borderSolid">
+        <tr>
+          <th>投稿者名</th>
+          <td>${name}</td>
+        </tr>
+        <tr>
+          <th>プロフィール</th>
+          <td>${profile}</td>
+        </tr>
+        <tr>
+            <th>画像</th>
+            <td>${file_image#direct}</td>
+          </tr>
+        </table>
+      <div class="buttonBox">
+        <ul>
+          <li class="next"><a href="add_finish.php" class="button next">登録</a></li>
+          <li class="back"><a href="add.php" class="button back">戻る</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>投稿者一覧</title>
+        <link rel="stylesheet" href="/css/base.css">
+        <link rel="stylesheet" href="/css/common.css">
+        <link rel="stylesheet" href="/css/widget.css">
+        <link rel="stylesheet" href="/css/page_admin.css">
+    </head>
+
+<body class="pageAdmin edit index">
+  <header class="header">
+    <div class="contents">
+      <h1 class="logo">ブログ管理画面</h1>
+      <ul class="gnav">
+        <li><a href="/admin/writer/add">新規投稿者作成</a></li>
+        <li><a href="/admin/writer/">投稿者一覧</a></li>
+      </ul>
+    </div>
+  </header>
+  
+  <div class="wallBelt narrow">
+    <div class="contents">
+
+      <!--list_section-->
+      <h2 class="pageTitle">投稿者一覧</h2>
+      <table class="greenTable">
+        <tr>
+          <th>投稿者名</th>
+          <th class="edit">編集</th>
+        </tr>
+        <!--writer_list-->
+        <tr>
+          <td>${name}</td>
+          <td class="edit">
+            <ul>
+              <li><a href="/admin/writer/writer.php?id=${id}">編集</a></li>
+              <li>${del_link#direct}</a></li>
+            </ul>
+          </td>
+        </tr>
+        <!--/writer_list-->
+      </table>      
+      <!--/list_section-->
+          
+    </div>
+  </div>
+
+</body>
+</html>
