@@ -42,23 +42,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $form->post->profile    = new FormFieldString(FormField::TRIM | FormField::NOT_NULL);
     $form->post->image      = new FormFieldFile($_FILES['image'], FormField::TRIM | FormField::NOT_NULL);
 
+    var_dump(is_uploaded_file($_FILES['image']['tmp_name']));
     var_dump($_FILES['image']);
 
-    if(is_uploaded_file($_FILES['image']['tmp_name'])){
-        $tmp = $_FILES['image']['tmp_name'];
-        $fileName = date("YmdHis") . substr($_FILES['image']['name'], -4);
-        $upload = "../../uploads/".$fileName;
-        if(move_uploaded_file($tmp, $upload)){
-            $imagePath = "/uploads/".$fileName;
-        }else{
-            //echo 'アップ失敗';
-        }
-    }else{
-        //echo 'そもそもファイルきてない';
-    }
     try {
         $ret = $form->get();
         
+        if(is_uploaded_file($_FILES['image']['tmp_name'])){
+            $tmp = $_FILES['image']['tmp_name'];
+            $fileName = date("YmdHis") . substr($_FILES['image']['name'], -4);
+            $upload = "../../uploads/".$fileName;
+            if(move_uploaded_file($tmp, $upload)){
+                $imagePath = "/uploads/".$fileName;
+            }else{
+                //echo 'アップ失敗';
+            }
+        }else{
+            //echo 'そもそもファイルきてない';
+        }
+
         $cur_ss['add_input'] = $ret;
         $cur_ss['add_input']['values']['image'] = $imagePath;
         $cur_ss['add_input']['in']['image'] = $imagePath;

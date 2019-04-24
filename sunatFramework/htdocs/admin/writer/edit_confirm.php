@@ -27,49 +27,23 @@ $db = new mysql_db();
 $where = '';
 $arrWhere = array();
 
-//カテゴリー
-$col = 'id,category_name';
-$table = 'category';
-$cate_list = $db->select($col, $table, $where, $arrWhere);
-foreach($cate_list as $cate){$cate_id[] = $cate['id'];}
-
-//作者
-$col = 'id,name';
-$table = 'writer';
-$writer_list = $db->select($col, $table, $where, $arrWhere);
-foreach($writer_list as $write){$write_id[] = $write['id'];}
-
-
-
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') error('アクセスエラー', '不正なアクセスです1', '/admin/edit');
+if ($_SERVER['REQUEST_METHOD'] == 'POST') error('アクセスエラー', '不正なアクセスです1', '/admin/writer');
 if (array_key_exists('edit_input', $cur_ss)) {
     $tmpl_arr = $cur_ss['edit_input']['values'];
     
     //画像の表示
-    if($cur_ss['edit_input']['values']['imgDel']){
-        $file_image = '';
+    if(!empty($cur_ss['edit_input']['values']['image'])){
+        $file_image = '<img src="' . $cur_ss['edit_input']['values']['image'] . '" alt="' . $cur_ss['edit_input']['values']['name'] . '">';
     }else{
-        if(!empty($cur_ss['edit_input']['values']['image'])){
-            $file_image = '<img src="' . $cur_ss['edit_input']['values']['image'] . '" alt="' . $cur_ss['edit_input']['values']['title'] . '">';
-        }else{
-            $file_image = '';
-        }
+        $file_image = '';
     }
 
     $tmpl_arr += array('file_image' => $file_image);
 
 }
-else redirect("/admin/edit/");
+else redirect("/admin/writer/");
 
-
-//カテゴリー
-$tmpl_arr += array('cate_list'   => $cate_list);
-
-//ライター
-$tmpl_arr += array('writer_list' => $writer_list);
-
-$temp = new HTMLTemplate('admin/edit/edit_confirm.html');
+$temp = new HTMLTemplate('admin/writer/edit_confirm.html');
 echo $temp->replace($tmpl_arr);
 
 

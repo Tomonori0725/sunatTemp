@@ -31,30 +31,12 @@ $imagePath = '';
 $db = new mysql_db();
 $form = new Form;
 
-//カテゴリー
-$col = 'id,category_name';
-$table = 'category';
-$cate_list = $db->select($col, $table, $where, $arrWhere);
-foreach($cate_list as $cate){$cate_id[] = $cate['id'];}
-
-//作者
-$col = 'id,name';
-$table = 'writer';
-$writer_list = $db->select($col, $table, $where, $arrWhere);
-foreach($writer_list as $write){$write_id[] = $write['id'];}
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //フォームが送信されたら...
     //バリデーション
-    $form->post->title       = new FormFieldString(FormField::TRIM | FormField::NOT_NULL);
-    $form->post->category_id = new FormFieldSelect($cate_id, FormField::NOT_NULL);
-    $form->post->description = new FormFieldString(FormField::TRIM);
-    $form->post->contents    = new FormFieldString(FormField::TRIM | FormField::NOT_NULL);
-    $form->post->date        = new FormFieldDateTimeArray(FormField::NOT_NULL);
-    $form->post->writer_id   = new FormFieldSelect($write_id, FormField::NOT_NULL);
-    $form->post->image       = new FormFieldFile($_FILES['image'], FormField::TRIM);
-    $form->post->imgDel      = new FormFieldBool(FormField::TRIM);
-    
+    $form->post->name       = new FormFieldString(FormField::TRIM | FormField::NOT_NULL);
+    $form->post->profile    = new FormFieldString(FormField::TRIM | FormField::NOT_NULL);
+
     //画像をアップロード
     if(is_uploaded_file($_FILES['image']['tmp_name'])){
         $tmp = $_FILES['image']['tmp_name'];
@@ -69,8 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $imagePath = $cur_ss['preImage'];
     }
 
+    if(!$imagePath){
+        $form->post->image = new FormFieldFile($_FILES['image'], FormField::TRIM | FormField::NOT_NULL);
+    }
+    
 	try {
-		$ret = $form->get();
+        $ret = $form->get(); //エラーがあるかどうかもここで...
         $cur_ss['edit_input'] = $ret;
         if(!empty($imagePath)){
             $cur_ss['edit_input']['values']['image'] = $imagePath;
@@ -90,14 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $id = $cur_ss['id'];
         //画像を引き継ぎ
         if(!empty($cur_ss['edit_input']['in']['image'])){
-            $tmpl_arr['htmlImage'] = '<img src="' . $cur_ss['edit_input']['in']['image'] . '" alt="' . $cur_ss['edit_input']['in']['title'] . '">';
+            $tmpl_arr['htmlImage'] = '<img src="' . $cur_ss['edit_input']['in']['image'] . '" alt="' . $cur_ss['edit_input']['in']['name'] . '">';
         }
-        //日付
-        //$date_arr = explode('-', $edit_arr['date']);
-        $year = $tmpl_arr['date']['year'];
-        $month = $tmpl_arr['date']['month'];
-        $day = $tmpl_arr['date']['day'];
-        $tmpl_arr['post_date'] = array('year' => $year, 'month' => $month, 'day' => $day);
 
 	}else {
         //初めてのアクセス
@@ -107,44 +87,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$id = $ret['values']['id'];
 			$cur_ss['id'] = $id;
 		} catch (FormCheckException $e) {
-			error('アクセスエラー', '不正なアクセスです', '/admin/edit/');
+			error('アクセスエラー', '不正なアクセスです1', '/admin/edit/');
 		}
 
         $col = <<< COL
-            category_id,title,description,contents,image,date,writer_id,imgDel
+            name,profile,image
 COL;
-        $table = 'article';
-        $edit_arr = $db->getRow($col, $table, 'article.id = ?', array($id));
+        $table = 'writer';
+        $edit_arr = $db->getRow($col, $table, 'id = ?', array($id));
 
-        if (!$edit_arr) error('アクセスエラー', '不正なアクセスです', '/admin/edit/');
-
-        //投稿日時を使いやすい型にする(dateTime→string)
-        $date_arr = explode('-', $edit_arr['date']);
-		$year = $date_arr[0];
-		$month = $date_arr[1];
-        $day = $date_arr[2];
+        if (!$edit_arr) error('アクセスエラー', '不正なアクセスです2', '/admin/edit/');
         
         //画像にimgタグをつける
         $cur_ss['preImage'] = $edit_arr['image'];
         if(!empty($edit_arr['image'])){
-            $edit_arr['htmlImage'] = '<img src="' . $edit_arr['image'] . '" alt="' . $edit_arr['title'] . '">';
+            $edit_arr['htmlImage'] = '<img src="' . $edit_arr['image'] . '" alt="' . $edit_arr['name'] . '">';
         }else{
             $edit_arr['htmlImage'] = '';
         }
 
         $tmpl_arr = $edit_arr;
-        $tmpl_arr['post_date'] = array('year' => $year, 'month' => $month, 'day' => $day);
-
     }
 }
 
-//カテゴリー
-$tmpl_arr += array('cate_list'   => $cate_list);
-
-//ライター
-$tmpl_arr += array('writer_list' => $writer_list);
-
-$temp = new HTMLTemplate('admin/edit/edit.html');
+$temp = new HTMLTemplate('admin/writer/edit.html');
 echo $temp->replace($tmpl_arr);
 
 

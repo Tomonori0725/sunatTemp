@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>確認　記事編集画面</title>
+        <title>確認　投稿者編集画面</title>
         <link rel="stylesheet" href="/css/base.css">
         <link rel="stylesheet" href="/css/common.css">
         <link rel="stylesheet" href="/css/widget.css">
@@ -14,45 +14,29 @@
     <div class="contents">
       <h1 class="logo">ブログ管理画面</h1>
       <ul class="gnav">
-        <li><a href="/admin/edit/add">新規記事作成</a></li>
-        <li><a href="/admin/edit/">記事一覧</a></li>
+        <li><a href="/admin/writer/add">新規投稿者作成</a></li>
+        <li><a href="/admin/writer/">投稿者一覧</a></li>
       </ul>
     </div>
   </header>
 
   <div class="wallBelt column">
     <div class="contents">
-      <h2 class="pageTitle">確認　記事編集画面</h2>
+      <h2 class="pageTitle">確認　投稿者編集画面</h2>
       <table class="borderBox borderSolid">
         <tr>
-          <th>タイトル</th>
-          <td>${title}</td>
+          <th>投稿者名</th>
+          <td>${name}</td>
         </tr>
         <tr>
-          <th>カテゴリー</th>
-          <td><!--cate_list-->${id=${category_id}?${category_name}:}<!--/cate_list--></td>
-        </tr>
-        <tr>
-          <th>description</th>
-          <td>${description}</td>
-        </tr>
-        <tr>
-          <th>本文</th>
-          <td>${contents#direct}</td>
-        </tr>
-        <tr>
-          <th>投稿日時</th>
-          <td>${date#format=Y年m月d日}</td>
-        </tr>
-        <tr>
-          <th>ライター</th>
-          <td><!--writer_list-->${id=${writer_id}?${name}:}<!--/writer_list--></td>
+          <th>プロフィール</th>
+          <td>${profile}</td>
         </tr>
         <tr>
             <th>画像</th>
             <td>${file_image#direct}</td>
-          </tr>
-        </table>
+        </tr>
+      </table>
       <div class="buttonBox">
         <ul>
           <li class="next"><a href="edit_finish.php" class="button next">登録</a></li>

@@ -59,7 +59,7 @@
                 <th class="required">本文</th>
                 <td>
                   <label for="contents"></label>
-                  <textarea name="contents" id="contents" cols="50" rows="5">${contents}</textarea>
+                  <textarea name="contents" id="contents" class="wysiwyg" cols="50" rows="5">${contents}</textarea>
                   <!--contents:error-->
                       <!--is_null--><br><span class="error">本文を入力してください。</span><!--/is_null-->
                   <!--/contents:error-->
@@ -111,5 +111,9 @@
 
     </div>
   </div>
+
+  <script src="/js/jquery-2.2.4.min.js"></script>
+  <script src="/js/tinymce/tinymce.min.js"></script>
+  <script src="/js/common.js"></script>
 </body>
 </html>
