@@ -49,6 +49,6 @@ $db->commit();
 unset($cur_ss['add_input']);
 
 $temp = new HTMLTemplate('admin/edit/add_finish.html');
-echo $temp->replace();
+echo $temp->replace($tmpl_arr);
 
 ?>

@@ -24,9 +24,9 @@
     <div class="contents">
       <h2 class="pageTitle">記事編集画面</h2>
 
-        <form action="index.php" enctype="multipart/form-data" method="post">
+        <form action="edit.php" enctype="multipart/form-data" method="post">
           <!--errors--><div class="error">入力エラーの箇所があります。</div><!--/errors-->
-          <table>
+          <table class="formTable">
 
               <tr>
                   <th class="required">タイトル</th>
@@ -69,16 +69,16 @@
               <tr>
                 <th class="required">投稿日時</th>
                 <td>
-                    <!--post_date-->
+                    <!--date-->
                     <input type="text" id="date_year" name="date[year]"  value="${year}" size="4" />年
                     <input type="text" id="date_month" name="date[month]" value="${month}"size="2" />月
                     <input type="text" id="date_day" name="date[day]"   value="${day}"  size="2" />日
-                    <!--/post_date-->
+                    <!--/date-->
                                       
-                    <!--post_date:error-->
+                    <!--date:error-->
                       <!--is_null--><br /><span class="error">投稿日時を入力してください。</span><!--/is_null-->
                       <!--bad_format--><br /><span class="error">投稿日時が正しくありません。</span><!--/bad_format-->
-                    <!--/post_date:error-->
+                    <!--/date:error-->
                   </td>
               </tr>
                   
@@ -93,7 +93,7 @@
                   </td>
                 </tr>
                 
-                <tr>
+                <tr class="thumbnail">
                   <th class="required">画像</th>
                   <td>
                     ${htmlImage#direct}

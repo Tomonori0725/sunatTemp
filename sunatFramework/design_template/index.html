@@ -18,9 +18,11 @@
     <div class="columnList">
       <!--article_list-->
         <dl>
-          <dt>${date}</dt>
-          <dd>${category_name}</dd>
-          <dd><a href="/detail.php?id=${id}">${title}</a></dd>
+          <!--date-->
+          <dt>${year}年${month}月${day}日</dt>
+          <!--/date-->
+          <dd class="name ${slug}">${category_name}</dd>
+          <dd class="title"><a href="/detail.php?id=${id}">${title}</a></dd>
         </dl>
       <!--/article_list-->
     </div>

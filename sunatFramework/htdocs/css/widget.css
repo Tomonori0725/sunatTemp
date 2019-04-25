@@ -1118,7 +1118,10 @@ table.greenTable td{
     vertical-align: middle;
 }
 
-
+/* ====================================================
+　formTable
+==================================================== */
+.formTable .thumbnail td img{width: 100%; height: auto;}
 
 
 

@@ -16,6 +16,7 @@ require 'sub.inc';
 
 session_start();
 
+//カレントセッション
 $sess = new SessionCurrent('*admin.user.list.edit');
 $cur_ss = &$sess->vars;
 
@@ -30,6 +31,7 @@ $imagePath = '';
 
 $db = new mysql_db();
 $form = new Form;
+$imagePath = '';
 
 //カテゴリー
 $col = 'id,category_name';
@@ -52,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $form->post->contents    = new FormFieldString(FormField::TRIM | FormField::NOT_NULL);
     $form->post->date        = new FormFieldDateTimeArray(FormField::NOT_NULL);
     $form->post->writer_id   = new FormFieldSelect($write_id, FormField::NOT_NULL);
-    $form->post->image       = new FormFieldFile($_FILES['image'], FormField::TRIM);
     $form->post->imgDel      = new FormFieldBool(FormField::TRIM);
     
     //画像をアップロード
@@ -67,6 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }else{
         //アップしない
         $imagePath = $cur_ss['preImage'];
+    }
+
+    if(!$imagePath){
+        $form->post->image = new FormFieldFile($_FILES['image'], FormField::TRIM | FormField::NOT_NULL);
     }
 
 	try {
@@ -120,9 +125,11 @@ COL;
 
         //投稿日時を使いやすい型にする(dateTime→string)
         $date_arr = explode('-', $edit_arr['date']);
-		$year = $date_arr[0];
-		$month = $date_arr[1];
-        $day = $date_arr[2];
+        $edit_arr['date'] = array(
+            'year'  => $date_arr[0],
+            'month' => $date_arr[1],
+            'day'   => $date_arr[2]
+        );
         
         //画像にimgタグをつける
         $cur_ss['preImage'] = $edit_arr['image'];
@@ -133,7 +140,6 @@ COL;
         }
 
         $tmpl_arr = $edit_arr;
-        $tmpl_arr['post_date'] = array('year' => $year, 'month' => $month, 'day' => $day);
 
     }
 }

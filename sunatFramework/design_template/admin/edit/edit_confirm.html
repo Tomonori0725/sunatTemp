@@ -23,7 +23,7 @@
   <div class="wallBelt column">
     <div class="contents">
       <h2 class="pageTitle">確認　記事編集画面</h2>
-      <table class="borderBox borderSolid">
+      <table class="borderBox borderSolid formTable">
         <tr>
           <th>タイトル</th>
           <td>${title}</td>
@@ -48,7 +48,7 @@
           <th>ライター</th>
           <td><!--writer_list-->${id=${writer_id}?${name}:}<!--/writer_list--></td>
         </tr>
-        <tr>
+        <tr class="thumbnail">
             <th>画像</th>
             <td>${file_image#direct}</td>
           </tr>

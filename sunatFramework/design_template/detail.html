@@ -2,31 +2,44 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>記事詳細</title>
+        <!--list_section-->
+        <!--article_list-->
+        <title>${title}</title>
+        <meta name="description" content="${description}">
+        <!--/article_list-->  
+        <!--/list_section-->
         <link rel="stylesheet" href="/css/base.css">
         <link rel="stylesheet" href="/css/common.css">
         <link rel="stylesheet" href="/css/widget.css">
         <link rel="stylesheet" href="/css/page.css">
     </head>
 
-<body class="pageArticle list">
+<body class="pageArticle detail">
 
 <div class="wallBelt column">
   <div class="contents">
-    <h1 class="pageTitle">記事詳細</h1>
-    <!--list_section-->    
-    <div class="columnList">
-      <!--article_list-->
-      <h2>${title}</h2>
-      <p>${date}</p>
-      <p>${category_name}</p>
-      <p>${name}</p>
-      <p>${description}</p>
-      <p>${contents#direct}</p>
-      <p>${image#direct}</p>
-      <!--/article_list-->
+    <!--list_section-->
+    <!--article_list-->
+    <div class="column_info">
+      <h1 class="title_column">${title}</h1>
+      <dl class="writer">
+        <dt>${prof_image#direct}</dt>
+        <dd>${name}</dd>
+      </dl>
+      <!--date-->
+      <p class="date">${year}年${month}月${day}日</p>
+      <!--/date-->  
+      <ul class="category">
+        <li class="${slug}">${category_name}</li>
+      </ul>
     </div>
-      
+    <div class="thumbnail">${image#direct}</div>
+
+
+    <div class="columnBody">
+      ${contents#direct}
+    </div>
+    <!--/article_list-->  
     <!--/list_section-->
         
     </div>

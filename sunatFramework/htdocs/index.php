@@ -32,9 +32,21 @@ $arrWhere = array();
 
 $db = new mysql_db();
 
-$col = 'article.id,category_name,title,date';
+$col = 'article.id,category_name,title,date,slug';
 $table = 'article LEFT OUTER JOIN category ON article.category_id = category.id ORDER BY article.date DESC';
 $article_list = $db->select($col, $table, $where, $arrWhere);
+
+$i = 0;
+foreach($article_list as $art){
+	$date_arr = explode('-', $article_list[$i]['date']);
+	$article_list[$i]['date'] = array(
+		'year'  => $date_arr[0],
+		'month' => $date_arr[1],
+		'day'   => $date_arr[2]
+	);
+	$i++;
+}
+$i=0;
 
 $list_section = array(
 	'article_list'	=> $article_list
@@ -42,6 +54,8 @@ $list_section = array(
 $tmpl_arr += array(
 	'list_section'		=> $list_section
 );
+
+//var_dump($article_list);
 
 $temp = new HTMLTemplate('index.html');
 echo $temp->replace($tmpl_arr);

@@ -21,7 +21,7 @@ session_start();
 $sess = new SessionCurrent('*admin.user.list.edit');
 $cur_ss = &$sess->vars;
 
-$ref_sess = new SessionReference('*admin.user.list', SessionReference::MUST);
+$ref_sess = new SessionReference('*admin.user.list', SessionReference::INIT);
 $ref_ss =& $ref_sess->vars;
 
 $newImage = '';
