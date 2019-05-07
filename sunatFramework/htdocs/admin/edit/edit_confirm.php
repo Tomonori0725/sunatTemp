@@ -45,7 +45,6 @@ foreach($writer_list as $write){$write_id[] = $write['id'];}
 if ($_SERVER['REQUEST_METHOD'] == 'POST') error('アクセスエラー', '不正なアクセスです1', '/admin/edit');
 if (array_key_exists('edit_input', $cur_ss)) {
     $tmpl_arr = $cur_ss['edit_input']['values'];
-    
     //画像の表示
     if($cur_ss['edit_input']['values']['imgDel']){
         $file_image = '';
@@ -56,9 +55,7 @@ if (array_key_exists('edit_input', $cur_ss)) {
             $file_image = '';
         }
     }
-
     $tmpl_arr += array('file_image' => $file_image);
-
 }
 else redirect("/admin/edit/");
 

@@ -54,13 +54,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $form->post->contents    = new FormFieldString(FormField::TRIM | FormField::NOT_NULL);
     $form->post->date        = new FormFieldDateTimeArray(FormField::NOT_NULL);
     $form->post->writer_id   = new FormFieldSelect($write_id, FormField::NOT_NULL);
+    $form->post->image       = new FormFieldFile($_FILES['image'], FormField::TRIM);
     $form->post->imgDel      = new FormFieldBool(FormField::TRIM);
     
     //画像をアップロード
     if(is_uploaded_file($_FILES['image']['tmp_name'])){
         $tmp = $_FILES['image']['tmp_name'];
         $fileName = date("YmdHis") . substr($_FILES['image']['name'], -4);
-        $upload = "../../uploads/".$fileName;
+        $upload = "../../uploads/" . $fileName;
         if(move_uploaded_file($tmp, $upload)){
             $imagePath = "/uploads/".$fileName;
         }else{//echo 'アップ失敗';
@@ -68,10 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }else{
         //アップしない
         $imagePath = $cur_ss['preImage'];
-    }
-
-    if(!$imagePath){
-        $form->post->image = new FormFieldFile($_FILES['image'], FormField::TRIM | FormField::NOT_NULL);
     }
 
 	try {

@@ -64,23 +64,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $form->post->writer_id   = new FormFieldSelect($write_id, FormField::NOT_NULL);
     $form->post->image       = new FormFieldFile($_FILES['image'], FormField::TRIM);
 
-    if(is_uploaded_file($_FILES['image']['tmp_name'])){
-        $tmp = $_FILES['image']['tmp_name'];
-        $fileName = date("YmdHis") . substr($_FILES['image']['name'], -4);
-        $upload = "../../uploads/".$fileName;
-        if(move_uploaded_file($tmp, $upload)){
-            $imagePath = "/uploads/".$fileName;
-        }else{
-            //echo 'アップ失敗';
-        }
-    }else{
-        //echo 'そもそもファイルきてない';
-    }
     try {
         $ret = $form->get();
+
+        if(is_uploaded_file($_FILES['image']['tmp_name'])){
+            $tmp = $_FILES['image']['tmp_name'];
+            $fileName = date("YmdHis") . substr($_FILES['image']['name'], -4);
+            $upload = "../../uploads/" . $fileName;
+            if(move_uploaded_file($tmp, $upload)){
+                $imagePath = "/uploads/".$fileName;
+            }else{
+                //echo 'アップ失敗';
+                $imagePath = 'upload miss';
+            }
+        }else{
+            //echo 'そもそもファイルきてない';
+            $imagePath = 'No File';
+        }
+
         $cur_ss['add_input'] = $ret;
         $cur_ss['add_input']['values']['image'] = $imagePath;
         $cur_ss['add_input']['in']['image'] = $imagePath;
+        $cur_ss['add_input']['values']['file'] = $_FILES;
 		redirect('add_confirm.php');
 	} catch (FormCheckException $e) {
 		$tmpl_arr += $e->getValues();

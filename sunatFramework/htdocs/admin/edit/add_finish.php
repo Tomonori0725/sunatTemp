@@ -24,6 +24,7 @@ $cur_ss = &$sess->vars;
 $ref_sess = new SessionReference('*admin.user.list', SessionReference::MUST);
 $ref_ss =& $ref_sess->vars;
 
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') error('アクセスエラー', '不正なアクセスです', '/admin/edit');
 
 if (array_key_exists('add_input', $cur_ss)) $sql_arr = $cur_ss['add_input']['values'];
@@ -49,6 +50,6 @@ $db->commit();
 unset($cur_ss['add_input']);
 
 $temp = new HTMLTemplate('admin/edit/add_finish.html');
-echo $temp->replace($tmpl_arr);
+echo $temp->replace();
 
 ?>

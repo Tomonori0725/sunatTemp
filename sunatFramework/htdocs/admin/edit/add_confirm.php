@@ -52,7 +52,6 @@ if (array_key_exists('add_input', $cur_ss)) {
 }
 else redirect("/admin/edit/");
 
-
 //カテゴリー
 $tmpl_arr += array('cate_list'   => $cate_list);
 

@@ -39,6 +39,7 @@
 /* ====================================================
 　検索メニュー
 ==================================================== */
+.pageAdmin.edit.index .wallBelt.narrow{padding-bottom: 60px;}
 .pageAdmin.edit.index .searchBox th,
 .pageAdmin.edit.index .searchBox td{
   padding: 12px 8px 11px;
@@ -62,7 +63,7 @@
 .pageAdmin.edit.index .searchBox .term  input[type="text"].year{width: 8em;}
 
 
-
+.pageArticle.list td img{width: 100%; height: auto;}
 
 
 
