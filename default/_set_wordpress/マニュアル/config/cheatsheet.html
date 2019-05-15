@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <title>config.jsonチートシート - 新規テーマの使い方</title>
+        <link rel="stylesheet" href="../assets/css/style.css">
+    </head>
+    <body>
+        <header>
+            <h1>新規テーマの使い方</h1>
+        </header>
+        <article>
+            <header>
+                <h2>config.jsonチートシート</h2>
+            </header>
+            <div class="cheatSheet">
+                <code class="code">
+                    <pre class="prettyprint linenums lang-js">
+{
+    "const": {
+        "DEFAULT_IMAGE": "assets/img/default.png",
+        "GOOGLE_MAPS_API_KEY": "AIzaSyCSZE8_-lpa7Exu0-hxZEcVEYVIAU_PJ9U",
+        "NUMBER_RECENT_POST": 5
+    },
+
+    "basic": {
+        "menu": {
+            "global1": "グローバルナビゲーション1",
+            "global2": "グローバルナビゲーション2",
+            "footer1": "フッターナビゲーション1",
+            "footer2": "フッターナビゲーション2"
+        },
+        "excerpt": {
+            "length": 500,
+            "more": {
+                "text": "&amp;nbsp;&amp;nbsp;[...]",
+                "link": {
+                    "text": "もっと読む",
+                    "class": [
+                        "more"
+                    ]
+                }
+            },
+            "allow": [],
+            "pair": []
+        },
+        "ogp": {
+            "twitter": {
+                "card": "summary_large_image",
+                "site": "@3at_nashiro"
+            },
+            "facebook": {
+                "appid": ""
+            }
+        },
+        "query_vars": []
+    },
+
+    "login": {
+        "url": "/-cmsadm-/-/__login.php",
+        "css": [
+            "admin/admin-login.css"
+        ],
+        "logo": "header/logo.png",
+        "background": {
+            "image": "bg.gif",
+            "position": "center",
+            "repeat": "no-repeat",
+            "color": "#f1f1f1"
+        },
+        "error": "&lt;strong&gt;エラー:&lt;/strong&gt; ユーザー名もしくはパスワードが間違えています。",
+        "reset": "パスワードをお忘れの方はこちら"
+    },
+
+    "posttype": {
+        "post": {
+            "name": ""
+        },
+        "page": {
+            "position": 8,
+            "metabox": [
+                {
+                    "title": "SEO",
+                    "item": {
+                        "description": {
+                            "title": "description",
+                            "type": "text",
+                            "placeholder": "description"
+                        }
+                    }
+                }
+            ]
+        },
+        "information": {
+            "name": "お知らせ",
+            "position": 6,
+            "icon": "dashicons-rss",
+            "supports": ["title", "editor", "thumbnail"],
+            "description": "お知らせ一覧です。",
+            "archive": ["top", "year", "month"],
+            "metabox": [
+                {
+                    "title": "SEO",
+                    "item": {
+                        "description": {
+                            "title": "description",
+                            "type": "text",
+                            "placeholder": "description"
+                        }
+                    }
+                }
+            ],
+            "taxonomy": {
+                "information-category": {
+                    "name": "カテゴリー",
+                    "archive": ["year", "month"],
+                    "metabox": {
+                        "color": [
+                            "カラー",
+                            "color",
+                            "イメージカラーです。"
+                        ]
+                    }
+                }
+            }
+        },
+        "works": {
+            "name": "施工事例",
+            "position": 7,
+            "icon": "dashicons-admin-multisite",
+            "supports": ["title"],
+            "description": "私たちが施工した物件を一部ご紹介します。",
+            "eyecatch": "image",
+            "archive": ["top", "year", "month"],
+            "metabox": [
+                {
+                    "title": "物件情報",
+                    "item": {
+                        "build-year": {
+                            "title": "建築年",
+                            "type": "number",
+                            "min": 2000
+                        },
+                        "remarks": {
+                            "title": "備考",
+                            "type": "textarea",
+                            "html": true,
+                            "placeholder": "備考"
+                        }
+                    }
+                },
+                {
+                    "title": "位置情報",
+                    "item": {
+                        "address": {
+                            "title": "住所",
+                            "type": "text",
+                            "title-hide": true,
+                            "placeholder": "住所"
+                        },
+                        "map": {
+                            "title": "地図",
+                            "type": "map",
+                            "title-hide": true
+                        }
+                    }
+                },
+                {
+                    "title": "担当者からのオススメポイント",
+                    "item": {
+                        "recommend": {
+                            "title": "担当者からのオススメポイント",
+                            "type": "wysiwyg",
+                            "title-hide": true
+                        }
+                    }
+                },
+                {
+                    "title": "物件写真",
+                    "item": {
+                        "image": {
+                            "title": "画像",
+                            "type": "image",
+                            "title-hide": true
+                        }
+                    }
+                }
+            ]
+        }
+    },
+
+    "menupage": {
+        "top-carousel": {
+            "title": "トップカルーセル",
+            "parent": "themes.php",
+            "template": "top-carousel.php",
+            "cap": "edit_others_posts",
+            "item": {
+                "top-carousel-image": [
+                    "画像",
+                    "array",
+                    []
+                ]
+            }
+        }
+    },
+
+    "widgets": {
+        "area": [
+            {
+                "id": "sidebar01",
+                "name": "右サイドバー",
+                "description": "右側に表示されるウィジェットエリアです。",
+                "before_widget": "&lt;div class=\"widget %2$s\"&gt;",
+                "after_widget": "&lt;/div&gt;",
+                "before_title": "&lt;h2&gt;",
+                "after_title": "&lt;/h2&gt;"
+            }
+        ],
+        "register": [
+            "ThemeWidgetRecentCustomPosts",
+            "ThemeWidgetCustomPostsTaxonomy",
+            "ThemeWidgetCustomPostsArchive",
+            "ThemeWidgetBanner"
+        ],
+        "unregister": [
+            "WP_Widget_Pages",
+            "WP_Widget_Calendar",
+            "WP_Widget_Archives",
+            "WP_Widget_Links",
+            "WP_Widget_Media_Audio",
+            "WP_Widget_Media_Image",
+            "WP_Widget_Media_Gallery",
+            "WP_Widget_Media_Video",
+            "WP_Widget_Meta",
+            "WP_Widget_Search",
+            "WP_Widget_Text",
+            "WP_Widget_Categories",
+            "WP_Widget_Recent_Posts",
+            "WP_Widget_Recent_Comments",
+            "WP_Widget_RSS",
+            "WP_Widget_Tag_Cloud",
+            "WP_Nav_Menu_Widget",
+            "WP_Widget_Custom_HTML"
+        ]
+    },
+
+    "resource": {
+        "css": [
+            "assets/css/font-awesome.min.css",
+            "assets/lib/jquery/bxslider/jquery.bxslider.css",
+            "assets/lib/sp-slidemenu/sp-slidemenu.css",
+            "assets/css/base.css",
+            "assets/css/common.css",
+            "assets/css/bootstrap.css",
+            "assets/css/widget.css",
+            "assets/css/page.css"
+        ]
+    }
+}
+                    </pre>
+                </code>
+                <code class="description">
+                    <pre class="prettyprint linenums">
+
+プログラム・テンプレート内で使える定数設定 (使いたい定数はここに追記する)
+    OGPや一覧のサムネイルなどで、画像がない時のデフォルト画像 (テンプレートディレクトリー以下のパス)
+    Google Maps APIのキー。Googleマップを使用する際には必須
+    新着などで表示する件数
+
+
+基本設定
+    カスタムメニューエリア定義 (追加した時はここに追記する)
+
+
+
+
+
+    抜粋表示設定
+        文字数 (これを超えると省略する)
+        省略時の表示設定
+            末尾に追加する文字
+            末尾に付ける詳細ページへのリンク設定 (リンク不要なら削除する)
+                リンク文字列
+                リンクのaタグに付加するclass
+
+
+
+
+        省略時に使用を許可する(削除しない)タグ
+        許可するタグのうち閉じタグがあるタグ
+
+    OGP設定
+        Twitter
+            Twitterカードのサイズ (summary_large_image：横長で上に付くタイプ / summary：正方形で横に付くタイプ)
+            Twitterアカウント
+
+        Facebook
+            APP ID
+
+
+    追加GETパラメーター
+
+
+ログイン画面設定
+    URL (WordPressトップページ以下のパス (頭の / に注意))
+    CSSファイル (使いたいCSSファイルはここに追記する)
+        assets/css/ 以下のパス
+
+    ロゴファイル (assets/img/ 以下のパス)
+    背景設定
+        背景画像 (background-image) (assets/img/ 以下のパス)
+        背景画像位置 (background-position)
+        背景画像繰り返し (background-repeat)
+        背景色 (background-color)
+
+        ログイン失敗時のエラーメッセージ
+        ログイン失敗時に表示されるパスワードリセット画面へのリンク文字列
+
+
+カスタム投稿タイプ設定 (カスタム投稿タイプを追加する時はここに追記する)
+    デフォルト投稿設定
+        表示名 (表示名を空にすると使用しない (管理画面から消える))
+
+    固定ページ設定
+        管理画面でのメニュー位置
+        カスタムフィールド設定
+            { ～ } が1セクション
+                セクション名 (折り畳み部分に表示される名前)
+                セクション内のカスタムフィールド
+                    フィールドのname属性
+                        項目名
+                        フィールドタイプ
+                        プレースホルダー
+
+
+
+
+
+    カスタム投稿タイプスラッグ (追加カスタム投稿タイプ設定)
+        表示名
+        管理画面でのメニュー位置
+        アイコン (dashicons名)
+        サポートする標準機能 (title, editor, author, thumbnail, excerpt, trackbacks, custom-fields, comments, revisions, page-attributes, post-formats)
+        一覧画面 (カスタム投稿トップ) でのmetaタグdescription
+        設置するアーカイブページ (top, year, month)
+        カスタムフィールド設定
+            { ～ } が1セクション
+                セクション名 (折り畳み部分に表示される名前)
+                セクション内のカスタムフィールド
+                    フィールドのname属性
+                        項目名
+                        フィールドタイプ
+                        プレースホルダー
+
+
+
+
+        タクソノミー設定
+            タクソノミースラッグ (追加タクソノミー設定)
+                タクソノミー名
+                設置するアーカイブページ (year, month)
+                カスタムフィールド設定
+                    フィールドのname属性
+                        項目名
+                        フィールドタイプ
+                        項目の説明
+
+
+
+
+
+    カスタム投稿タイプスラッグ (追加カスタム投稿タイプ設定)
+        表示名
+        管理画面でのメニュー位置
+        アイコン (dashicons名)
+        サポートする標準機能 (title, editor, author, thumbnail, excerpt, trackbacks, custom-fields, comments, revisions, page-attributes, post-formats)
+        一覧画面 (カスタム投稿トップ) でのmetaタグdescription
+        アイキャッチに使用するカスタムフィールド名 (name)
+        設置するアーカイブページ (top, year, month)
+        カスタムフィールド設定
+            { ～ } が1セクション
+                セクション名 (折り畳み部分に表示される名前)
+                セクション内のカスタムフィールド
+                    フィールドのname属性
+                        項目名
+                        フィールドタイプ
+                        最小値
+
+                    フィールドのname属性
+                        項目名
+                        フィールドタイプ
+                        htmlを許可するか
+                        プレースホルダー
+
+
+
+            2つ目のセクション
+                セクション名 (折り畳み部分に表示される名前)
+                セクション内のカスタムフィールド
+                    フィールドのname属性
+                        項目名
+                        フィールドタイプ
+                        項目名を隠すか
+                        プレースホルダー
+
+                    フィールドのname属性
+                        項目名
+                        フィールドタイプ
+                        項目名を隠すか
+
+
+
+            3つ目のセクション
+                セクション名 (折り畳み部分に表示される名前)
+                セクション内のカスタムフィールド
+                    フィールドのname属性
+                        項目名
+                        フィールドタイプ
+                        項目名を隠すか
+
+
+
+            4つ目のセクション
+                セクション名 (折り畳み部分に表示される名前)
+                セクション内のカスタムフィールド
+                    フィールドのname属性
+                        項目名
+                        フィールドタイプ
+                        項目名を隠すか
+
+
+
+
+
+
+
+    設定ページ設定
+            ページスラッグ
+            管理画面でのメニュー表示名
+            管理画面でのメニューを入れる箇所 (どのメニューの下に入れるか)
+            設定ページのテンプレートファイル名 (includes/menupage/ 以下のパス)
+            設定ページで変更できる最低権限
+            カスタムフィールド設定
+                フィールドのname属性
+                    項目名
+                    値が1つか複数か (single / array)
+                    初期値
+
+
+
+
+
+    ウィジェット設定
+        エリア設定
+            { ～ } が1エリア
+                テンプレート上でウィジェットエリアを呼び出す時のID
+                エリア名 (管理画面のウィジェット設定に表示される名前)
+                説明 (管理画面のウィジェット設定に表示される説明)
+                ウィジェット表示時にウィジェットの前に追加する内容
+                ウィジェット表示時にウィジェットの後に追加する内容
+                ウィジェット表示時にウィジェットタイトルの前に追加する内容
+                ウィジェット表示時にウィジェットタイトルの後に追加する内容
+
+
+        追加ウィジェット (テーマで用意したウィジェットで追加したいウィジェットのクラス名を入れる)
+            最近の投稿(カスタム投稿タイプ対応)
+            カテゴリー(カスタムタクソノミー対応)
+            アーカイブ(カスタム投稿タイプ対応)
+            バナー(画像登録付き)
+
+        削除ウィジェット (デフォルトウィジェットで削除したいウィジェットのクラス名を入れる)
+            固定ページ
+            カレンダー
+            アーカイブ
+            リンク
+            音声
+            画像
+            ギャラリー
+            動画
+            メタ情報
+            検索
+            テキスト
+            カテゴリー
+            最近の投稿
+            最近のコメント
+            RSS
+            タグクラウド
+            ナビゲーションメニュー
+            カスタムHTML
+
+
+
+    リソース設定
+        CSS (自動読み込みするCSSファイルのテンプレートディレクトリー以下のパス)
+
+
+
+
+
+
+
+
+
+
+
+                    </pre>
+                </code>
+            </div>
+        </article>
+        <footer>
+            <small>&copy; 2018 Sunatmark</small>
+        </footer>
+        <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    </body>
+</html>

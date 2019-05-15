@@ -1,0 +1,243 @@
+{
+    "const": {
+        "DEFAULT_IMAGE": "assets/img/default.png",
+        "GOOGLE_MAPS_API_KEY": "AIzaSyCSZE8_-lpa7Exu0-hxZEcVEYVIAU_PJ9U",
+        "NUMBER_RECENT_POST": 5
+    },
+
+    "basic": {
+        "menu": {
+            "global1": "グローバルナビゲーション1",
+            "global2": "グローバルナビゲーション2",
+            "footer1": "フッターナビゲーション1",
+            "footer2": "フッターナビゲーション2"
+        },
+        "excerpt": {
+            "length": 500,
+            "more": {
+                "text": "&nbsp;&nbsp;[...]",
+                "link": {
+                    "text": "もっと読む",
+                    "class": [
+                        "more"
+                    ]
+                }
+            },
+            "allow": [],
+            "pair": []
+        },
+        "ogp": {
+            "twitter": {
+                "card": "summary_large_image",
+                "site": "@3at_nashiro"
+            },
+            "facebook": {
+                "appid": ""
+            }
+        },
+        "query_vars": []
+    },
+
+    "login": {
+        "url": "/-cmsadm-/-/__login.php",
+        "css": [
+            "admin/admin-login.css"
+        ],
+        "logo": "header/logo.png",
+        "background": {
+            "image": "bg.gif",
+            "position": "center",
+            "repeat": "no-repeat",
+            "color": "#f1f1f1"
+        },
+        "error": "<strong>エラー:</strong> ユーザー名もしくはパスワードが間違えています。",
+        "reset": "パスワードをお忘れの方はこちら"
+    },
+
+    "posttype": {
+        "post": {
+            "name": ""
+        },
+        "page": {
+            "position": 8,
+            "metabox": [
+                {
+                    "title": "SEO",
+                    "item": {
+                        "description": {
+                            "title": "description",
+                            "type": "text",
+                            "placeholder": "description"
+                        }
+                    }
+                }
+            ]
+        },
+        "information": {
+            "name": "お知らせ",
+            "position": 6,
+            "icon": "dashicons-rss",
+            "supports": ["title", "editor", "thumbnail"],
+            "description": "お知らせ一覧です。",
+            "archive": ["top", "year", "month"],
+            "metabox": [
+                {
+                    "title": "SEO",
+                    "item": {
+                        "description": {
+                            "title": "description",
+                            "type": "text",
+                            "placeholder": "description"
+                        }
+                    }
+                }
+            ],
+            "taxonomy": {
+                "information-category": {
+                    "name": "カテゴリー",
+                    "archive": ["year", "month"],
+                    "metabox": {
+                        "color": [
+                            "カラー",
+                            "color",
+                            "イメージカラーです。"
+                        ]
+                    }
+                }
+            }
+        },
+        "works": {
+            "name": "施工事例",
+            "position": 7,
+            "icon": "dashicons-admin-multisite",
+            "supports": ["title"],
+            "description": "私たちが施工した物件を一部ご紹介します。",
+            "eyecatch": "image",
+            "archive": ["top", "year", "month"],
+            "metabox": [
+                {
+                    "title": "物件情報",
+                    "item": {
+                        "build-year": {
+                            "title": "建築年",
+                            "type": "number",
+                            "min": 2000
+                        },
+                        "remarks": {
+                            "title": "備考",
+                            "type": "textarea",
+                            "html": true,
+                            "placeholder": "備考"
+                        }
+                    }
+                },
+                {
+                    "title": "位置情報",
+                    "item": {
+                        "address": {
+                            "title": "住所",
+                            "type": "text",
+                            "title-hide": true,
+                            "placeholder": "住所"
+                        },
+                        "map": {
+                            "title": "地図",
+                            "type": "map",
+                            "title-hide": true
+                        }
+                    }
+                },
+                {
+                    "title": "担当者からのオススメポイント",
+                    "item": {
+                        "recommend": {
+                            "title": "担当者からのオススメポイント",
+                            "type": "wysiwyg",
+                            "title-hide": true
+                        }
+                    }
+                },
+                {
+                    "title": "物件写真",
+                    "item": {
+                        "image": {
+                            "title": "画像",
+                            "type": "image",
+                            "title-hide": true
+                        }
+                    }
+                }
+            ]
+        }
+    },
+
+    "menupage": {
+        "top-carousel": {
+            "title": "トップカルーセル",
+            "parent": "themes.php",
+            "template": "top-carousel.php",
+            "cap": "edit_others_posts",
+            "item": {
+                "top-carousel-image": [
+                    "画像",
+                    "array",
+                    []
+                ]
+            }
+        }
+    },
+
+    "widgets": {
+        "area": [
+            {
+                "id": "sidebar01",
+                "name": "右サイドバー",
+                "description": "右側に表示されるウィジェットエリアです。",
+                "before_widget": "<div class=\"widget %2$s\">",
+                "after_widget": "</div>",
+                "before_title": "<h2>",
+                "after_title": "</h2>"
+            }
+        ],
+        "register": [
+            "ThemeWidgetRecentCustomPosts",
+            "ThemeWidgetCustomPostsTaxonomy",
+            "ThemeWidgetCustomPostsArchive",
+            "ThemeWidgetBanner"
+        ],
+        "unregister": [
+            "WP_Widget_Pages",
+            "WP_Widget_Calendar",
+            "WP_Widget_Archives",
+            "WP_Widget_Links",
+            "WP_Widget_Media_Audio",
+            "WP_Widget_Media_Image",
+            "WP_Widget_Media_Gallery",
+            "WP_Widget_Media_Video",
+            "WP_Widget_Meta",
+            "WP_Widget_Search",
+            "WP_Widget_Text",
+            "WP_Widget_Categories",
+            "WP_Widget_Recent_Posts",
+            "WP_Widget_Recent_Comments",
+            "WP_Widget_RSS",
+            "WP_Widget_Tag_Cloud",
+            "WP_Nav_Menu_Widget",
+            "WP_Widget_Custom_HTML"
+        ]
+    },
+
+    "resource": {
+        "css": [
+            "assets/css/font-awesome.min.css",
+            "assets/lib/jquery/bxslider/jquery.bxslider.css",
+            "assets/lib/sp-slidemenu/sp-slidemenu.css",
+            "assets/css/base.css",
+            "assets/css/common_first.css",
+            "assets/css/common_body.css",
+            "assets/css/floatgrid.min.css",
+            "assets/css/widget.css",
+            "assets/css/page.css"
+        ]
+    }
+}

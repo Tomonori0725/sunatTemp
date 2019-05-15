@@ -1,0 +1,42 @@
+@charset "utf-8";
+
+.uploadImageList {
+    margin: 0;
+    padding: 10px 0;
+}
+.uploadImageList .image {
+    display: inline-block;
+    margin: 0 10px 10px 0;
+}
+.uploadImageList .imageWrap {
+    display: inline-block;
+    max-width: 100%;
+    margin: 0;
+    padding: 5px;
+    position: relative;
+    background: #ffffff;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.uploadImageList .imageWrap img {
+    margin: 0;
+    padding: 0;
+    width: auto;
+    max-width: 100%;
+    height:auto;
+    vertical-align: middle;
+    background: #ffffff;
+}
+.uploadImageList .removeImageButton {
+    position: absolute;
+    top: -9px;
+    right: -9px;
+    height: 30px;
+    width: 32px;
+    text-align: center;
+    vertical-align: middle;
+    background: #ffffff;
+    border-radius: 50%;
+    font-size: 32px;
+}

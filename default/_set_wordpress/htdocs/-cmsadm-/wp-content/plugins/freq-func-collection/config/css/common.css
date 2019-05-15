@@ -1,0 +1,96 @@
+.mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.viewDescription {
+    margin-bottom: 10px;
+}
+caption .viewDescription {
+    margin-top: 10px;
+}
+.funcDescription {
+    display: none;
+}
+.funcDescription :first-child {
+    margin-top: 0;
+}
+
+.removeItemButton {
+    margin: 0;
+    border: none;
+    padding: 0;
+    font: inherit;
+    background: transparent;
+    cursor: pointer;
+}
+.ui-sortable-handle {
+    cursor: move;
+}
+
+.form-table {
+    margin-bottom: 20px;
+}
+.form-table caption {
+    text-align: left;
+}
+.form-table caption h4 {
+    margin: 0;
+    font-size: 1.1em;
+}
+.form-table th,
+.form-table td {
+    padding: 5px;
+    width: auto;
+    vertical-align: middle;
+}
+.form-table th {
+    text-align: center;
+}
+.form-table td {
+    text-align: left;
+}
+
+.table-striped tr:nth-of-type(even) {
+    background-color: rgba(0,0,0,.05);
+}
+
+.table-definelist th {
+    width: 250px;
+    text-align: left;
+}
+
+.table-addablelist thead th {
+    padding: 15px 10px;
+}
+.table-addablelist thead th:nth-of-type(1),
+.table-addablelist tbody td:nth-of-type(1) {
+    width: 20px;
+    text-align: center;
+}
+@media screen and (max-width: 782px) {
+    .table-addablelist thead {
+        display: none;
+    }
+    .table-addablelist tbody td:nth-of-type(1) {
+        display: table-cell;
+    }
+    .table-addablelist tbody td[data-colname]:before {
+        font-weight: bold;
+        content: attr(data-colname);
+    }
+}
+
+.table-checklist th {
+    width: auto;
+    text-align: left;
+}
+.table-checklist td {
+    width: 20px;
+    text-align: center;
+}
+@media screen and (max-width: 782px) {
+    .table-checklist th,
+    .table-checklist td {
+        display: table-cell;
+    }
+}

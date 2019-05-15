@@ -1,0 +1,16 @@
+.login #login h1 a {
+    width: 100%;
+    max-height: calc(100vh - 500px);
+}
+.login #login h1 .customLogo {
+    text-indent: 0;
+    height: auto;
+    background: none;
+}
+.login #login h1 .customLogo img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: calc(100vh - 500px);
+    vertical-align: middle;
+}

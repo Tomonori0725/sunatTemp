@@ -1,0 +1,50 @@
+@charset "utf-8";
+
+.login #login {
+    width: 450px;
+}
+.login #login h1 {
+    margin-bottom: 15px;
+    padding: 20px;
+    border: #ffffff 1px solid;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.13);
+}
+.login #login h1 a {
+    margin: 0 auto;
+    width: 260px;
+    height: 53px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+.login #login #loginform {
+    border: #ffffff 1px solid;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.13);
+}
+.login #login #loginform label {
+    color: #333333;
+}
+.login #login #loginform .submit #wp-submit {
+
+}
+.login #login #loginform .submit #wp-submit:hover {
+    opacity: 0.8;
+}
+.login .description {
+    clear: both;
+}
+.login #nav,
+.login #backtoblog {
+    display: none;
+}
+.login.login-action-lostpassword #nav {
+    display: block;
+    margin-top: -70px;
+}
+.login.login-action-lostpassword #nav a:after {
+    content: "画面に戻る"
+}

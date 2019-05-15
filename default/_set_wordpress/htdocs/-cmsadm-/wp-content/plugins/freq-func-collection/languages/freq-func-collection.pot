@@ -1,0 +1,62 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Freq Func COLLECTION\n"
+"POT-Creation-Date: 2018-02-20 20:02+0900\n"
+"PO-Revision-Date: 2018-02-13 11:51+0900\n"
+"Last-Translator: Sunatmark <nashiro@sunatmark.co.jp>\n"
+"Language-Team: Sunatmark\n"
+"Language: ja_JP\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.6\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: addons/field/tags.php:56
+msgid "Add Image"
+msgstr ""
+
+#: addons/field/tags.php:82
+msgid "There is no addition."
+msgstr ""
+
+#: addons/field/view/map.php:3
+msgid "Please drag the marker."
+msgstr ""
+
+#: addons/field/view/map.php:4
+msgid "Use the mouse wheel or [<span class=\"dashicons dashicons-plus\"></span>] and [<span class=\"dashicons dashicons-minus\"></span>] to zoom in and out."
+msgstr ""
+
+#: addons/field/view/map.php:5
+msgid "In the actual display, the center is the position of the marker."
+msgstr ""
+
+#: addons/field/view/map.php:10
+msgid "Hide map"
+msgstr ""
+
+#: addons/fields/type/FfcFieldsMetabox.php:71
+msgid "Box"
+msgstr ""
+
+#: addons/widget/FfcWidget.php:72
+msgid "Widgets area"
+msgstr ""
+
+#: addons/widget/FfcWidget.php:74
+msgid "It is a widget area."
+msgstr ""
+
+#: includes/FfcBaseClass.php:90
+msgid "File not found."
+msgstr ""
+
+#: includes/FfcBaseClass.php:100
+msgid "The description of the file is incorrect."
+msgstr ""

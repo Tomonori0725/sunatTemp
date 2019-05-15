@@ -1,0 +1,12 @@
+.spinner-container .spinner-up,
+.spinner-container .spinner-down {
+    padding: 2px 6px;
+    width: 28px;
+}
+@media screen and (max-width: 782px) {
+    .spinner-container .spinner-up,
+    .spinner-container .spinner-down {
+        padding: 14px 14px;
+        width: 44px;
+    }
+}

@@ -1,0 +1,31 @@
+@charset "utf-8";
+
+#titlediv .inside {
+/*    display: none;*/
+}
+
+.postbox th {
+    text-align: left;
+}
+
+.no_box {
+    background: transparent;
+    border: 0 none;
+    box-shadow: none;
+}
+.no_box .hndle,
+.js .no_box .handlediv {
+    display: none;
+}
+.no_box .inside {
+    padding: 0;
+    margin: 0;
+}
+
+.required.error {
+    background-color: #fcc;
+}
+
+.field {
+    margin-top: 10px;
+}
