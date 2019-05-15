@@ -131,7 +131,7 @@ COL;
         //画像にimgタグをつける
         $cur_ss['preImage'] = $edit_arr['image'];
         if(!empty($edit_arr['image'])){
-            $edit_arr['htmlImage'] = '<img src="' . $edit_arr['image'] . '" alt="' . $edit_arr['title'] . '">';
+            $edit_arr['htmlImage'] = '<img src="' . $edit_arr['image'] . '" alt="' . $edit_arr['title'] . '"><input type="checkbox" id="ImgDel" name="imgDel" value="true"><label for="ImgDel">削除</label>';
         }else{
             $edit_arr['htmlImage'] = '';
         }

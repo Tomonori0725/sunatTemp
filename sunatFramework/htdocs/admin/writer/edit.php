@@ -96,7 +96,11 @@ COL;
         $table = 'writer';
         $edit_arr = $db->getRow($col, $table, 'id = ?', array($id));
 
-        if (!$edit_arr) error('アクセスエラー', '不正なアクセスです2', '/admin/edit/');
+        if (!$edit_arr){
+            $listPage = "/admin/writer/";
+            header('Location: ' . $listPage);
+            exit();
+        }
         
         //画像にimgタグをつける
         $cur_ss['preImage'] = $edit_arr['image'];

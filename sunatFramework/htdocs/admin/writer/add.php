@@ -59,12 +59,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         $cur_ss['add_input'] = $ret;
+
+        //名前が他の投稿者とかぶっていたらエラーを出す
+        $col = 'name';
+        $table = 'writer';
+        $where = 'name = ?';
+        $arrWhere = $cur_ss['add_input']['values']['name'];
+        $writer_name = $db->select($col, $table, $where, $arrWhere);
+        
+        if(!empty($writer_name)) $err_flg = true;
+        if ($err_flg) {
+			$tmpl_arr = $ret['in'];
+			$tmpl_arr['writer_name:error'] = array('same' => true);
+			$err_flg = 1;
+        }
+        var_dump($err_flg);
+
+
         $cur_ss['add_input']['values']['image'] = $imagePath;
         $cur_ss['add_input']['in']['image'] = $imagePath;
 		redirect('add_confirm.php');
 	} catch (FormCheckException $e) {
 		$tmpl_arr += $e->getValues();
-	}
+    }
+        
 }else{
     //戻るなどの処理で来た時
     if (array_key_exists('add_input', $cur_ss)) {

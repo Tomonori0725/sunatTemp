@@ -14,15 +14,14 @@ require 'MDB2.php';
 require 'phplib5.inc';
 require 'sub.inc';
 
+session_cache_limiter('private_no_expire');
+
 session_start();
 
 //カレントセッション
 $sess = new SessionCurrent('*admin.user.list.index');
 $cur_ss = &$sess->vars;
-
-$ref_sess = new SessionReference('*admin.user.list', SessionReference::INIT);
-$ref_ss =& $ref_sess->vars;
-
+$cur_ss['condition'] = '';
 
 $tmpl_arr = array();
 $search_writer = '';
@@ -49,9 +48,12 @@ foreach($writer_list as $write){$write_id[] = $write['id'];}
 
 $col = 'article.id,category_name,title,date';
 $table = 'article LEFT OUTER JOIN category ON article.category_id = category.id';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	//絞り込み検索されたら...
 	// 開始年月日のチェック
+
+	
 	$start_flug = 0;
 	if(array_key_exists('start', $_POST)){
 		if(($_POST['start']['year'] != '') || ($_POST['start']['month'] != '') || ($_POST['start']['day'] != '')){
@@ -68,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		}
 	}
 
-
     //バリデーション
 	$form->post->category_id = new FormFieldSelect($cate_id);
 	$form->post->writer_id   = new FormFieldSelect($write_id);
@@ -77,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 	try{
 		$ret = $form->get();
+		var_dump($ret);
 		$cur_ss['serch'] = $ret;
 		$search_date = $cur_ss['serch']['values'];
 		$search_cate = $search_date['category_id'];
@@ -133,6 +135,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		if($where) $where .= ' ORDER BY article.date DESC';
 		else $where = ' ORDER BY article.date DESC';
 
+		$cur_ss['condition'] = $where;
+		var_dump($cur_ss['condition']);
+
 	} catch (FormCheckException $e) {
         $tmpl_arr += $e->getValues();
 	}
@@ -150,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$table .= ' ORDER BY article.date DESC';
 }
 
-$article_list = $db->select($col, $table, $where, $arrWhere);
+$article_list = $db->select($col, $table, $cur_ss['condition'], $arrWhere);
 
 $list_section = array(
 	'article_list'	=> $article_list

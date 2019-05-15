@@ -43,11 +43,14 @@ $col = 'title,contents,description,article.image,date,category_name,writer.name,
 $table = 'article LEFT OUTER JOIN category ON article.category_id = category.id LEFT OUTER JOIN writer ON article.writer_id = writer.id';
 $where = 'article.id = '. $articleId;
 $article_list = $db->select($col, $table, $where, $arrWhere);
-$article_list = $article_list[0];
+
+//記事がなければエラーページへ
 if(empty($article_list)){
 	$errorPage = "/error/404.html";
 	header('Location: ' . $errorPage);
 	exit();
+}else{
+	$article_list = $article_list[0];
 }
 
 //イメージをimgタグに追加

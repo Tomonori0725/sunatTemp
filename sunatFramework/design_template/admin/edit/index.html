@@ -25,7 +25,6 @@
   <div class="wallBelt narrow">
     <div class="contents">
       <div class="searchBox">
-
         <form action="index.php" enctype="multipart/form-data" method="post">
           <table>
             <tr>
@@ -38,7 +37,7 @@
                     <option value="${id}" ${id=${search_writer}? selected:}>${name}</option>
                     <!--/writer_list-->
                   </select>
-              </label>
+                </label>
               </td>
             </tr>
             <tr>
@@ -66,7 +65,13 @@
                   <input name="end[month]" type="text" id="end_m" value="${end_m}">月
                   <input name="end[day]" type="text" id="end_d" value="${end_d}">日
                   <!--/serch_date-->
-              </td>
+                  <!--start:error-->
+                      <!--bad_format--><span class="error">期間開始日が存在しない日付です。(もしくは数値でない)</span><br /><!--/bad_format-->
+                  <!--/start:error-->                  
+                  <!--end:error-->
+                      <!--bad_format--><span class="error">期間開始日が存在しない日付です。(もしくは数値でない)</span><br /><!--/bad_format-->
+                  <!--/end:error-->                  
+                </td>
             </tr>
           </table>
           <div class="buttonBox">
@@ -75,9 +80,7 @@
               </ul>
           </div>
         </form>
-
       </div>
-
 
       <!--list_section-->
       <h2 class="pageTitle">記事一覧</h2>
