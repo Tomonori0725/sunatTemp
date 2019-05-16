@@ -13,6 +13,7 @@ class FormFieldFileUp extends FormFieldSubFields {
 
 	public function pre_converts(array &$results, array &$errors, array &$in, array &$files) {
 		parent::pre_converts($results, $errors, $in, $files);
+		var_dump($results);
 		$value = $this->pre_convert($results, $files);
 		if ($value instanceof ByteArray)
 		$errors = $value;

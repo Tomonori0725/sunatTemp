@@ -114,7 +114,7 @@ $tmpl_arr += array('cate_list'	 => $cate_list);
 $tmpl_arr += array('writer_list' => $writer_list);
 
 //画像が登録されていたら、、、
-$tmpl_arr['htmlImage'] = '';y
+$tmpl_arr['htmlImage'] = '';
 if(!empty($imagePath)){
     $cur_ss['add_input']['values']['image'] = $imagePath;
     $cur_ss['add_input']['in']['image'] = $imagePath;

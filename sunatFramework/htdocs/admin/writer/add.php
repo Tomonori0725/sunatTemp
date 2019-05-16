@@ -13,6 +13,7 @@ require	'error.inc';
 require 'MDB2.php';
 require 'phplib5.inc';
 require 'sub.inc';
+require 'sub_app.inc';
 
 session_start();
 
@@ -28,12 +29,6 @@ $arrWhere = array();
 
 $err_flg = NULL;
 
-if(!empty($cur_ss['add_input']['values']['image'])){
-    $imagePath = $cur_ss['add_input']['values']['image'];
-}else{
-    $imagePath = '';
-}
-
 $db = new mysql_db();
 $table = 'writer';
 
@@ -45,56 +40,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $form = new Form;
     $form->post->name       = new FormFieldNameDbDuplicate(FormField::TRIM | FormField::NOT_NULL, $db, $table, 'name');
     $form->post->profile    = new FormFieldString(FormField::TRIM | FormField::NOT_NULL);
-    //$form->post->image      = new FormFieldFile($_FILES['image'], FormField::TRIM);
-    $form->post->image      = new FormFieldFileUp(FormField::NOT_NULL, $uploadDir, '/\.jpg$|\.png$/i');
-
-    if(is_uploaded_file($_FILES['image']['tmp_name'])){
-        $tmp = $_FILES['image']['tmp_name'];
-        $fileName = date("YmdHis") . substr($_FILES['image']['name'], -4);
-        $upload = "../../uploads/" . $fileName;
-        if(move_uploaded_file($tmp, $upload)){
-            $imagePath = "/uploads/".$fileName;
-        }else{
-            //echo 'アップ失敗';
-        }
-    }else{
-        //echo 'そもそもファイルきてない';
-    }
-
+    $form->post->image      = new FormFieldFileUp(FormField::NOT_NULL, $uploadDir, '/\.jpg$|\.JPG$/i');
 
     try {
         $ret = $form->get();
+        //TODO アップロードファイルが変更された場合、前のアップロードファイルを削除(unlink)する
+        if (array_key_exists('add_input', $cur_ss)) {
+            $prev_path = $cur_ss['add_input']['values']['image']['path'];
+            $current_path = $ret['values']['image']['path'];
+
+            if ($prev_path != $current_path) {
+                @unlink($prev_path);
+            }
+        }
 
         $cur_ss['add_input'] = $ret;
 
-        //名前が他の投稿者とかぶっていたらエラーを出す
-        $col = 'name';
-        $table = 'writer';
-        $where = 'name = ?';
-        $arrWhere = $cur_ss['add_input']['values']['name'];
-        $writer_name = $db->select($col, $table, $where, $arrWhere);
-
-
-
-
-
-        //画像があるかどうか
-        if (empty($imagePath)) $err_flg = true;
-        if ($err_flg) {
-            $tmpl_arr = $ret['in'];
-            $tmpl_arr['image:error'] = array('is_null' => true);
-            $errors['is_null'] = TRUE;
-            $err_flg = 1;
-        }
-        else {
-        }
-    
-
-
-
-        
-        $cur_ss['add_input']['values']['image'] = $imagePath;
-        $cur_ss['add_input']['in']['image'] = $imagePath;
 		redirect('add_confirm.php');
 	} catch (FormCheckException $e) {
 		$tmpl_arr += $e->getValues();
@@ -109,21 +70,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $tmpl_arr = array(
 			'name'	    => '',
 			'profile'	=> '',
-			'image'		=> ''
+			'image'		=> array("current" => null, "up" => null, "delete" => false, "exist" => false, "name" => null, "temp_name" => null, "path" => null)
         );
     }
 }
 
-//画像が登録されていたら、、、
-$tmpl_arr['htmlImage'] = '';
-if(!empty($imagePath)){
-    $cur_ss['add_input']['values']['image'] = $imagePath;
-    $cur_ss['add_input']['in']['image'] = $imagePath;
-    $tmpl_arr['htmlImage'] = '<img src="' . $imagePath . '" alt="' . $tmpl_arr['name'] . '">';
-}
-if(!empty($imgDel)) $imagePath = '';
 
-//var_dump($tmpl_arr);
+var_dump($tmpl_arr);
+var_dump($cur_ss);
 
 
 $temp = new HTMLTemplate('admin/writer/add.html');
