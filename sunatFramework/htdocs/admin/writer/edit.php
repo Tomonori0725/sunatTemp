@@ -29,12 +29,13 @@ $arrWhere = array();
 $imagePath = '';
 
 $db = new mysql_db();
+$table = 'writer';
 $form = new Form;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //フォームが送信されたら...
     //バリデーション
-    $form->post->name       = new FormFieldString(FormField::TRIM | FormField::NOT_NULL);
+    $form->post->name       = new FormFieldNameDbDuplicate(FormField::TRIM | FormField::NOT_NULL, $db, $table, 'name');
     $form->post->profile    = new FormFieldString(FormField::TRIM | FormField::NOT_NULL);
 
     //画像をアップロード

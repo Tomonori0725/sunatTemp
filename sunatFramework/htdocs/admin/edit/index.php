@@ -27,11 +27,22 @@ $tmpl_arr = array();
 $search_writer = '';
 $search_cate = '';
 
+$serch_date = array(
+	'start_y' => null,
+	'start_m' => null,
+	'start_d' => null,
+	'end_y'   => null,
+	'end_m'   => null,
+	'end_d'   => null
+);
+
 $where = '';
 $arrWhere = array();
 
 $db = new mysql_db();
 $form = new Form;
+$err_flg = NULL;
+$err_search_flg = false;
 
 //カテゴリー
 $col = 'id,category_name';
@@ -45,15 +56,12 @@ $table = 'writer';
 $writer_list = $db->select($col, $table, $where, $arrWhere);
 foreach($writer_list as $write){$write_id[] = $write['id'];}
 
-
 $col = 'article.id,category_name,title,date';
 $table = 'article LEFT OUTER JOIN category ON article.category_id = category.id';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	//絞り込み検索されたら...
 	// 開始年月日のチェック
-
-	
 	$start_flug = 0;
 	if(array_key_exists('start', $_POST)){
 		if(($_POST['start']['year'] != '') || ($_POST['start']['month'] != '') || ($_POST['start']['day'] != '')){
@@ -73,12 +81,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //バリデーション
 	$form->post->category_id = new FormFieldSelect($cate_id);
 	$form->post->writer_id   = new FormFieldSelect($write_id);
-	$form->post->start       = new FormFieldDateTimeArray(FormField::TRIM | FormField::MBCONV | $start_flug, true);
-	$form->post->end         = new FormFieldDateTimeArray(FormField::TRIM | FormField::MBCONV | $end_flug, true);
-
+	$form->post->start	= new FormFieldDateTimeArray(NULL, true);
+	$form->post->end	= new FormFieldDateTimeArray(NULL, true);
 	try{
 		$ret = $form->get();
-		var_dump($ret);
+
+		// 開始・終了両方にデータがあれば妥当性確認
+		if (!is_null($ret['values']['start']) && !is_null($ret['values']['end'])) {
+			if ($ret['values']['end']->getValue(array()) < $ret['values']['start']->getValue(array())) $err_flg = true;
+		}
+		if ($err_flg) {
+			$tmpl_arr = $ret['in'];
+			$tmpl_arr['serch_date:error'] = array('incorrect' => true);
+			$err_flg = 1;
+		}
+		else {
+			$cur_ss['search_info']['start'] = $ret['values']['start'];
+			$cur_ss['search_info']['end'] = $ret['values']['end'];
+		}
+		
+
 		$cur_ss['serch'] = $ret;
 		$search_date = $cur_ss['serch']['values'];
 		$search_cate = $search_date['category_id'];
@@ -136,12 +158,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		else $where = ' ORDER BY article.date DESC';
 
 		$cur_ss['condition'] = $where;
-		var_dump($cur_ss['condition']);
 
 	} catch (FormCheckException $e) {
-        $tmpl_arr += $e->getValues();
-	}
+		$tmpl_arr += $e->getValues();
+		$err_search_flg = true;
 
+	}
 }else{
 	//全記事一覧
 	$serch_date = array(
@@ -155,13 +177,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$table .= ' ORDER BY article.date DESC';
 }
 
+//エラーがでた時に投稿日をセットする
+if($err_search_flg){
+	$serch_date = array(
+		'start_y' => $tmpl_arr['start']['year'],
+		'start_m' => $tmpl_arr['start']['month'],
+		'start_d' => $tmpl_arr['start']['day'],
+		'end_y'   => $tmpl_arr['end']['year'],
+		'end_m'   => $tmpl_arr['end']['month'],
+		'end_d'   => $tmpl_arr['end']['day']
+	);
+	$table .= ' ORDER BY article.date DESC';
+}
+
+
+
 $article_list = $db->select($col, $table, $cur_ss['condition'], $arrWhere);
 
 $list_section = array(
 	'article_list'	=> $article_list
 );
 $tmpl_arr += array(
-	'list_section'		=> $list_section
+	'list_section'	=> $list_section
 );
 //カテゴリー一覧
 $tmpl_arr += array('cate_list'   => $cate_list);
@@ -171,8 +208,7 @@ $tmpl_arr += array('writer_list' => $writer_list);
 $tmpl_arr['search_cate'] = $search_cate;
 $tmpl_arr['search_writer'] = $search_writer;
 
-
-$tmpl_arr += array('serch_date'   => $serch_date);
+$tmpl_arr += array('serch_date' => $serch_date);
 
 $temp = new HTMLTemplate('admin/edit/index.html');
 echo $temp->replace($tmpl_arr);

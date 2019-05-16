@@ -605,15 +605,14 @@ form .datePicker + button:before {
 ==================================================== */
 form .error {
     display: block;
-    background:#990000;
-    margin: 0.5em 0;
-    padding:0.25em 1em 0.25em 1.5em;
-    text-indent: -1.25em;
-    line-height: 1.25;
-    color: #ffffff;
-    font-size: 90%;
+    margin: 0;
+    padding:0;
+    line-height: 1.5;
+    color: #ff0000;
+    font-size: 1em;
     font-weight: bold;
 }
+form td .error:first-of-type{margin-top: 0.75em;}
 form .error:before { content: "※"; margin-right:0.25em;}
 
 /* ====================================================

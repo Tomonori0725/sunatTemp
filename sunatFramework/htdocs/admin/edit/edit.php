@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $id = $cur_ss['id'];
         //画像を引き継ぎ
         if(!empty($cur_ss['edit_input']['in']['image'])){
-            $tmpl_arr['htmlImage'] = '<img src="' . $cur_ss['edit_input']['in']['image'] . '" alt="' . $cur_ss['edit_input']['in']['title'] . '">';
+            $tmpl_arr['htmlImage'] = '<img src="' . $cur_ss['edit_input']['in']['image'] . '" alt="' . $cur_ss['edit_input']['in']['title'] . '"><input type="checkbox" id="ImgDel" name="imgDel" value="true"><label for="ImgDel">削除</label>';
         }
         //日付
         //$date_arr = explode('-', $edit_arr['date']);

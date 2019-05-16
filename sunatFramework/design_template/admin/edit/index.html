@@ -65,11 +65,16 @@
                   <input name="end[month]" type="text" id="end_m" value="${end_m}">月
                   <input name="end[day]" type="text" id="end_d" value="${end_d}">日
                   <!--/serch_date-->
+
+                  <!--serch_date:error-->
+                      <!--incorrect--><span class="error">開始日と終了日の指定に不一致があります。(開始日 ＞ 終了日)</span><!--/incorrect-->
+                  <!--/serch_date:error-->
+
                   <!--start:error-->
-                      <!--bad_format--><span class="error">期間開始日が存在しない日付です。(もしくは数値でない)</span><br /><!--/bad_format-->
+                      <!--bad_format--><span class="error">期間開始日が存在しない日付です。(もしくは数値でない)</span><!--/bad_format-->
                   <!--/start:error-->                  
                   <!--end:error-->
-                      <!--bad_format--><span class="error">期間開始日が存在しない日付です。(もしくは数値でない)</span><br /><!--/bad_format-->
+                      <!--bad_format--><span class="error">期間終了日が存在しない日付です。(もしくは数値でない)</span><!--/bad_format-->
                   <!--/end:error-->                  
                 </td>
             </tr>

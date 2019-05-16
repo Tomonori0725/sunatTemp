@@ -64,23 +64,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $form->post->writer_id   = new FormFieldSelect($write_id, FormField::NOT_NULL);
     $form->post->image       = new FormFieldFile($_FILES['image'], FormField::TRIM);
 
+    if(is_uploaded_file($_FILES['image']['tmp_name'])){
+        $tmp = $_FILES['image']['tmp_name'];
+        $fileName = date("YmdHis") . substr($_FILES['image']['name'], -4);
+        $upload = "../../uploads/" . $fileName;
+        if(move_uploaded_file($tmp, $upload)){
+            $imagePath = "/uploads/".$fileName;
+        }else{
+            //echo 'アップ失敗';
+        }
+    }else{
+        //echo 'そもそもファイルきてない';
+    }
+
     try {
         $ret = $form->get();
-
-        if(is_uploaded_file($_FILES['image']['tmp_name'])){
-            $tmp = $_FILES['image']['tmp_name'];
-            $fileName = date("YmdHis") . substr($_FILES['image']['name'], -4);
-            $upload = "../../uploads/" . $fileName;
-            if(move_uploaded_file($tmp, $upload)){
-                $imagePath = "/uploads/".$fileName;
-            }else{
-                //echo 'アップ失敗';
-                $imagePath = 'upload miss';
-            }
-        }else{
-            //echo 'そもそもファイルきてない';
-            $imagePath = 'No File';
-        }
 
         $cur_ss['add_input'] = $ret;
         $cur_ss['add_input']['values']['image'] = $imagePath;
@@ -105,16 +103,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			'image'			=> array(),
 			'date'			=> array('year' => $year, 'month' => $month, 'day' => $day),
 			'writer_id'		=> $writer_list[0]['id'],
-			'imgDel'		=> '',
+			'imgDel'		=> 'false',
         );
     }
 }
 
 //カテゴリー
-$tmpl_arr += array('cate_list'	=> $cate_list);
-
+$tmpl_arr += array('cate_list'	 => $cate_list);
 //ライター
-$tmpl_arr += array('writer_list'	=> $writer_list);
+$tmpl_arr += array('writer_list' => $writer_list);
+
+//画像が登録されていたら、、、
+$tmpl_arr['htmlImage'] = '';y
+if(!empty($imagePath)){
+    $cur_ss['add_input']['values']['image'] = $imagePath;
+    $cur_ss['add_input']['in']['image'] = $imagePath;
+    $tmpl_arr['htmlImage'] = '<img src="' . $imagePath . '" alt="' . $tmpl_arr['title'] . '"><input type="checkbox" id="ImgDel" name="imgDel" value="true"><label for="ImgDel">削除</label>';
+}
+if(!empty($imgDel)) $imagePath = '';
+
+//echo $imagePath;
+//var_dump($tmpl_arr);
 
 $temp = new HTMLTemplate('admin/edit/add.html');
 echo $temp->replace($tmpl_arr);

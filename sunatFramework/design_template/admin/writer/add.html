@@ -36,6 +36,7 @@
                   <input name="name" type="text" id="name" value="${name}" size="50">
                   <!--name:error-->
                       <!--is_null--><br><span class="error">投稿者名を入力してください。</span><!--/is_null-->
+                      <!--duplicate--><br /><span class="error">既に登録済みの投稿者名です。</span><!--/duplicate-->
                   <!--/name:error-->
                   <!--writer_name:error-->
                       <!--same--><br><span class="error">投稿者名を入力してください。</span><!--/same-->
@@ -57,10 +58,21 @@
               <tr>
                 <th class="required">プロフィール画像</th>
                 <td>
-                  <input type="file" name="image" id="image">
-                  <!--image:error-->
+                  ${htmlImage#direct}
+                  <input type="hidden" name="upfile[current]" value="{{ receipt.current }}">
+                    {% if upfile.exist %}
+                    <input type="hidden" name="upfile[file]" value="{{ upfile.file }}">
+                    <input type="hidden" name="upfile[name]" value="{{ upfile.name }}">
+                    {% endif %}
+
+                    <input type="file" name="upfile[up]" size="30" />
+                    <p>{{ upfile.name }}</p>
+                    {% if upfile_error %}
+                        {% if upfile_error.is_null %}<p class="errormsg">アップロードファイルを選択してください</p>{% endif %}
+                    {% endif %}
+                  <!--htmlImage:error-->
                       <!--is_null--><br><span class="error">プロフィール画像が登録されていません。</span><!--/is_null-->
-                  <!--/image:error-->
+                  <!--/htmlImage:error-->
                 </td>
               </tr>
                   

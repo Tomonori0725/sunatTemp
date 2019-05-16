@@ -36,6 +36,7 @@
                   <input name="name" type="text" id="name" value="${name}" size="50">
                   <!--name:error-->
                       <!--is_null--><br><span class="error">タイトルを入力してください。</span><!--/is_null-->
+                      <!--duplicate--><br /><span class="error">既に登録済みの投稿者名です。</span><!--/duplicate-->
                   <!--/name:error-->
                   </td>
               </tr>
@@ -44,6 +45,9 @@
                 <th class="required">プロフィール</th>
                 <td><label for="profile"></label>
                 <textarea name="profile" id="profile" cols="50" rows="5">${profile}</textarea></td>
+                <!--profile:error-->
+                  <!--is_null--><br><span class="error">プロフィールを入力してください。</span><!--/is_null-->
+                <!--/profile:error-->
               </tr>
                           
               <tr>
@@ -52,7 +56,7 @@
                   ${htmlImage#direct}
                   <input type="file" name="image" id="image">
                   <!--image:error-->
-                      <!--is_null--><br><span class="error">タイトルを入力してください。</span><!--/is_null-->
+                      <!--is_null--><br><span class="error">画像をアップロードしてください。</span><!--/is_null-->
                   <!--/image:error-->
                 </td>
               </tr>
