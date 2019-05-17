@@ -58,6 +58,8 @@ $tmpl_arr += array('cate_list'   => $cate_list);
 //ライター
 $tmpl_arr += array('writer_list' => $writer_list);
 
+//var_dump($tmpl_arr);
+
 $temp = new HTMLTemplate('admin/edit/add_confirm.html');
 echo $temp->replace($tmpl_arr);
 

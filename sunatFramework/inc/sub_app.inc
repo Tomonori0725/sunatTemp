@@ -23,6 +23,10 @@ function request_indeed($arrResult, $backend_server, $arrCond, $user_id, $contra
 	$loaded_count	= 0;
     $db = new mysql_db();
     $max_result = $db->get('book_search_max', 'user', 'id = ?', array($user_id));
+    if ($max_result > 1000) {
+        $max_result = MAX_RESULT;
+    }
+    $disp_limit = in_array($contract_type, array(2,3)) ? 50 : 30; // 常に50件(トライアルの場合は30件)毎
 
 	/*
 	$max_result = MAX_RESULT;
@@ -104,23 +108,23 @@ function request_indeed($arrResult, $backend_server, $arrCond, $user_id, $contra
 	// 各項目を抽出するための正規表現と、異常と判定するマッチ成功率の設定
 	$regex_list = array(
 		'company_name' => array(
-			'regex'	=> '/<span class="?company"? itemprop="hiringOrganization" itemtype="http:\/\/schema\.org\/Organization">\s*<span itemprop="name">\s*(.+?)\s*<\/span>\s*<\/span>/us',
+			'regex'	=> '/<span class="?company"?>\s*(.+?)\s*<\/span>/us',
 			'match_rate'	=> 20,
 			'match_count'	=> 0
 		),
 		'location' => array(
-			'regex'	=> '/<span itemprop="addressLocality">(.+?)<\/span>/us',
+			'regex'	=> '/<span class="location">(.+?)<\/span>/us',
 			'match_rate'	=> 50,
 			'match_count'	=> 0
 		),
 		'salary' => array(
-			'regex'	=> '/<span class="no-wrap">(.+?)<\/span>/us',
+			'regex'	=> '/<span class="(?:salary )?no-wrap">\s*(.+?)<\/span>/us',
 			'match_rate'	=> 10,
 			'match_count'	=> 0
 		),
 		'source' => array(
 			'regex'	=> '/<span class="?(?:sdn|result-link-source)"?>(.+?)<\/span>/us',
-			'match_rate'	=> 90,
+			'match_rate'	=> 20,
 			'match_count'	=> 0
 		),
 		'url_code' => array(
@@ -129,12 +133,12 @@ function request_indeed($arrResult, $backend_server, $arrCond, $user_id, $contra
 			'match_count'	=> 0
 		),
 		'url_ind' => array(
-			'regex' => '/href="\/cmp\/[^\/"]+\/jobs\/[^"]*\-(\w+)/us',
+			'regex' => '/href="\/company\/[^\/"]+\/jobs\/[^"]*\-(\w+)/us',
 			'match_rate'	=> 0,
 			'match_count'	=> 0
 		),
 		'employment_type' => array(
-            'regex'	=> '/<td class=snip>\s*(?:<span class="no-wrap">[^<]*?<\/span>\s*)?\-?\s*(.*?)\s*<div>/us',
+            'regex'	=> '/<div class="jobTypeLabelsWrapper">\s*(.+?)<\/div>/us',
 			'match_rate'	=> 10,
 			'match_count'	=> 0
 		),
@@ -157,15 +161,15 @@ function request_indeed($arrResult, $backend_server, $arrCond, $user_id, $contra
 		'establishment'		=> array(),
 		'remarks'			=> array()
 	);
-	
+
 	if ($data === false) {
 		// NOP（HTTPリクエストにそもそも失敗した）
 	}
-	elseif (preg_match_all('/<div class="\s*(?:last)?row[^"]*"\s*id=".*?(<\/div>\s*<\/div>\s*<\/div>|その他のツール<\/a>)/isu', $data, $arrMatches, PREG_SET_ORDER)) {
-        $result_count = 0;
+	elseif (preg_match_all('/<div\s+class="\s*(?:jobsearch-SerpJobCard|row|lastrow)[^"]*"\s*id=".*?(<\/div>\s*<\/div>\s*<\/div>|その他のツール<\/a>|<div class="notes-container result-tab"><\/div>)/isu', $data, $arrMatches, PREG_SET_ORDER)) {
+		$result_count = 0;
         foreach ($arrMatches as $idx => $arrMatch) {
 
-            if ($arrMatch[1] != "その他のツール</a>") {
+            if (preg_match('/<\/div>\s*<\/div>\s*<\/div>/', $arrMatch[1])) {
 				continue;
 			}
 			$gotInfo = array();
@@ -204,12 +208,23 @@ function request_indeed($arrResult, $backend_server, $arrCond, $user_id, $contra
 				}
 			}
 		}
-		
+
 		// 検索結果件数
 		if (preg_match('/求人検索結果\s([\d,]+)\s件中\s([\d,]+)\s\-\s([\d,]+)/u', $data, $ma)) {
+            // 件数表示のパターン
+			// 求人検索結果 5,137 件中 1 - 50 件目
 			$total_count	= str_replace(',', '', $ma[1]);
 			$loaded_count	= str_replace(',', '', $ma[3]);
 		}
+        elseif (preg_match('/求人検索結果\s([\d,]+)\s件中\s([\d,]+)\sページ/u', $data, $ma)) {
+            // ページ数表記のパターン（2018/10/30）
+        	// 求人検索結果 5,137 件中 1 ページ目
+            $total_count	= str_replace(',', '', $ma[1]);
+            $loaded_count	= str_replace(',', '', $ma[2]) * $disp_limit;
+            if ($total_count < $loaded_count) {
+                $loaded_count = $total_count;
+			}
+        }
 		else {
 			$arrAlert['COUNT_MATCH_ERROR'] = COUNT_MATCH_ERROR_MSG;
 		}
@@ -266,7 +281,7 @@ function request_indeed($arrResult, $backend_server, $arrCond, $user_id, $contra
 			// NOP（上限に達した）
 		}
 		elseif (preg_match('/<span class=np>次へ&nbsp;&raquo;<\/span>/su', $data)) {
-			$has_next['disp_limit'] = in_array($contract_type, array(2,3)) ? 50 : 30; // 常に50件(トライアルの場合は30件)毎
+			$has_next['disp_limit'] = $disp_limit;
 		}
 		else {
 			$total_count = $loaded_count; // 次のページが無ければ、結果件数を実際取得した数で上書き
@@ -276,7 +291,8 @@ function request_indeed($arrResult, $backend_server, $arrCond, $user_id, $contra
     // 正規表現による解析に失敗した可能性があれば通知を行う
 	if ($arrAlert) {
 		$arrAlert['CONDITION'] = $arrCond;
-		alert_mail(INDEED_PARSER_ALERT_MAIL_TITLE, $arrAlert);
+		// 2018/10/26 コメントアウト
+		// alert_mail(INDEED_PARSER_ALERT_MAIL_TITLE, $arrAlert);
 	}
 
 	return array(
@@ -344,7 +360,8 @@ function alert_mail($subject, array $arrDetail) {
 	$error_ini = load_error_ini();
 	$mbody = "エラーの疑いが検出されました。\r\n";
 	$mbody .= print_r($arrDetail, true);
-	mb_send_mail($error_ini['mail_to'], $subject, $mbody, 'From: '.$error_ini['mail_from']);
+	// 2018/10/26
+	// mb_send_mail($error_ini['mail_to'], $subject, $mbody, 'From: '.$error_ini['mail_from']);
 }
 
 
@@ -457,11 +474,13 @@ function request_itown($qid, $target_idx, $type, $pgno, $user_id, $kw, $user_age
 		$company_name = str_replace(array("\r\n","\r","\n"), " ", $company_name);
 		$company_name = preg_replace('/<br[[:space:]]*\/?[[:space:]]*>/iu', " ", $company_name);
 		$company_name = trim(strip_tags($company_name));
-	
+
 		//所在名
-		preg_match('/^(\S+?)( (\S+))?$/u', $query_data['location'], $ma);
-		$location = $ma[1];
-		
+        $location = '';
+        if (preg_match('/^(\S+?)( (\S+))?$/u', $query_data['location'], $ma)) {
+            $location = $ma[1];
+		}
+
 		//株式会社に置換
 		$company_name = preg_replace('/（株）|\(株\)|㈱/u', '株式会社', $company_name);
 		//有限会社に置換
@@ -570,7 +589,6 @@ function access_itown($proxy_script_url, $url, $user_agent) {
 	$post_context_stream = stream_context_create(make_request_context_array($_SERVER, 'POST', $user_agent, $content));
 	$data = @file_get_contents($proxy_script_url, false, $post_context_stream);
 
-	if ($data) $data = mb_convert_encoding($data, 'UTF-8', 'SJIS-WIN');
 	if (!isset($http_response_header)) $http_response_header = array();
 	return array($data, $http_response_header);
 	
@@ -601,7 +619,7 @@ function parse_itown($backend_server_group, $user_agent, $qid, $user_id, $arrCon
 	if ($mode == 'completion') {
 		$query_string = $arrCond['company_name'];
 		if (array_key_exists('location', $arrCond)) $query_string .= ' ' . $arrCond['location'];
-		$query = 'http://itp.ne.jp/result/?kw='.urlencode(mb_convert_encoding($query_string, 'SJIS-WIN', 'UTF-8'));
+		$query = 'https://itp.ne.jp/result/?kw='.urlencode($query_string);
 		$pgno = $arrCond['pgno'];
 		if ($pgno) $query .= '&pg='.$pgno;
 		if ($query_string) $query .= '&num=50';
@@ -611,7 +629,7 @@ function parse_itown($backend_server_group, $user_agent, $qid, $user_id, $arrCon
 		$kw2 = $arrCond['kw2'];
 		$query_string = $kw . '	' . $kw2;
 	
-		$query = 'http://itp.ne.jp/result/?kw='.urlencode(mb_convert_encoding($query_string, 'SJIS-WIN', 'UTF-8'));
+		$query = 'https://itp.ne.jp/result/?kw='.urlencode($query_string);
 		$pgno = $arrCond['pgno'];
 		if ($pgno) $query .= '&pg='.$pgno;
 		if ($query_string) $query .= '&num=50';
@@ -639,12 +657,12 @@ function parse_itown($backend_server_group, $user_agent, $qid, $user_id, $arrCon
 	// 各項目を抽出するための正規表現と、異常と判定するマッチ成功率の設定
 	$regex_list = array(
 		'i_company_name' => array(
-			'regex'	=> '/<h4 [^>]*>\s*<a [^>]*href="\/shop\/.+?" target="_blank">(.+?)<\/a>/us',
+			'regex'	=> '/<h4 [^>]*>\s*<a [^>]*href="\/info\/.+?" target="_blank">(.+?)<\/a>/us',
 			'match_rate'	=> 80,
 			'match_count'	=> 0
 		),
 		'i_url_code' => array(
-			'regex'	=> '/href="\/shop\/(.+?)" target="_blank">\s*<img/us',
+			'regex'	=> '/href="\/info\/(\d+\/).*?" target="_blank">/us',
 			'match_rate'	=> 0,
 			'match_count'	=> 0
 		),
@@ -702,10 +720,10 @@ function parse_itown($backend_server_group, $user_agent, $qid, $user_id, $arrCon
 			'regex'	=> '/FAX番号.*?((\d{2,4}-\d{2,4}-\d{4}))/us',
 		),
 		'i_site_url' => array(
-			'regex'	=> '/ＵＲＬ.*?<A[^>]*>(.+?)<\/A>\s+.*?E\-mail/us',
+			'regex'	=> '/ホームページ.*?<A[^>]*>(.+?)<\/A>\s+.*?E-mail/us',
 		),
 		'i_email' => array(
-			'regex'	=> '/E-\mail.*?<A[^>]*>(.+?)<\/A>/us',
+			'regex'	=> '/E-mailアドレス.*?<A[^>]*>(.+?)<\/A>/us',
 		),
 	);
 	if ($data === false) {
@@ -826,28 +844,23 @@ function get_itown_detail($arrResult, $idx, $ad_detail_regex_list, $backend_serv
 	if (!$detail) return $row;
 	
 	//$row['idx'] = $idx;
-	if ($row['i_url_code']) {
-		if (preg_match('/^[a-zA-Z0-9]+\/$/', $row['i_url_code'])) {
-			//NOP
-		}
-		else {
-			$detail_regex_list = $ad_detail_regex_list;
-			$query = 'http://itp.ne.jp/shop/' . $row['i_url_code'];
-			list($detail_data, $http_response_header) = access_itown($backend_server['proxy_script_url'], $query, $user_agent);
-			$res = array_key_exists(0, $http_response_header) ? $http_response_header[0] : null;
-			if ($res) {
-				if (preg_match('#^HTTP/1.1 4\d{2}#', $res)) {
-					$res_info = array('バックエンドサーバ' => $backend_server);
-					$res_info['レスポンスヘッダー'] = $http_response_header;
-					alert_mail(REQUEST_ERROR_ALERT_MAIL_TITLE, $res_info);
-				}
+	if (preg_match('/^\d+\//', $row['i_url_code'])) {
+		$detail_regex_list = $ad_detail_regex_list;
+		$query = 'https://itp.ne.jp/info/' . $row['i_url_code'] . 'shop/';
+		list($detail_data, $http_response_header) = access_itown($backend_server['proxy_script_url'], $query, $user_agent);
+		$res = array_key_exists(0, $http_response_header) ? $http_response_header[0] : null;
+		if ($res) {
+			if (preg_match('#^HTTP/1.1 4\d{2}#', $res)) {
+				$res_info = array('バックエンドサーバ' => $backend_server);
+				$res_info['レスポンスヘッダー'] = $http_response_header;
+				alert_mail(REQUEST_ERROR_ALERT_MAIL_TITLE, $res_info);
 			}
+		}
 
-			foreach ($detail_regex_list as $key => $regex) {
-				$row[$key] = '';
-				if (array_key_exists('regex', $regex) && preg_match($regex['regex'], $detail_data, $ma)) {
-					$row[$key] = $ma[1];
-				}
+		foreach ($detail_regex_list as $key => $regex) {
+			$row[$key] = '';
+			if (array_key_exists('regex', $regex) && preg_match($regex['regex'], $detail_data, $ma)) {
+				$row[$key] = $ma[1];
 			}
 		}
 	}

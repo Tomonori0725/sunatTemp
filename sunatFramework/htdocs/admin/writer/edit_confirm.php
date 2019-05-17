@@ -33,7 +33,7 @@ if (array_key_exists('edit_input', $cur_ss)) {
     
     //画像の表示
     if(!empty($cur_ss['edit_input']['values']['image'])){
-        $file_image = '<img src="' . $cur_ss['edit_input']['values']['image'] . '" alt="' . $cur_ss['edit_input']['values']['name'] . '">';
+        $file_image = '<img src="' . $cur_ss['filepass'] . '" alt="' . $cur_ss['edit_input']['values']['name'] . '">';
     }else{
         $file_image = '';
     }

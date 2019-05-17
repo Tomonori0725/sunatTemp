@@ -38,9 +38,6 @@
                       <!--is_null--><br><span class="error">投稿者名を入力してください。</span><!--/is_null-->
                       <!--duplicate--><br /><span class="error">既に登録済みの投稿者名です。</span><!--/duplicate-->
                   <!--/name:error-->
-                  <!--writer_name:error-->
-                      <!--same--><br><span class="error">投稿者名を入力してください。</span><!--/same-->
-                  <!--/writer_name:error-->
                 </td>
               </tr>
                                     
@@ -60,12 +57,16 @@
                 <td>
                   <!--image-->
                   <input type="hidden" name="image[current]" value="${current}">
+
+                  <input type="hidden" name="image[file]" value="${file}">
+                  <input type="hidden" name="image[name]" value="${name}">
+
                   <input type="file" name="image[up]" size="30">
                   <!--/image-->
-
-                  <!--htmlImage:error-->
+                  ${htmlImage#direct}
+                  <!--image:error-->
                       <!--is_null--><br><span class="error">プロフィール画像が登録されていません。</span><!--/is_null-->
-                  <!--/htmlImage:error-->
+                  <!--/image:error-->
                 </td>
               </tr>
                   

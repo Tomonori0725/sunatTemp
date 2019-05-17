@@ -63,6 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $form->post->date        = new FormFieldDateTimeArray(FormField::NOT_NULL);
     $form->post->writer_id   = new FormFieldSelect($write_id, FormField::NOT_NULL);
     $form->post->image       = new FormFieldFile($_FILES['image'], FormField::TRIM);
+    $form->post->image       = new FormFieldFile($_FILES['image'], FormField::TRIM);
+    $form->post->imgDel      = new FormFieldBool(FormField::TRIM);
 
     if(is_uploaded_file($_FILES['image']['tmp_name'])){
         $tmp = $_FILES['image']['tmp_name'];
@@ -81,6 +83,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $ret = $form->get();
 
         $cur_ss['add_input'] = $ret;
+
+        
+        if(!empty($cur_ss['add_input']['values']['imgDel'])){
+            $imgDel = $cur_ss['add_input']['values']['imgDel'];
+            if($imgDel) $imagePath = '';
+        }
+        
         $cur_ss['add_input']['values']['image'] = $imagePath;
         $cur_ss['add_input']['in']['image'] = $imagePath;
         $cur_ss['add_input']['values']['file'] = $_FILES;
@@ -114,13 +123,16 @@ $tmpl_arr += array('cate_list'	 => $cate_list);
 $tmpl_arr += array('writer_list' => $writer_list);
 
 //画像が登録されていたら、、、
-$tmpl_arr['htmlImage'] = '';
+if($tmpl_arr['imgDel']) $imagePath = '';
 if(!empty($imagePath)){
     $cur_ss['add_input']['values']['image'] = $imagePath;
     $cur_ss['add_input']['in']['image'] = $imagePath;
-    $tmpl_arr['htmlImage'] = '<img src="' . $imagePath . '" alt="' . $tmpl_arr['title'] . '"><input type="checkbox" id="ImgDel" name="imgDel" value="true"><label for="ImgDel">削除</label>';
+    $tmpl_arr['htmlImage'] = '<img src="' . $imagePath . '" alt="' . $tmpl_arr['title'] . '">';
+    $tmpl_arr['del_label'] = '<label for="ImgDel">削除</label>';
+}else{
+    $tmpl_arr['htmlImage'] = '';
+    $tmpl_arr['del_label'] = '';
 }
-if(!empty($imgDel)) $imagePath = '';
 
 //echo $imagePath;
 //var_dump($tmpl_arr);

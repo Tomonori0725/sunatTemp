@@ -12,8 +12,6 @@ $Id$
 
 class WideSearch extends ListCluster {
 
-
-
     /*----------------------------------------------------------------------------
     機能概要: コンストラクタ
     機能説明:
@@ -26,10 +24,36 @@ class WideSearch extends ListCluster {
         $this->arrColumn = array(
             'i_company_name', 'i_location_detail', 'i_zip', 'i_email', 'i_tel', 'i_fax', 'i_site_url'
         );
+        // マスタ、再検索マスタの差分チェック対象項目
+        $this->arrMasterEditColumn = array(
+            'i_company_name', 'i_location_detail', 'i_zip', 'i_email', 'i_tel', 'i_fax', 'i_site_url'
+        );
         $this->arrSubColumn = array(
             'i_url_code', 'done', 'i_idx', 'create_date', 'execute_date', 'ppt_url', 'last_row'
         );
         $this->arrMasterColumn = array_merge($this->arrColumn, $this->arrSubColumn);
+
+        $this->arrMergeKey = array(
+            array('id' => 1, 'name' => '会社名', 'column' => 'i_company_name'),
+            array('id' => 2, 'name' => '電話番号', 'column' => 'i_tel'),
+            array('id' => 3, 'name' => 'e-mail', 'column' => 'i_email'),
+            array('id' => 4, 'name' => 'URL', 'column' => 'i_site_url')
+        );
+
+        $this->arrMergeId = array();
+        foreach ($this->arrMergeKey as $item) {
+            $this->arrMergeId[] = $item['id'];
+        }
+
+        $this->arrCsvColumn = array(
+            1 => array(
+                '', 'i_company_name', '', 'i_site_url', 'i_zip', 'i_location_detail', 'i_tel', 'i_email', ''
+            ),
+            2 => array(
+                'i_company_name', 'i_tel', 'i_fax', 'i_email', 'i_zip', 'i_location_detail', '', 'i_site_url'
+            )
+        );
+
         parent::__construct();
     }
 
@@ -76,6 +100,22 @@ class WideSearch extends ListCluster {
         $arrMaster[$m_key] = $arrData;
         file_put_contents($master_path, json_encode($arrMaster));
     }
+
+
+    /**
+     * 保存済みリストの取得
+     *
+     * @param $db
+     * @param $user_id
+     * @param $qid
+     * @param $load_list
+     * @return bool|mixed
+     */
+    protected function getList(mysql_db $db, $user_id, $qid, $load_list)
+    {
+        return $this->getWideList($db, $user_id, $qid, $load_list);
+    }
+
 
     /**
      * 保存済みリストの取得
@@ -160,7 +200,6 @@ class WideSearch extends ListCluster {
                 }
             }
         }
-  //      file_put_contents('../debug/' . __LINE__ . '_' .rand(1000, 9999), print_r($arrUpdate, true));
 
         return array(array_values($arrMaster), $arrUpdate, $re_search);
     }
@@ -319,10 +358,7 @@ class WideSearch extends ListCluster {
         if ($row_type == 'add_row') {
             $arrCount['total_count'] += 1;
             $row['row_type'] = 'normal_row';
-            $row['execute_date'] = date('Y年m月d日 H:i:s');
         }
-
-        $row['execute_date'] = date('Y年m月d日 H:i:s');
         $arrBefore['completion'] = $completion;
 
         $m_key = $row['i_company_name'] . '_' . $row['i_tel'];
@@ -350,6 +386,17 @@ class WideSearch extends ListCluster {
             $db->update('favorite_search_terms', $arrSqlVal, 'user = ? AND qid = ?', array($user_id, $qid));
         }
 
+        // 再検索マスタを更新する
+        $this->updateReMaster($m_key, $arrMasterRow, $this->arrMasterEditColumn);
+        
+        // マスタと再検索マスタは一致するので、通常行として扱う
+        $row['row_type'] = 'normal_row';
+        
+//        // マスタ、再検索マスタから、行タイプ（変更あり、無し）を設定する
+//        $rowType = $this->getRowType($arrMasterRow['url'], $this->arrMasterEditColumn);
+//        if (!is_null($rowType)) {
+//            $row['row_type'] = $rowType;
+//        }
         return array_merge($row, $arrBefore);
     }
 
@@ -375,7 +422,6 @@ class WideSearch extends ListCluster {
             $arrMaster = json_decode(file_get_contents($master_path), true);
         }
 
-        $row['execute_date'] = date('Y年m月d日 H:i:s');
         $tel = $row['i_tel'];
         $email = $row['i_email'];
         $db = new mysql_db();
@@ -436,6 +482,13 @@ class WideSearch extends ListCluster {
             );
             $db->update('favorite_search_terms', $arrSqlVal, 'user = ? AND qid = ?', array($user_id, $qid));
         }
+        
+        // 再検索マスタを更新する
+        $this->updateReMaster($m_key, $arrMasterRow, $this->arrMasterEditColumn);
+        
+        // マスタと再検索マスタは一致するので、通常行として扱う
+        $row['row_type'] = 'normal_row';
+        
         return $row;
     }
 
@@ -610,7 +663,7 @@ class WideSearch extends ListCluster {
             return false;
         }
         $re_master_path = $this->temp_dir . '/' . parent::RE_MASTER;
-
+        
         if (file_exists($re_master_path)) {
             $arrReMaster = json_decode(file_get_contents($re_master_path), true);
         } else {
@@ -619,7 +672,8 @@ class WideSearch extends ListCluster {
 
         $arrData['i_idx'] = count($arrReMaster) + 1;
         $m_key = $arrData['i_company_name'] . '_' . $arrData['i_tel'];
-
+        // 再検索時点の日時を保持しておく
+        $arrData['execute_date'] = date('Y年m月d日 H:i:s');
         $arrReMaster[$m_key] = $arrData;
 
         file_put_contents($re_master_path, json_encode($arrReMaster));
@@ -700,12 +754,6 @@ class WideSearch extends ListCluster {
 
         return $csv_contents;
     }
-
-
-
-
-
-
 
 }
 

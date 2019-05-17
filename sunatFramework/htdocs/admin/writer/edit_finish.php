@@ -29,7 +29,10 @@ $arrWhere = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') error('アクセスエラー', '不正なアクセスです', '/admin/edit');
 
-if (array_key_exists('edit_input', $cur_ss)) $sql_arr = $cur_ss['edit_input']['values'];
+if (array_key_exists('edit_input', $cur_ss)){
+	$sql_arr = $cur_ss['edit_input']['values'];
+	$sql_arr['filepass'] = $cur_ss['filepass'];
+}
 else redirect("/admin/writer/");
 
 //削除にチェックが入っていたら
@@ -38,7 +41,7 @@ $newImage = $sql_arr['image'];
 $arrArticle = array(
 	'name'    => $sql_arr['name'],
 	'profile' => $sql_arr['profile'],
-	'image'   => $newImage,
+	'image'   => $sql_arr['filepass'],
 	'imgDel'  => false
 );
 

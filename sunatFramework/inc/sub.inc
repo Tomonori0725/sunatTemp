@@ -361,7 +361,7 @@ function login_passwd_check($db_passwd, $passwd) {
 function loggingLogin(mysql_db $db, $user, $session_limit, $client_type = null) {
 	$client_type = 1;	//TSⅡは全てPCとして扱う
 	$service = 2;		//サービス(TSⅡ)
-	
+
 	$remote_addr = $_SERVER['REMOTE_ADDR'];	// リモートアドレス
 	$expire = $db->get('value', 'system_info', 'name = ?', array('login_expire'));	// ログイン有効期限
 
@@ -373,7 +373,7 @@ function loggingLogin(mysql_db $db, $user, $session_limit, $client_type = null) 
 	$where = "user = ? AND service = ? AND logout_datetime = '0000-00-00 00:00:00' AND CURRENT_TIMESTAMP < DATE_ADD(last_access, $expire)";
 	// 同時接続数が上限に達していればログイン不可とする
 	if ($db->count($table, $where, $arrWhere) >= $session_limit) return $ret;
-	
+
 	//常にログインログを生成
 	$arrValues = array(
 		'user'			=> $user,
@@ -516,15 +516,15 @@ function loggingSearch($keyword) {
 ----------------------------------------------------------------------------*/
 function session_limit_check(mysql_db $db = null) {
 	if (is_null($db)) $db = new mysql_db();
-	
+
 	$service = 2;		//サービス(TSⅡ)
-	
+
 	$login_info = $_SESSION['login_info'];
 	$login_id = $login_info['login_id'];
 	$email = $login_info['email'];
 	$user_id = $login_info['id'];
 	$session_limit = $login_info['session_limit'];
-	
+
 	//期限切れの場合は強制ログアウト
 	if (!$db->count('user', 'id = ? AND CURRENT_TIMESTAMP < expire_datetime', array($user_id))) {
 		$db->update('login_log', array('logout_datetime' => 'CURRENT_TIMESTAMP'), 'id = ?', array($login_id));
@@ -533,14 +533,14 @@ function session_limit_check(mysql_db $db = null) {
 		redirect('/login.php');
 		exit;
 	}
-	
+
 	$expire = $db->get('value', 'system_info', 'name = ?', array('login_expire'));	// ログイン有効期限
 
 	// ログインID、最終アクセス日時がログイン有効期限内かを取得
 	$arrWhere = array($login_id);
 	$where = "id = ? AND CURRENT_TIMESTAMP < DATE_ADD(last_access, $expire)";
 	$table = 'login_log';
-	
+
 	if (!$db->count($table, $where, $arrWhere)) {
 		// ログインIDが違い、ユーザー、サービスが同じで、最終アクセス日時がログイン有効期限内であるログインログ数を取得
 		$arrWhere = array($login_id, $user_id, $service);
@@ -559,8 +559,14 @@ function session_limit_check(mysql_db $db = null) {
 	else {
 		//NOP
 	}
-	
-	list($login_datetime) = $db->getCol('login_datetime', $table, 'id = ?', array($login_id));
+
+//	list($login_datetime) = $db->getCol('login_datetime', $table, 'id = ?', array($login_id));
+	$login_datetimeList = $db->getCol('login_datetime', $table, 'id = ?', array($login_id));
+    $login_datetime = null;
+    if (count($login_datetimeList) != 0) {
+        $login_datetime = $login_datetimeList[0];
+    }
+
 	$arrValues = array(
 		'login_datetime' => $login_datetime,
 		'last_access' => 'CURRENT_TIMESTAMP'
@@ -582,23 +588,23 @@ function session_limit_check(mysql_db $db = null) {
 ----------------------------------------------------------------------------*/
 function get_random_user_agent() {
 	$arrUserAgent = array(
-		'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; SLCC1; .NET CLR 2.0.50727; Media Center PC 5.0; .NET CLR 3.0.04506)', 
-		'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; .NET CLR 3.0.04506.648)', 
-		'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; .NET CLR 3.0.04506.648)', 
-		'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; .NET CLR 3.0.04506.648)', 
-		'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)', 
-		'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)', 
-		'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)', 
-		'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)', 
-		'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0', 
-		'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.160 Safari/537.22', 
-		'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.160 Safari/537.22', 
-		'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.160 Safari/537.22', 
-		'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.160 Safari/537.22', 
-		'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; ja-jp) AppleWebKit/531.21.11 (KHTML, like Gecko) Version/4.0.4 Safari/531.21.10', 
+		'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; SLCC1; .NET CLR 2.0.50727; Media Center PC 5.0; .NET CLR 3.0.04506)',
+		'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; .NET CLR 3.0.04506.648)',
+		'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; .NET CLR 3.0.04506.648)',
+		'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; .NET CLR 3.0.04506.648)',
+		'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
+		'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
+		'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
+		'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
+		'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0',
+		'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.160 Safari/537.22',
+		'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.160 Safari/537.22',
+		'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.160 Safari/537.22',
+		'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.160 Safari/537.22',
+		'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; ja-jp) AppleWebKit/531.21.11 (KHTML, like Gecko) Version/4.0.4 Safari/531.21.10',
 		'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; ja-jp) AppleWebKit/533.16 (KHTML, like Gecko) Version/5.0 Safari/533.16'
 	);
-	
+
 	return $arrUserAgent[array_rand($arrUserAgent)];
 
 }
@@ -623,5 +629,30 @@ function getIdFaceList($arr_list) {
 	return $list;
 }
 
+/**
+ * JSONレスポンスを返す.
+ *
+ * @param array $data JSONデータ
+ */
+function sendJson($data = array())
+{
+    header('Content-Type: application/json; charset=UTF-8');    // JSON形式
+    header('X-Content-Type-Options: nosniff');  // IEがContent-Typeヘッダーを無視してコンテンツの内容を解析するのを防ぐ
+    echo json_encode($data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);    // エスケープしてJSONで出力する
+}
 
+/**
+ * ディレクトリが空かどうか調べる
+ * 
+ * @param string $dirPath ディレクトリパス
+ * @return boolean true:空, false:空でない
+ */
+function isEmptyDir($dirPath)
+{
+    if (!file_exists($dirPath) || !is_dir($dirPath)) {
+        return true;
+    }
+    $result = scandir($dirPath);
+    return count($result) <= 2;
+}
 }?>

@@ -31,43 +31,47 @@ $imagePath = '';
 $db = new mysql_db();
 $table = 'writer';
 $form = new Form;
+$uploadDir    = dirname(dirname(__FILE__)) . '/../uploads/';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //フォームが送信されたら...
     //バリデーション
-    $form->post->name       = new FormFieldNameDbDuplicate(FormField::TRIM | FormField::NOT_NULL, $db, $table, 'name');
+    $form->post->name       = new FormFieldNameDbDuplicate(FormField::TRIM | FormField::NOT_NULL, $db, $table, 'name', array('id', $cur_ss['id']));
     $form->post->profile    = new FormFieldString(FormField::TRIM | FormField::NOT_NULL);
-
-    //画像をアップロード
-    if(is_uploaded_file($_FILES['image']['tmp_name'])){
-        $tmp = $_FILES['image']['tmp_name'];
-        $fileName = date("YmdHis") . substr($_FILES['image']['name'], -4);
-        $upload = "../../uploads/".$fileName;
-        if(move_uploaded_file($tmp, $upload)){
-            $imagePath = "/uploads/".$fileName;
-        }else{//echo 'アップ失敗';
-        }
-    }else{
-        //アップしない
-        $imagePath = $cur_ss['preImage'];
-    }
-
     if(!$imagePath){
-        $form->post->image = new FormFieldFile($_FILES['image'], FormField::TRIM | FormField::NOT_NULL);
+        $form->post->image = new FormFieldFileUp(FormField::NOT_NULL, $uploadDir, '/image/');
     }
     
 	try {
-        $ret = $form->get(); //エラーがあるかどうかもここで...
+        $ret = $form->get();
+        //TODO アップロードファイルが変更された場合、前のアップロードファイルを削除(unlink)する
+        if(!empty($tmpl_arr['image']['up'])){
+            if (array_key_exists('add_input', $cur_ss)) {
+                $prev_path = $cur_ss['add_input']['values']['image']['path'];
+                $current_path = $ret['values']['image']['path'];
+
+                if ($prev_path != $current_path) {
+                    @unlink($prev_path);
+                }
+            }
+        }
+
+        $tmpl_arr = $ret['in'];
+
         $cur_ss['edit_input'] = $ret;
-        if(!empty($imagePath)){
-            $cur_ss['edit_input']['values']['image'] = $imagePath;
-            $cur_ss['edit_input']['in']['image'] = $imagePath;
+        //画像のパスを保持する
+        if(!empty($tmpl_arr['image']['up'])){
+            $cur_ss['filepass'] = '/uploads/' . $tmpl_arr['image']['up']['temp_name'];
         }
 		redirect('edit_confirm.php');
 		
 	} catch (FormCheckException $e) {
 		$id = $cur_ss['id'];
         $tmpl_arr += $e->getValues();
+        //画像のパスを保持する
+        if(!empty($tmpl_arr['image']['up'])){
+            $cur_ss['filepass'] = '/uploads/' . $tmpl_arr['image']['up']['temp_name'];
+        }
     }
 
 }else{
@@ -76,8 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $tmpl_arr = $cur_ss['edit_input']['in'];
         $id = $cur_ss['id'];
         //画像を引き継ぎ
-        if(!empty($cur_ss['edit_input']['in']['image'])){
-            $tmpl_arr['htmlImage'] = '<img src="' . $cur_ss['edit_input']['in']['image'] . '" alt="' . $cur_ss['edit_input']['in']['name'] . '">';
+        if(!empty($cur_ss['filepass'])){
+            $tmpl_arr['htmlImage'] = '<img src="' . $cur_ss['filepass'] . '" alt="' . $cur_ss['edit_input']['in']['name'] . '">';
         }
 
 	}else {
@@ -103,17 +107,22 @@ COL;
             exit();
         }
         
+        
         //画像にimgタグをつける
+        $cur_ss['filepass'] = $edit_arr['image'];
         $cur_ss['preImage'] = $edit_arr['image'];
-        if(!empty($edit_arr['image'])){
-            $edit_arr['htmlImage'] = '<img src="' . $edit_arr['image'] . '" alt="' . $edit_arr['name'] . '">';
-        }else{
-            $edit_arr['htmlImage'] = '';
-        }
-
         $tmpl_arr = $edit_arr;
+        $tmpl_arr['image'] = array("current" => null, "up" => null, "delete" => false, "exist" => false, "name" => null, "temp_name" => null, "path" => null);
     }
 }
+
+if(!empty($cur_ss['filepass'])){
+    $tmpl_arr['htmlImage'] = '<img src="' . $cur_ss['filepass'] . '" alt="' . $tmpl_arr['name'] . '">';
+}else{
+    $tmpl_arr['htmlImage'] = '';
+}
+
+//var_dump($tmpl_arr);
 
 $temp = new HTMLTemplate('admin/writer/edit.html');
 echo $temp->replace($tmpl_arr);

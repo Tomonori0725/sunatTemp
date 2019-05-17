@@ -53,8 +53,15 @@
               <tr>
                 <th class="required">画像</th>
                 <td>
+                  <!--image-->
+                  <input type="hidden" name="image[current]" value="${current}">
+
+                  <input type="hidden" name="image[file]" value="${file}">
+                  <input type="hidden" name="image[name]" value="${name}">
+
+                  <input type="file" name="image[up]" size="30">
+                  <!--/image-->
                   ${htmlImage#direct}
-                  <input type="file" name="image" id="image">
                   <!--image:error-->
                       <!--is_null--><br><span class="error">画像をアップロードしてください。</span><!--/is_null-->
                   <!--/image:error-->

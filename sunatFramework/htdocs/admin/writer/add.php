@@ -32,7 +32,7 @@ $err_flg = NULL;
 $db = new mysql_db();
 $table = 'writer';
 
-$uploadDir = '/uploads/';
+$uploadDir    = dirname(dirname(__FILE__)) . '/../uploads/';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 //フォームが送信されたら...
@@ -40,25 +40,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $form = new Form;
     $form->post->name       = new FormFieldNameDbDuplicate(FormField::TRIM | FormField::NOT_NULL, $db, $table, 'name');
     $form->post->profile    = new FormFieldString(FormField::TRIM | FormField::NOT_NULL);
-    $form->post->image      = new FormFieldFileUp(FormField::NOT_NULL, $uploadDir, '/\.jpg$|\.JPG$/i');
+    $form->post->image      = new FormFieldFileUp(FormField::NOT_NULL, $uploadDir, '/image/');
 
     try {
         $ret = $form->get();
         //TODO アップロードファイルが変更された場合、前のアップロードファイルを削除(unlink)する
-        if (array_key_exists('add_input', $cur_ss)) {
-            $prev_path = $cur_ss['add_input']['values']['image']['path'];
-            $current_path = $ret['values']['image']['path'];
+        if(!empty($tmpl_arr['image']['up'])){
+            if (array_key_exists('add_input', $cur_ss)) {
+                $prev_path = $cur_ss['add_input']['values']['image']['path'];
+                $current_path = $ret['values']['image']['path'];
 
-            if ($prev_path != $current_path) {
-                @unlink($prev_path);
+                if ($prev_path != $current_path) {
+                    @unlink($prev_path);
+                }
             }
         }
 
+        $tmpl_arr = $ret['in'];
+        
         $cur_ss['add_input'] = $ret;
+        //画像のパスを保持する
+        if(!empty($tmpl_arr['image']['up'])){
+            $cur_ss['filepass'] = '/uploads/' . $tmpl_arr['image']['up']['temp_name'];
+        }
 
 		redirect('add_confirm.php');
 	} catch (FormCheckException $e) {
-		$tmpl_arr += $e->getValues();
+        $tmpl_arr += $e->getValues();
+        //画像のパスを保持する
+        if(!empty($tmpl_arr['image']['up'])){
+            $cur_ss['filepass'] = '/uploads/' . $tmpl_arr['image']['up']['temp_name'];
+        }
     }
 }else{
     //戻るなどの処理で来た時
@@ -75,10 +87,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
+if(!empty($tmpl_arr['image']['up']['temp_name'])){
+    $file_pass = $tmpl_arr['image']['up']['temp_name'];
+}
 
-var_dump($tmpl_arr);
-var_dump($cur_ss);
 
+if(!empty($tmpl_arr['image']['file'])){
+    $tmpl_arr['htmlImage'] = '<img src="' . $cur_ss['filepass'] . '" alt="' . $tmpl_arr['name'] . '">';
+}else{
+    $tmpl_arr['htmlImage'] = '';
+}
+
+//var_dump($tmpl_arr);
+//var_dump($cur_ss);
 
 $temp = new HTMLTemplate('admin/writer/add.html');
 echo $temp->replace($tmpl_arr);

@@ -26,13 +26,16 @@ $ref_ss =& $ref_sess->vars;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') error('アクセスエラー', '不正なアクセスです', '/admin/edit');
 
-if (array_key_exists('add_input', $cur_ss)) $sql_arr = $cur_ss['add_input']['values'];
+if (array_key_exists('add_input', $cur_ss)){
+	$sql_arr = $cur_ss['add_input']['values'];
+	$sql_arr['filepass'] = $cur_ss['filepass'];
+} 
 else redirect("/admin/");
 
 $arrWriter = array(
 	'name'       => $sql_arr['name'],
 	'profile'    => $sql_arr['profile'],
-	'image'      => $sql_arr['image'],
+	'image'      => $sql_arr['filepass'],
 	'imgDel'     => false
 );
 

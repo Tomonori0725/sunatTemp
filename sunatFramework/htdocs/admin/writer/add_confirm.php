@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') error('アクセスエラー', '不正
 if (array_key_exists('add_input', $cur_ss)) {
     $tmpl_arr = $cur_ss['add_input']['values'];
     if (!empty($cur_ss['add_input']['values']['image'])) {
-        $file_image = '<img src="' . $cur_ss['add_input']['values']['image'] . '" alt="' . $cur_ss['add_input']['values']['name'] . '">';
+        $file_image = '<img src="' . $cur_ss['filepass'] . '" alt="' . $cur_ss['add_input']['values']['name'] . '">';
     }else{
         $file_image = '';
     }
