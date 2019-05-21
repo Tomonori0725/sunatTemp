@@ -38,9 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //バリデーション
     $form->post->name       = new FormFieldNameDbDuplicate(FormField::TRIM | FormField::NOT_NULL, $db, $table, 'name', array('id', $cur_ss['id']));
     $form->post->profile    = new FormFieldString(FormField::TRIM | FormField::NOT_NULL);
-    if(!$imagePath){
-        $form->post->image = new FormFieldFileUp(FormField::NOT_NULL, $uploadDir, '/image/');
-    }
+    $form->post->image      = new FormFieldFileUp(FormField::TRIM, $uploadDir, '/image/');
     
 	try {
         $ret = $form->get();
@@ -123,6 +121,7 @@ if(!empty($cur_ss['filepass'])){
 }
 
 //var_dump($tmpl_arr);
+//var_dump($cur_ss);
 
 $temp = new HTMLTemplate('admin/writer/edit.html');
 echo $temp->replace($tmpl_arr);

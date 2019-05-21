@@ -92,7 +92,7 @@ if(!empty($tmpl_arr['image']['up']['temp_name'])){
 }
 
 
-if(!empty($tmpl_arr['image']['file'])){
+if(!empty($tmpl_arr['image']['up']) || !empty($tmpl_arr['image']['file'])){
     $tmpl_arr['htmlImage'] = '<img src="' . $cur_ss['filepass'] . '" alt="' . $tmpl_arr['name'] . '">';
 }else{
     $tmpl_arr['htmlImage'] = '';

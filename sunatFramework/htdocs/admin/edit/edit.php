@@ -129,11 +129,12 @@ COL;
         );
         
         //画像にimgタグをつける
-        $cur_ss['preImage'] = $edit_arr['image'];
         if(!empty($edit_arr['image'])){
-            $edit_arr['htmlImage'] = '<img src="' . $edit_arr['image'] . '" alt="' . $edit_arr['title'] . '"><input type="checkbox" id="ImgDel" name="imgDel" value="true"><label for="ImgDel">削除</label>';
+            $cur_ss['filepass'] = $edit_arr['image'];
+            $cur_ss['preImage'] = $edit_arr['image'];
         }else{
-            $edit_arr['htmlImage'] = '';
+            $cur_ss['filepass'] = '';
+            $cur_ss['preImage'] = '';
         }
 
         $tmpl_arr = $edit_arr;
@@ -141,11 +142,20 @@ COL;
     }
 }
 
+if(!empty($cur_ss['filepass'])){
+    $tmpl_arr['htmlImage'] = '<img src="' . $cur_ss['filepass'] . '" alt="' . $tmpl_arr['title'] . '"><input type="checkbox" id="ImgDel" name="imgDel" value="true"><label for="ImgDel">削除</label>';
+}else{
+    $tmpl_arr['htmlImage'] = '';
+}
+
 //カテゴリー
 $tmpl_arr += array('cate_list'   => $cate_list);
 
 //ライター
 $tmpl_arr += array('writer_list' => $writer_list);
+
+//var_dump($tmpl_arr);
+//var_dump($cur_ss);
 
 $temp = new HTMLTemplate('admin/edit/edit.html');
 echo $temp->replace($tmpl_arr);

@@ -63,7 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $form->post->date        = new FormFieldDateTimeArray(FormField::NOT_NULL);
     $form->post->writer_id   = new FormFieldSelect($write_id, FormField::NOT_NULL);
     $form->post->image       = new FormFieldFile($_FILES['image'], FormField::TRIM);
-    $form->post->image       = new FormFieldFile($_FILES['image'], FormField::TRIM);
     $form->post->imgDel      = new FormFieldBool(FormField::TRIM);
 
     if(is_uploaded_file($_FILES['image']['tmp_name'])){

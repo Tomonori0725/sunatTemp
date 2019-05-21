@@ -54,7 +54,7 @@ class FormFieldFileUp extends FormFieldSubFields {
                 'path'   => null,
                 'exist'  => false
             );
-        } else if ($value['file']) {
+        } else if ($value['file'] && $value['file'] != '{file:not found}') {
             if ($value['name']) $name = $value['name'];
             else $name = urldecode(basename($value['file']));
             $result = array(
