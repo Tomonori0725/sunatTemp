@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+{% block title %}パスワード管理{% endblock %}
+{% block body %}
+    <div class="wallBelt narrow">
+        <div class="contents">
+            <h1>パスワード管理</h1>
+            <p><a href="{{ path('account_add') }}">新規追加</a></p>
+
+            <select onChange="location.href=value;">
+                <option value="{{ path('accountList') }}">-------</option>
+                <option value="{{ path('accountList') }}?sort=account_asc"{% if sort == "account_asc" %} selected{% endif %}>アカウント昇順</option>
+                <option value="{{ path('accountList') }}?sort=account_desc"{% if sort == "account_desc" %} selected{% endif %}>アカウント降順</option>
+                <option value="{{ path('accountList') }}?sort=modified_asc"{% if sort == "modified_asc" %} selected{% endif %}>更新日時昇順</option>        
+                <option value="{{ path('accountList') }}?sort=modified_desc"{% if sort == "modified_desc" %} selected{% endif %}>更新日時降順</option>        
+            </select>
+            
+            <table class="table">
+                <tr>
+                    <th>アカウント</th>
+                    <th>管理者メモ</th>
+                    <th>更新日時表示</th>
+                    <th>操作</th>
+                </tr>
+                
+                {% for account in accounts %}
+                <tr>
+                    <td>{{ account.name }}</td>
+                    <td>{{ account.memo }}</td>
+                    <td>{{ modified[account.id]}}</td>
+                    <td>
+                    <a href="{{ path('account_edit', {'id': account.id}) }}">パスワード変更</a>
+                    <form action="{{ path('account_delete', {'id': account.id}) }}" method = "post">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('account') }}">
+                        <button type="submit">削除</button>
+                    </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
