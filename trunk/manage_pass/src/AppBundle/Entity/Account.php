@@ -30,6 +30,7 @@ class Account
      *      max = 16,
      *      maxMessage = "16文字以下にしてください。"
      * )
+     *  @Assert\Regex("/^[a-z]+[a-z0-9_]$/", message = "a-zで始まるa-z0-9_で入力してください。")
      */
 
     private $name;
@@ -37,6 +38,12 @@ class Account
     /**
      *  @ORM\Column(name="password", type="string", unique=true)
      *  @Assert\NotBlank(message = "パスワードを入力してください。")
+     *  @Assert\Length(
+     *      min = 8,
+     *      max = 16,
+     *      maxMessage = "8文字以上16文字以下にしてください。"
+     *  )
+     *  @Assert\Regex("/[a-zA-Z0-9]{8,16}/", message = "英数字で入力してください。")
      */
 
     private $password;

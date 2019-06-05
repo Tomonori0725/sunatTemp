@@ -9,9 +9,10 @@
                     <tr>
                         <th>パスワード</th>
                         <td>
-                            {{ form_widget(form.password, {'attr':{'class':'password'}}) }}
+                            {{ form_widget(form.password, {'attr':{'class':'password'}})}}
                             <input type="checkbox" id="Toggle-secret">
                             <label for="Toggle-secret">パスワードを表示する</label>
+                            <button type="button" class="button" onclick="create_pass('appbundle_account_password');">パスワードを生成する</button>
                             {{ form_errors(form.password, {'attr':{'class':'error'}}) }}
                         </td>
                     </tr>
@@ -21,6 +22,14 @@
                             {{ form_widget(form.memo, {'attr':{'class':'memo'}}) }}
                             {{ form_errors(form.memo, {'attr':{'class':'error'}}) }}
                         </td>
+                    </tr>
+                    <tr>
+                        <th>登録日時表示</th>
+                        <td>{{ created }}</td>
+                    </tr>
+                    <tr>
+                        <th>更新日時表示</th>
+                        <td>{{ modifid }}</td>
                     </tr>
                 </table>
 

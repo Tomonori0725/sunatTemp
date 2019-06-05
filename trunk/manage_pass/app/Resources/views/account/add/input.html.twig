@@ -4,7 +4,7 @@
     <div class="wallBelt narrow">
         <div class="contents">
             <h1>新規追加</h1>
-            {{ form_start(form) }}
+            {{ form_start(form, {'attr':{'novalidate':'novalidate'}}) }}
                 <table class="table">
                     <tr>
                         <th>名前</th>
@@ -19,6 +19,7 @@
                             {{ form_widget(form.password, {'attr':{'class':'password'}}) }}
                             <input type="checkbox" id="Toggle-secret">
                             <label for="Toggle-secret">パスワードを表示する</label>
+                            <button type="button" class="button" onclick="create_pass('form_password');">パスワードを生成する</button>
                             {{ form_errors(form.password, {'attr':{'class':'error'}}) }}
                         </td>
                     </tr>

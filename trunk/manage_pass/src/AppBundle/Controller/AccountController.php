@@ -103,8 +103,9 @@ class AccountController extends Controller
         $iv = '0123456789abcdef';
         $options = 0;
 
-        var_dump($ssl_encode);
-        var_dump(openssl_decrypt($ssl_encode, $method, $password, $options, $iv));
+        //var_dump($ssl_encode);
+        //var_dump(openssl_decrypt($ssl_encode, $method, $password, $options, $iv));
+        $decode_pass = openssl_decrypt($ssl_encode, $method, $password, $options, $iv);
 
         if(!$account){
             throw $this->createNotFoundException('No account found for id' .$id);
@@ -113,7 +114,8 @@ class AccountController extends Controller
         $form = $this->createForm(AccountType::class, $account, ['method' => 'PUT'])
             ->add('password', PasswordType::class,[
                 'always_empty' => false,
-                'empty_data' => 'tomonori'
+                'empty_data' => $decode_pass,
+                'attr' => ['value' => $decode_pass]
             ])
             ->add('memo', TextareaType::class)
             ->add('confirm', SubmitType::class);
@@ -134,6 +136,7 @@ class AccountController extends Controller
             return $this->render('account/edit/confirm.html.twig', [
                 'form_finish' => $form_finish->createView(),
                 'account' => $account,
+                'old_password' => $decode_pass,
             ]);
         }
         //確認→完了
@@ -157,8 +160,12 @@ class AccountController extends Controller
             return $this->redirectToRoute('accountList');
         }
 
+        $created_date = $account->getCreatedDate()->format('Y-m-d H:i');
+        $modifid_date = $account->getModifiedDate()->format('Y-m-d H:i');
         return $this->render('account/edit/edit.html.twig',[
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'created' => $created_date,
+            'modifid' => $modifid_date
         ]);
     }
 
