@@ -70,3 +70,8 @@ swiftmailer:
 sensio_framework_extra:
    router:
         annotations: false
+
+knp_paginator:
+    template:
+        # Bootstrap3用テンプレート
+        pagination: KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig

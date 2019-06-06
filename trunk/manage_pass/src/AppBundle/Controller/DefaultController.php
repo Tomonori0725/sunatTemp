@@ -9,6 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity\Account;
 use AppBundle\Repository\AccountRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query;
+use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
+
 
 class DefaultController extends Controller
 {
@@ -25,10 +29,22 @@ class DefaultController extends Controller
         $limit = $this->container->getParameter('page_per_account');
 
         $offset = 0;
-        $query = $repository->createQueryBuilder('count(*)')
-            ->getQuery();
-        $customer = $query->getResult();
-        var_dump($customer);
+
+
+
+
+
+        $em = $this->get('doctrine.orm.entity_manager');
+        $dpl = "SELECT a FROM AppBundle:Account a";
+        $query = $em->createQuery($dpl);
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            5
+        );
+
 
 
 
@@ -50,6 +66,7 @@ class DefaultController extends Controller
             $modifiedDate[$account->getId()] = $account->getModifiedDate()->format('Y-m-d H:i');
         }
 
-        return $this->render('account/index.html.twig', ['accounts' => $accounts, 'modified' => $modifiedDate, 'sort' => $sort]);
+        return $this->render('account/index.html.twig',
+        ['accounts' => $accounts, 'modified' => $modifiedDate, 'sort' => $sort, 'pagination' => $pagination]);
     }
 }
