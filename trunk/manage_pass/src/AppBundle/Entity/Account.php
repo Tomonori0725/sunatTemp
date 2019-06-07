@@ -55,12 +55,12 @@ class Account
     private $memo;
 
     /**
-     * @ORM\Column(name="created_date", type="datetime", nullable=true)
+     * @ORM\Column(name="created_date", type="datetime")
      */
     private $created_date;
 
     /**
-     * @ORM\Column(name="modified_date", type="datetime", nullable=true)
+     * @ORM\Column(name="modified_date", type="datetime")
      */
     private $modified_date;
 

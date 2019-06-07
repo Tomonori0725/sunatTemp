@@ -14,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use AppBundle\Entity\Account;
 use AppBundle\Form\AccountType;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class AccountController extends Controller
 {
@@ -64,7 +66,7 @@ class AccountController extends Controller
             $date = $account->getPassword();
             $password = 'sunat';
             $method = 'AES-256-CBC';
-            $iv = openssl_random_pseudo_bytes(16);
+            $iv = '0123456789abcdef';
             $options = 0;
             $encPass = openssl_encrypt($date, $method, $password, $options, $iv);
             $account->setPassword(base64_encode($encPass));
@@ -73,6 +75,8 @@ class AccountController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($account);
             $em->flush();
+
+            $session->remove('account_add');
 
             /** 記事一覧にリダイレクト */
             return $this->redirectToRoute('accountList');
@@ -103,8 +107,6 @@ class AccountController extends Controller
         $iv = '0123456789abcdef';
         $options = 0;
 
-        //var_dump($ssl_encode);
-        //var_dump(openssl_decrypt($ssl_encode, $method, $password, $options, $iv));
         $decode_pass = openssl_decrypt($ssl_encode, $method, $password, $options, $iv);
 
         if(!$account){
@@ -143,7 +145,8 @@ class AccountController extends Controller
         if($form_finish->get('finish')->isClicked()){
             //セッションから内容を取り出し
             $account_ss = $session->get('account_edit');
-            //パスワード生成
+
+            //パスワード生成(DB用)
             $date = $account_ss->getPassword();
             $password = 'sunat';
             $method = 'AES-256-CBC';
@@ -153,11 +156,23 @@ class AccountController extends Controller
             $account->setPassword(base64_encode($encPass));
             $account->setMemo($account_ss->getMemo());
 
+            //パスワード生成(.htpasswd用)
+            $ht_name = $account_ss->getName();
+            $ht_pass = password_hash($date, PASSWORD_BCRYPT);
+            //.htpasswdに書き込み
+            $current_dir_path = getcwd();
+            //$fs = new Filesystem();
+            //$fs->appendToFile($current_dir_path . '/.htpasswd', nl2br($ht_name . ':' . $ht_pass . '\n'));
+            file_put_contents($current_dir_path . '/.htpasswd', $ht_name . ':' . $ht_pass . PHP_EOL, FILE_APPEND);
+
+
             $em = $this->getDoctrine()->getManager();
             /** データベースに保存 */
             $em->flush();
+
             /** 記事一覧にリダイレクト */
             return $this->redirectToRoute('accountList');
+
         }
 
         $created_date = $account->getCreatedDate()->format('Y-m-d H:i');

@@ -34,7 +34,7 @@ class DefaultController extends Controller
 
 
 
-        $em = $this->get('doctrine.orm.entity_manager');
+        /*$em = $this->get('doctrine.orm.entity_manager');
         $dpl = "SELECT a FROM AppBundle:Account a";
         $query = $em->createQuery($dpl);
 
@@ -43,7 +43,7 @@ class DefaultController extends Controller
             $query,
             $request->query->getInt('page', 1),
             5
-        );
+        );*/
 
 
 
@@ -67,6 +67,6 @@ class DefaultController extends Controller
         }
 
         return $this->render('account/index.html.twig',
-        ['accounts' => $accounts, 'modified' => $modifiedDate, 'sort' => $sort, 'pagination' => $pagination]);
+        ['accounts' => $accounts, 'modified' => $modifiedDate, 'sort' => $sort]);
     }
 }
