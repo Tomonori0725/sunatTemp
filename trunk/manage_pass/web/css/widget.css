@@ -15,6 +15,13 @@ input[type="radio"] + label:before, input[type="radio"] + span:before { content:
 input[type="checkbox"]:checked + label:before, input[type="checkbox"]:checked + span:before { content: "\f046"; }
 input[type="radio"]:checked + label:before, input[type="radio"]:checked + span:before { content: "\f192"; }
 
+textarea{height: 250px;}
+
+.buttonBox{text-align: center;}
+.pagination{justify-content: center;}
+.pagination span,
+.pagination span a{font-size: 18px;}
+
 
 
 /* ######################################################################################
@@ -85,4 +92,16 @@ br.pc { display: none; }
 }
 
 @media screen and (max-width: 767px) {
+}
+
+/* ######################################################################################
+
+　タイトル　title
+
+###################################################################################### */
+@media print, screen and (min-width: 768px) {
+    .pageTitle{margin-bottom: 1.25em; font-size: 30px;}
+}
+@media screen and (max-width: 767px) {
+    .pageTitle{margin-bottom: 1em; font-size: 28px;}
 }

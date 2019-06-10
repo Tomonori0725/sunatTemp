@@ -6,8 +6,9 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: en,
-    page_per_account: 2
+    locale: en
+    page_per_account: 5
+    ht_path: /.htpasswd
 
 framework:
     #esi: ~
@@ -72,6 +73,15 @@ sensio_framework_extra:
         annotations: false
 
 knp_paginator:
-    template:
-        # Bootstrap3用テンプレート
-        pagination: KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig
+    page_range: 5
+    default_options:
+        page_name: page 
+        sort_field_name: sort
+        sort_direction_name: direction
+        distinct: true
+        filter_field_name: filterField
+        filter_value_name: filterValue
+    template:                                        
+        pagination: '@KnpPaginator/Pagination/sliding.html.twig'
+        sortable: '@KnpPaginator/Pagination/sortable_link.html.twig'
+        filtration: '@KnpPaginator/Pagination/filtration.html.twig'

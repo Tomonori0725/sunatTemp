@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use \Datetime;
 
@@ -11,6 +12,10 @@ use \Datetime;
  *
  * @ORM\Table(name="account")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\AccountRepository")
+ * @UniqueEntity(
+ *  fields = {"name"},
+ *  message = "既に登録されている名前です。"
+ * )
  */
 class Account
 {
@@ -30,7 +35,7 @@ class Account
      *      max = 16,
      *      maxMessage = "16文字以下にしてください。"
      * )
-     *  @Assert\Regex("/^[a-z]+[a-z0-9_]$/", message = "a-zで始まるa-z0-9_で入力してください。")
+     *  @Assert\Regex("/^[a-z][a-z0-9_]+/", message = "a-zで始まるa-z0-9_で入力してください。")
      */
 
     private $name;
@@ -49,7 +54,7 @@ class Account
     private $password;
 
     /**
-     *  @ORM\Column(name="memo", type="text")
+     *  @ORM\Column(name="memo", type="text", nullable=true)
      */
 
     private $memo;
