@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+{% block title %}パスワード管理{% endblock %}
+{% block body %}
+    <div class="wallBelt narrow">
+        <div class="contents">
+            <h1>パスワード編集</h1>
+            {{ form_start(form) }}
+                <table class="table">
+                    <tr>
+                        <th>パスワード</th>
+                        <td>
+                            {{ form_widget(form.password, {'attr':{'class':'password'}})}}
+                            <input type="checkbox" id="Toggle-secret">
+                            <label for="Toggle-secret">パスワードを表示する</label>
+                            <button type="button" class="button" onclick="create_pass('appbundle_account_password');">パスワードを生成する</button>
+                            {{ form_errors(form.password, {'attr':{'class':'error'}}) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>管理者メモ</th>
+                        <td>
+                            {{ form_widget(form.memo, {'attr':{'class':'memo'}}) }}
+                            {{ form_errors(form.memo, {'attr':{'class':'error'}}) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>登録日時表示</th>
+                        <td>{{ created }}</td>
+                    </tr>
+                    <tr>
+                        <th>更新日時表示</th>
+                        <td>{{ modifid }}</td>
+                    </tr>
+                </table>
+
+                <div class="buttonBox">
+                    <ul>
+                        <li>{{ form_widget(form.confirm, {'attr':{'formnovalidate':'formnovalidate'}}) }}</li>
+                        <li><a href="{{ path('accountList') }}" class="button blue">戻る</a></li>
+                    </ul>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+

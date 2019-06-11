@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+{% block title %}アカウント追加{% endblock %}
+{% block body %}
+    <div class="wallBelt narrow">
+        <div class="contents">
+            <h1 class="pageTitle">アカウント追加</h1>
+            {{ form_start(form, {'attr':{'novalidate':'novalidate'}}) }}
+                <table class="table">
+                    <tr>
+                        <th>名前</th>
+                        <td class="form-group">
+                            {{ form_widget(form.name, {'attr':{'class':'form-control name'}}) }}
+                            {{ form_errors(form.name, {'attr':{'class':'error'}}) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>パスワード</th>
+                        <td class="form-group">
+                            {{ form_widget(form.password, {'attr':{'class':'form-control password'}}) }}
+                            <input type="checkbox" id="Toggle-secret">
+                            <label for="Toggle-secret">パスワードを表示する</label>
+                            <button type="button" class="button" onclick="create_pass('form_password');">パスワードを生成する</button>
+                            {{ form_errors(form.password, {'attr':{'class':'error'}}) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>管理者メモ</th>
+                        <td class="form-group">
+                            {{ form_widget(form.memo, {'attr':{'class':'form-control memo'}}) }}
+                            {{ form_errors(form.memo, {'attr':{'class':'error'}}) }}
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="buttonBox">
+                    <ul>
+                        <li>{{ form_widget(form.confirm, {'attr':{'class':'btn btn-primary'}}) }}</li>
+                    </ul>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+

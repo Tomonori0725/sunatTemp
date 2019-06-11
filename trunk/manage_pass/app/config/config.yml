@@ -7,8 +7,10 @@ imports:
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    #一覧のアカウント数
     page_per_account: 5
-    ht_path: /.htpasswd
+    #.htpasswdへのパス
+    ht_path: /home/fujii/test/htdocs/.htpasswd
 
 framework:
     #esi: ~

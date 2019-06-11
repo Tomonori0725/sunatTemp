@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+{% block title %}パスワード管理{% endblock %}
+{% block body %}
+    <div class="wallBelt narrow">
+        <div class="contents">
+            <h1 class="pageTitle">パスワード管理</h1>
+            <p><a href="{{ path('account_add') }}" class="btn btn-danger btn-sm">新規追加</a></p>
+            
+            <table class="table">
+                <tr>
+                    <th>{{ knp_pagination_sortable(pagination, 'アカウント', 'a.name') }}</th>
+                    <th>管理者メモ</th>
+                    <th>{{ knp_pagination_sortable(pagination, '更新日時表示', 'a.modified_date') }}</th>
+                    <th>操作</th>
+                </tr>
+                
+                {% for account in pagination %}
+                <tr>
+                    <td>{{ account.name }}</td>
+                    <td>{{ account.memo }}</td>
+                    <td>{{ account.modifiedDate | date('Y-m-d H:i') }}</td>
+                    <td>
+                        <div class="btn-toolbar">
+                            <div class="btn-group mr-2">
+                                <a href="{{ path('account_edit', {'id': account.id}) }}" class="btn btn-outline-primary btn-sm">パスワード変更</a>
+                            </div>
+                            <div class="btn-group mr-2">
+                                <form action="{{ path('account_delete', {'id': account.id}) }}" method = "post">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('account') }}">
+                                    <button type="submit" class="btn btn-secondary btn-sm">削除</button>
+                                </form>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <nav class="navigation">
+            {{ knp_pagination_render(pagination) }}
+            </nav>
+
+        </div>
+    </div>
+{% endblock %}

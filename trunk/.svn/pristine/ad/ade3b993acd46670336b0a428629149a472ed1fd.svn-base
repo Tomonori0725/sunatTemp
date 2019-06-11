@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="stylesheet" href="/css/base.css">
+        <link rel="stylesheet" href='/css/bootstrap.min.css'>
+        <link rel="stylesheet" href='/css/widget.css'>
+    </head>
+    <body>
+        {% block body %}{% endblock %}
+        <script src="/js/jquery-2.2.4.min.js"></script>
+        <script src='/js/bootstrap.min.js'></script>
+        <script src='/js/common.js'></script>
+    </body>
+</html>

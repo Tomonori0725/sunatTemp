@@ -1,0 +1,107 @@
+@charset "UTF-8";
+
+
+/* ######################################################################################
+
+　フォーム　Form
+
+###################################################################################### */
+input[type="checkbox"], input[type="radio"] { display: none; }
+input[type="checkbox"] + label, input[type="checkbox"] + span { position: relative; padding-left: 1.5em; cursor: pointer; }
+input[type="radio"] + label, input[type="radio"] + span { position: relative; padding-left: 1.5em; cursor: pointer; }
+input[type="checkbox"] + label:before, input[type="checkbox"] + span:before, input[type="radio"] + label:before, input[type="radio"] + span:before { content: ""; display: inline-block; position: absolute; top: 50%; left: 0.25em; transform: translateY(-50%); font-family: FontAwesome; }
+input[type="checkbox"] + label:before, input[type="checkbox"] + span:before { content: "\f096"; }
+input[type="radio"] + label:before, input[type="radio"] + span:before { content: "\f10c"; }
+input[type="checkbox"]:checked + label:before, input[type="checkbox"]:checked + span:before { content: "\f046"; }
+input[type="radio"]:checked + label:before, input[type="radio"]:checked + span:before { content: "\f192"; }
+
+textarea{height: 250px;}
+
+.buttonBox{text-align: center;}
+.pagination{justify-content: center;}
+.pagination span,
+.pagination span a{font-size: 18px;}
+
+
+
+/* ######################################################################################
+
+　表示・非表示　pc sp
+
+###################################################################################### */
+
+/* ====================================================
+　表示・非表示
+==================================================== */
+@media print, screen and (min-width: 768px) {
+div.sp { display: none; }
+div.pc { display: block; }
+img.sp,
+span.sp,
+br.sp { display: none; }
+img.pc,
+span.pc,
+br.pc { display: inline; }
+}
+
+@media screen and (max-width: 767px) {
+div.sp { display: block; }
+div.pc { display: none; }
+img.sp,
+span.sp,
+br.sp { display: inline; }
+img.pc,
+span.pc,
+br.pc { display: none; }
+}
+
+
+
+
+/* ######################################################################################
+
+　帯背景　wallBelt
+
+###################################################################################### */
+@media print, screen and (min-width: 768px) {
+    .wallBelt {
+        padding: 60px 0;
+        overflow: hidden;
+    }
+    .wallBelt.zero { padding: 0 0; }
+    .wallBelt.narrow { padding: 30px 0; }
+    .wallBelt.wide { padding: 80px 0; }
+}
+
+@media screen and (max-width: 767px) {
+    .wallBelt { padding: 30px 0; }
+    .wallBelt.zero { padding: 0 0; }
+    .wallBelt.narrow { padding: 15px 0; }
+    .wallBelt.wide { padding: 40px 0; }
+}
+
+/* ######################################################################################
+
+　コンテンツ　contents
+
+###################################################################################### */
+.contents{padding: 0 15px;}
+
+@media print, screen and (min-width: 768px) {
+    .contents{width: 1030px; margin: 0 auto;}
+}
+
+@media screen and (max-width: 767px) {
+}
+
+/* ######################################################################################
+
+　タイトル　title
+
+###################################################################################### */
+@media print, screen and (min-width: 768px) {
+    .pageTitle{margin-bottom: 1.25em; font-size: 30px;}
+}
+@media screen and (max-width: 767px) {
+    .pageTitle{margin-bottom: 1em; font-size: 28px;}
+}

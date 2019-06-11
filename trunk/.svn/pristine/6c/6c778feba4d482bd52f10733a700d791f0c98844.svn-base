@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+{% block title %}パスワード管理{% endblock %}
+{% block body %}
+    <div class="wallBelt narrow">
+        <div class="contents">
+            <h1>新規追加</h1>
+            {{ form_start(form) }}
+                <table class="table">
+                    <tr>
+                        <th>名前</th>
+                        <td>
+                            {{ form_widget(form.name, {'attr':{'class':'name'}}) }}
+                            {{ form_errors(form.name, {'attr':{'class':'error'}}) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>パスワード</th>
+                        <td>
+                            {{ form_widget(form.password, {'attr':{'class':'password'}}) }}
+                            <input type="checkbox" id="Toggle-secret">
+                            <label for="Toggle-secret">パスワードを表示する</label>
+                            {{ form_errors(form.password, {'attr':{'class':'error'}}) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>管理者メモ</th>
+                        <td>
+                            {{ form_widget(form.memo, {'attr':{'class':'memo'}}) }}
+                            {{ form_errors(form.memo, {'attr':{'class':'error'}}) }}
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="buttonBox">
+                    <ul>
+                        <li>{{ form_widget(form.confirm) }}</li>
+                        <li><a href="{{ path('accountList') }}" class="button blue">戻る</a></li>
+                    </ul>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
