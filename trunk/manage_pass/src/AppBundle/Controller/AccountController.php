@@ -71,13 +71,13 @@ class AccountController extends Controller
             $encPass = $this->encPassword($date);
 
             //DBに書き込む
-            $account->setPassword($encPass['db']);
+            $account->setPassword($encPass);
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
             $em->persist($account);
             $em->flush();
 
-            //.htaccessに書き込む
+            //.htpasswdに書き込む
             $this->writePassword();
 
             $session->remove('account_add');
@@ -148,15 +148,15 @@ class AccountController extends Controller
             //パスワードを暗号化
             $encPass = $this->encPassword($account_ss->getPassword());
 
-            //.htaccessに書き込む
-            $this->writePassword();
-
             //DBに書き込む
-            $account->setPassword($encPass['db']);
+            $account->setPassword($encPass);
             $account->setMemo($account_ss->getMemo());
             $em = $this->getDoctrine()->getManager();
             $em->flush();
 
+            //.htpasswdに書き込む
+            $this->writePassword();
+            
             /** 記事一覧にリダイレクト */
             return $this->redirectToRoute('accountList');
         }
@@ -200,31 +200,23 @@ class AccountController extends Controller
     }
 
 
-
-
-
     /**
-     * パスワードの暗号化(DB、htaccess)
+     * パスワードの暗号化(DB)
      */
     public function encPassword($date){
-        //パスワード暗号化(DB用)
         $method = 'AES-256-CBC';
         $password = 'sunat';
         $options = 0;
         $iv = '0123456789abcdef';
         $encPass = openssl_encrypt($date, $method, $password, $options, $iv);
 
-        return array(
-            'db' => base64_encode($encPass),
-            'htpasswd' => password_hash($date, PASSWORD_BCRYPT)
-        );
+        return base64_encode($encPass);
     }
 
     /**
-     * パスワードの復号化
+     * パスワードの復号化(DB)
      */
     public function decPassword($date){
-        //パスワード復号化(DB用)
         $ssl_encode = base64_decode($date);
         $method = 'AES-256-CBC';
         $password = 'sunat';
@@ -242,17 +234,17 @@ class AccountController extends Controller
         $em = $this->getDoctrine()->getManager();
         $query = $em->createQuery('SELECT a.name, a.password FROM AppBundle:Account a');
         $dates = $query->getResult();
-        #$current_dir_path = getcwd();
+
         $path = $this->container->getParameter('ht_path');
         //一旦、.htpasswdを削除
         file_put_contents($path, '');
         //書き込み可能かどうか
-        if(!is_writeable($path)){
+        if(!is_writable($path)){
             chmod($path, 0666);
         }
         //DBから新しいアカウント情報を追加
         foreach($dates as $date){
-            file_put_contents($path, $date['name'] . ':' . $date['password'] . PHP_EOL, FILE_APPEND);
+            file_put_contents($path, $date['name'] . ':' . password_hash($this->decPassword($date['password']), PASSWORD_BCRYPT) . PHP_EOL, FILE_APPEND);
         }
     }
 
