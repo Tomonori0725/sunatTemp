@@ -33,7 +33,38 @@
         }
     });
 
+    //////////////////////////////////////////////
+    //
+    //    削除するか確認する
+    //
+    //////////////////////////////////////////////
+    $('.actionDelete').submit(function(){
+        var result = confirm('このアカウントを削除しますか。');
+        return result;
+    });
+
+
+
+
+
+    //////////////////////////////////////////////
+    //
+    //    パスワード作成
+    //
+    //////////////////////////////////////////////
+    if($('#form_password').length){
+        $('#CreatePassword').click(function(){
+            create_pass('form_password');
+        });
+    }
+    if($('#appbundle_account_password').length){
+        $('#CreatePassword').click(function(){
+            create_pass('appbundle_account_password');
+        });
+    }
+
 });
+
 
 function create_pass(areaId){
     //使用文字の定義

@@ -7,7 +7,7 @@
             {{ form_start(form) }}
                 <table class="table">
                     <tr>
-                        <th>お名前</th>
+                        <th>名前</th>
                         <td>{{ name }}</td>
                     </tr>
                     <tr>
@@ -17,7 +17,7 @@
                             {{ form_widget(form.password, {'attr':{'class':'form-control password'}})}}
                             <input type="checkbox" id="Toggle-secret">
                             <label for="Toggle-secret">パスワードを表示する</label>
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="create_pass('appbundle_account_password');">パスワードを生成する</button>
+                            <button type="button" class="btn btn-secondary btn-sm" id="CreatePassword">パスワードを生成する</button>
                             {{ form_errors(form.password, {'attr':{'class':'error'}}) }}
                         </td>
                     </tr>
@@ -40,7 +40,7 @@
 
                 <div class="buttonBox">
                     <ul>
-                        <li>{{ form_widget(form.confirm, {'attr':{'formnovalidate':'formnovalidate', 'class':'btn btn-primary'}}) }}</li>
+                        <li>{{ form_widget(form.confirm, {'attr':{'formnovalidate':'formnovalidate', 'class':'btn btn-primary'}, 'label': '確認'}) }}</li>
                     </ul>
                 </div>
             {{ form_end(form) }}

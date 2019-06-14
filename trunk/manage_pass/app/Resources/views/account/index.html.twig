@@ -8,7 +8,7 @@
             
             <table class="table">
                 <tr>
-                    <th>{{ knp_pagination_sortable(pagination, 'アカウント', 'a.name') }}</th>
+                    <th>{{ knp_pagination_sortable(pagination, '名前', 'a.name') }}</th>
                     <th>管理者メモ</th>
                     <th>{{ knp_pagination_sortable(pagination, '更新日時表示', 'a.modified_date') }}</th>
                     <th>操作</th>
@@ -25,7 +25,7 @@
                                 <a href="{{ path('account_edit', {'id': account.id}) }}" class="btn btn-outline-primary btn-sm">パスワード変更</a>
                             </div>
                             <div class="btn-group mr-2">
-                                <form action="{{ path('account_delete', {'id': account.id}) }}" method = "post">
+                                <form action="{{ path('account_delete', {'id': account.id}) }}" class="actionDelete" method = "post">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <input type="hidden" name="_token" value="{{ csrf_token('account') }}">
                                     <button type="submit" class="btn btn-secondary btn-sm">削除</button>

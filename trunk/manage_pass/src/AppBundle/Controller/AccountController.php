@@ -50,7 +50,7 @@ class AccountController extends Controller
         $session = $request->getSession();
         
         //入力→確認
-        if($form->get('confirm')->isClicked() && $form->isValid()){
+        if ( $form->get('confirm')->isClicked() && $form->isValid() ) {
             //セッションに挿入
             $session->set('account_add', $account);
             $secret_pass = str_repeat('●', mb_strlen($account->getPassword(), 'UTF8'));
@@ -61,7 +61,7 @@ class AccountController extends Controller
             ]);
         }
         //確認→完了
-        if($form_finish->get('finish')->isClicked()){
+        if ( $form_finish->get('finish')->isClicked() ) {
             // DBに挿入
             //セッションから内容を取り出し
             $account = $session->get('account_add');
@@ -104,7 +104,7 @@ class AccountController extends Controller
     {
         $repository = $this->getDoctrine()->getRepository(Account::class);
         $account = $repository->find($id);
-        if(!$account){
+        if (! $account ) {
             return $this->redirectToRoute('accountList');
         }
 
@@ -130,7 +130,7 @@ class AccountController extends Controller
         $session = $request->getSession();
 
         //入力→確認
-        if($form->get('confirm')->isClicked() && $form->isValid()){
+        if ( $form->get('confirm')->isClicked() && $form->isValid() ) {
             //セッションに挿入
             $session->set('account_edit', $account);
             $secret_pass = str_repeat('●', mb_strlen($account->getPassword(), 'UTF8'));
@@ -141,7 +141,7 @@ class AccountController extends Controller
             ]);
         }
         //確認→完了
-        if($form_finish->get('finish')->isClicked()){
+        if ( $form_finish->get('finish')->isClicked() ) {
             //セッションから内容を取り出し
             $account_ss = $session->get('account_edit');
 
@@ -163,6 +163,10 @@ class AccountController extends Controller
 
         $created_date = $account->getCreatedDate()->format('Y-m-d H:i');
         $modifid_date = $account->getModifiedDate()->format('Y-m-d H:i');
+
+        //.htpasswdに書き込む
+        $this->writePassword();
+        
         return $this->render('account/edit/input.html.twig',[
             'name' => $account->getName(),
             'form' => $form->createView(),
@@ -185,10 +189,10 @@ class AccountController extends Controller
         $repository = $this->getDoctrine()->getRepository(Account::class);
         $account = $repository->find($id);
 
-        if(!$account){
+        if ( ! $account ) {
             throw $this->createNotFoundException('No account found for id' .$id);
         }
-        if($this->isCsrfTokenValid('account', $request->get('_token'))){
+        if ( $this->isCsrfTokenValid('account', $request->get('_token')) ) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($account);
             $em->flush();
@@ -203,49 +207,63 @@ class AccountController extends Controller
     /**
      * パスワードの暗号化(DB)
      */
-    public function encPassword($date){
-        $method = 'AES-256-CBC';
-        $password = 'sunat';
+    public function encPassword($date)
+    {
+        $method = $this->container->getParameter('enc_method');
+        $key = $this->container->getParameter('enc_key');
         $options = 0;
-        $iv = '0123456789abcdef';
-        $encPass = openssl_encrypt($date, $method, $password, $options, $iv);
 
-        return base64_encode($encPass);
+        //iv作成
+        $iv_size = openssl_cipher_iv_length($method);
+        $iv = openssl_random_pseudo_bytes($iv_size);
+        $encPass = openssl_encrypt($date, $method, $key, $options, $iv);
+
+        return base64_encode($iv . $encPass);
     }
 
     /**
      * パスワードの復号化(DB)
      */
-    public function decPassword($date){
+    public function decPassword($date)
+    {
         $ssl_encode = base64_decode($date);
-        $method = 'AES-256-CBC';
-        $password = 'sunat';
-        $options = 0;
-        $iv = '0123456789abcdef';
-        $decode_pass = openssl_decrypt($ssl_encode, $method, $password, $options, $iv);
 
-        return $decode_pass;
+        $method = $this->container->getParameter('enc_method');
+        $key = $this->container->getParameter('enc_key');
+        $options = 0;
+
+        //ivとパスワードを切り離し
+        $iv_size = openssl_cipher_iv_length($method);
+        $iv = substr($ssl_encode, 0, $iv_size);
+        $encPass = substr($ssl_encode, $iv_size);
+
+        $decPass = openssl_decrypt($encPass, $method, $key, $options, $iv);
+
+        return $decPass;
     }
 
     /**
      * .htpasswdに書き出し
      */
-    public function writePassword(){
+    public function writePassword()
+    {
+        $htpasswd = '';
         $em = $this->getDoctrine()->getManager();
         $query = $em->createQuery('SELECT a.name, a.password FROM AppBundle:Account a');
         $dates = $query->getResult();
-
         $path = $this->container->getParameter('ht_path');
-        //一旦、.htpasswdを削除
-        file_put_contents($path, '');
+
         //書き込み可能かどうか
-        if(!is_writable($path)){
+        if ( !is_writable($path) ) {
             chmod($path, 0666);
         }
-        //DBから新しいアカウント情報を追加
+
+        //DBからアカウント情報を持ってくる
         foreach($dates as $date){
-            file_put_contents($path, $date['name'] . ':' . password_hash($this->decPassword($date['password']), PASSWORD_BCRYPT) . PHP_EOL, FILE_APPEND);
+            $htpasswd .= $date['name'] . ':' . password_hash($this->decPassword($date['password']), PASSWORD_BCRYPT) . "\n";
         }
+        //.htpasswdに書き込み
+        file_put_contents($path, $htpasswd, LOCK_EX);
     }
 
 }
