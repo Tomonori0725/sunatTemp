@@ -16,6 +16,8 @@ use AppBundle\Form\AccountType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use AppBundle\Service\ManageFunction;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class AddAccountController extends Controller
 {
@@ -31,26 +33,51 @@ class AddAccountController extends Controller
     public function indexAction(Request $request)
     {
         $account = new Account();
+        $session = $request->getSession();
+
+        //確認画面から戻っていた時に、変更。
+        if ( $session->has('account_add') ) {
+            $acc_ss = $session->get('account_add');
+            $acc_value = array(
+                'name' => $acc_ss->getName(),
+                'password' => $acc_ss->getPassword(),
+                'memo' => $acc_ss->getMemo()
+            );
+        }else{
+            $acc_value = array(
+                'name' => '',
+                'password' => '',
+                'memo' => ''
+            );
+        }
+
         $form = $this->createFormBuilder($account)
-            ->add('name', TextType::class)
+            ->add('name', TextType::class,[
+                'attr' => ['value' => $acc_value['name']]
+            ])
             ->add('password', PasswordType::class,[
+                'attr' => ['value' => $acc_value['password']],
+                'constraints' => [
+                    new NotBlank(['message' => 'パスワードを入力してください。']),
+                ],
                 'always_empty' => false
             ])
-            ->add('memo', TextareaType::class, array('required' => false))
+            ->add('memo', TextareaType::class,[
+                'required' => false,
+                'data' => $acc_value['memo']
+            ])
             ->add('confirm', SubmitType::class)
             ->getForm();
 
-
         //Form送信のハンドリング
         $form->handleRequest($request);
-        $session = $request->getSession();
         
         //入力→確認
         if ( $form->get('confirm')->isClicked() && $form->isValid() ) {
             //セッションに挿入
             $session->set('account_add', $account);
 
-            /** 確認画面にリダイレクト */
+            //確認画面にリダイレクト
             return $this->redirectToRoute('account_add_confirm');
         }
 
@@ -111,85 +138,26 @@ class AddAccountController extends Controller
         $session = $request->getSession();
         $account = $session->get('account_add');
 
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        $manageFunc = new ManageFunction($this->container, $em);
+        
         //パスワード暗号化
-        $encPass = $this->encPassword($account->getPassword());
+        $encPass = $manageFunc->encPassword($account->getPassword());
+        //パスワードハッシュ化
+        $hashPass = $manageFunc->hashPassword($account->getPassword());
 
         //DBに書き込む
         $account->setPassword($encPass);
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
+        $account->setHashPass($hashPass);
         $em->persist($account);
         $em->flush();
 
         //.htpasswdに書き込む
-        $this->writePassword();
-
-        $session->remove('account_add');
+        $manageFunc->writePassword();
 
         /** 記事一覧にリダイレクト */
         return $this->redirectToRoute('accountList');
-    }
-
-    /**
-     * パスワードの暗号化(DB)
-     */
-    public function encPassword($date)
-    {
-        $method = $this->container->getParameter('enc_method');
-        $key = $this->container->getParameter('enc_key');
-        $options = 0;
-
-        //iv作成
-        $iv_size = openssl_cipher_iv_length($method);
-        $iv = openssl_random_pseudo_bytes($iv_size);
-        $encPass = openssl_encrypt($date, $method, $key, $options, $iv);
-
-        return base64_encode($iv . $encPass);
-    }
-
-    /**
-     * パスワードの復号化(DB)
-     */
-    public function decPassword($date)
-    {
-        $ssl_encode = base64_decode($date);
-
-        $method = $this->container->getParameter('enc_method');
-        $key = $this->container->getParameter('enc_key');
-        $options = 0;
-
-        //ivとパスワードを切り離し
-        $iv_size = openssl_cipher_iv_length($method);
-        $iv = substr($ssl_encode, 0, $iv_size);
-        $encPass = substr($ssl_encode, $iv_size);
-
-        $decPass = openssl_decrypt($encPass, $method, $key, $options, $iv);
-
-        return $decPass;
-    }
-
-    /**
-     * .htpasswdに書き出し
-     */
-    public function writePassword()
-    {
-        $htpasswd = '';
-        $em = $this->getDoctrine()->getManager();
-        $query = $em->createQuery('SELECT a.name, a.password FROM AppBundle:Account a');
-        $dates = $query->getResult();
-        $path = $this->container->getParameter('ht_path');
-
-        //書き込み可能かどうか
-        if ( !is_writable($path) ) {
-            chmod($path, 0666);
-        }
-
-        //DBからアカウント情報を持ってくる
-        foreach($dates as $date){
-            $htpasswd .= $date['name'] . ':' . password_hash($this->decPassword($date['password']), PASSWORD_BCRYPT) . "\n";
-        }
-        //.htpasswdに書き込み
-        file_put_contents($path, $htpasswd, LOCK_EX);
     }
 
 }

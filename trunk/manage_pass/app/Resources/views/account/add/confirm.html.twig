@@ -22,6 +22,7 @@
             <div class="buttonBox">
                 <ul>
                     <li>{{ form_widget(form_finish.finish, {'attr':{'class':'btn btn-primary'}, 'label': '登録'}) }}</li>
+                    <li><a href="{{ path('account_add') }}">戻る</a></li>
                 </ul>
             </div>
             {{ form_end(form_finish) }}

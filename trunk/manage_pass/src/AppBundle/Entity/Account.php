@@ -41,8 +41,7 @@ class Account
     private $name;
 
     /**
-     *  @ORM\Column(name="password", type="string", unique=true)
-     *  @Assert\NotBlank(message = "パスワードを入力してください。")
+     *  @ORM\Column(name="password", type="string", nullable=true)
      *  @Assert\Length(
      *      min = 8,
      *      max = 16,
@@ -53,6 +52,12 @@ class Account
      */
 
     private $password;
+
+    /**
+     *  @ORM\Column(name="hashPass", type="string")
+     */
+
+    private $hashPass;
 
     /**
      *  @ORM\Column(name="memo", type="text", nullable=true)
@@ -207,5 +212,29 @@ class Account
     public function getModifiedDate()
     {
         return $this->modified_date;
+    }
+
+    /**
+     * Set hashPass
+     *
+     * @param string $hashPass
+     *
+     * @return Account
+     */
+    public function setHashPass($hashPass)
+    {
+        $this->hashPass = $hashPass;
+
+        return $this;
+    }
+
+    /**
+     * Get hashPass
+     *
+     * @return string
+     */
+    public function getHashPass()
+    {
+        return $this->hashPass;
     }
 }
