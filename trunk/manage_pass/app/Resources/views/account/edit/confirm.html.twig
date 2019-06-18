@@ -4,7 +4,7 @@
     <div class="wallBelt narrow">
         <div class="contents">
             <h1 class="pageTitle">パスワード変更　確認</h1>
-            <table class="table">
+            <table class="table form">
                 <tr>
                     <th>名前</th>
                     <td>{{ account.name }}</td>
@@ -21,8 +21,8 @@
             {{ form_start(form_finish) }}
             <div class="buttonBox">
                 <ul>
-                    <li>{{ form_widget(form_finish.finish, {'attr':{'class':'btn btn-primary'}, 'label': '登録'}) }}</li>
-                    <li><a href="{{ path('account_edit', {'id': account.id}) }}">戻る</a></li>
+                    <li class="submit">{{ form_widget(form_finish.finish, {'attr':{'class':'btn btn-primary'}, 'label': '登録'}) }}</li>
+                    <li class="back"><a href="{{ path('account_edit', {'id': account.id}) }}" class="btn btn-secondary">戻る</a></li>
                 </ul>
             </div>
             {{ form_end(form_finish) }}

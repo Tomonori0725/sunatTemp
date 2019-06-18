@@ -30,10 +30,10 @@ class DelAccountController extends Controller
         $repository = $this->getDoctrine()->getRepository(Account::class);
         $account = $repository->find($id);
 
-        if ( ! $account ) {
+        if (!$account) {
             throw $this->createNotFoundException('No account found for id = ' .$id);
         }
-        if ( $this->isCsrfTokenValid('account', $request->get('_token')) ) {
+        if ($this->isCsrfTokenValid('account', $request->get('_token'))) {
             $em = $this->getDoctrine()->getManager();
             $manageFunc = new ManageFunction($this->container, $em);
             $em->remove($account);

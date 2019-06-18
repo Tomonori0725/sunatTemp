@@ -33,7 +33,7 @@ class EditAccountController extends Controller
     {
         $repository = $this->getDoctrine()->getRepository(Account::class);
         $account = $repository->find($id);
-        if (! $account ) {
+        if (!$account) {
             return $this->redirectToRoute('accountList');
         }
 
@@ -41,21 +41,21 @@ class EditAccountController extends Controller
         $em = $this->getDoctrine()->getManager();
         $manageFunc = new ManageFunction($this->container, $em);
 
-        //確認画面から戻っていた時に、変更。
+        //確認画面から戻ってきた時にフォームに値をいれる。
         $session = $request->getSession();
-        if ( $session->has('account_edit') ) {
+        if ($session->has('account_edit')) {
             $acc_ss = $session->get('account_edit');
             $decode_pass = $acc_ss->getPassword();
             $memo = $acc_ss->getMemo();
-        }else{
+        } else {
             //パスワードを復号化
             $decode_pass = $manageFunc->decPassword($account->getPassword());
             $memo = $account->getMemo();
         }
 
         //もしパスワードがなければ
-        if(!$decode_pass){
-            $decode_pass = $this->container->getParameter('emptyPass');
+        if (!$decode_pass) {
+            $decode_pass = $this->container->getParameter('DUMMY_PASS');
         }
 
         $form = $this->createForm(AccountType::class, $account, ['method' => 'PUT'])
@@ -72,26 +72,19 @@ class EditAccountController extends Controller
         $form->handleRequest($request);
 
         //入力→確認
-        if ( $form->get('confirm')->isClicked() && $form->isValid() ) {
-
-            if(!strcmp($decode_pass, $this->container->getParameter('emptyPass'))){
+        if ($form->get('confirm')->isClicked() && $form->isValid()) {
+            if (strcmp($decode_pass, $this->container->getParameter('DUMMY_PASS')) == 0 ) {
                 $account->setPassword('');
             }
-
             //セッションに挿入
             $session->set('account_edit', $account);
             /** 確認画面にリダイレクト */
             return $this->redirectToRoute('account_edit_confirm', ['id' => $id]);
         }
-
-        $created_date = $account->getCreatedDate()->format('Y-m-d H:i');
-        $modifid_date = $account->getModifiedDate()->format('Y-m-d H:i');
         
         return $this->render('account/edit/input.html.twig',[
-            'name' => $account->getName(),
-            'form' => $form->createView(),
-            'created' => $created_date,
-            'modifid' => $modifid_date
+            'account' => $account,
+            'form' => $form->createView()
         ]);
     }
 
@@ -116,7 +109,7 @@ class EditAccountController extends Controller
         $form_finish->handleRequest($request);
 
         //確認→完了
-        if ( $form_finish->get('finish')->isClicked() ) {
+        if ($form_finish->get('finish')->isClicked()) {
             /** 確認画面にリダイレクト */
             return $this->redirectToRoute('account_edit_thanks', ['id' => $id]);
         }
@@ -150,7 +143,12 @@ class EditAccountController extends Controller
         $manageFunc = new ManageFunction($this->container, $em);
 
         //パスワードを暗号化
-        $encPass = $manageFunc->encPassword($account_ss->getPassword());
+        $pass = $account_ss->getPassword();
+        if ($pass) {
+            $encPass = $manageFunc->encPassword($pass);
+        } else {
+            $encPass = '';
+        }
         //パスワードをハッシュ化
         $hashPass = $manageFunc->hashPassword($account_ss->getPassword());
 
@@ -158,13 +156,15 @@ class EditAccountController extends Controller
         $account->setPassword($encPass);
         $account->setHashPass($hashPass);
         $account->setMemo($account_ss->getMemo());
+
         $em->flush();
 
         //.htpasswdに書き込む
         $manageFunc->writePassword();
             
-        /** 記事一覧にリダイレクト */
+        //記事一覧にリダイレクト
         return $this->redirectToRoute('accountList');
+
     }
 
 }

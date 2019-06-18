@@ -5,11 +5,11 @@
         <div class="contents">
             <h1 class="pageTitle">アカウント追加</h1>
             {{ form_start(form, {'attr':{'novalidate':'novalidate'}}) }}
-                <table class="table">
+                <table class="table form">
                     <tr>
                         <th>名前</th>
                         <td class="form-group">
-                            <p class="limit">半角英字で始まる、英数字もしくはアンダースコア(_) 一文字以上16文字以下</p>
+                            <p class="limit">半角英字で始まる、半角英数字もしくはアンダースコア(_) 一文字以上16文字以下</p>
                             {{ form_widget(form.name, {'attr':{'class':'form-control name'}}) }}
                             {{ form_errors(form.name, {'attr':{'class':'error'}}) }}
                         </td>
@@ -17,7 +17,7 @@
                     <tr>
                         <th>パスワード</th>
                         <td class="form-group">
-                            <p class="limit">英数字8文字以上16文字以下</p>
+                            <p class="limit">全半角英字・半角数字 8文字以上16文字以下</p>
                             {{ form_widget(form.password, {'attr':{'class':'form-control password'}}) }}
                             <input type="checkbox" id="Toggle-secret">
                             <label for="Toggle-secret">パスワードを表示する</label>
@@ -36,8 +36,8 @@
 
                 <div class="buttonBox">
                     <ul>
-                        <li>{{ form_widget(form.confirm, {'attr':{'class':'btn btn-primary'}, 'label': '確認'}) }}</li>
-                        <li><a href="{{ path('accountList') }}">パスワード一覧</a></li>
+                        <li class="submit">{{ form_widget(form.confirm, {'attr':{'class':'btn btn-primary'}, 'label': '確認'}) }}</li>
+                        <li class="back"><a href="{{ path('accountList') }}" class="btn btn-secondary">一覧に戻る</a></li>
                     </ul>
                 </div>
             {{ form_end(form) }}

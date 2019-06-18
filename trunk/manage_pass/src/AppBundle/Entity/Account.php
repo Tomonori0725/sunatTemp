@@ -14,7 +14,7 @@ use \Datetime;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\AccountRepository")
  * @UniqueEntity(
  *  fields = {"name"},
- *  message = "既に登録されている名前です。"
+ *  message = "この名前は既に登録されています。"
  * )
  */
 class Account
@@ -35,7 +35,7 @@ class Account
      *      max = 16,
      *      maxMessage = "16文字以下にしてください。"
      * )
-     *  @Assert\Regex("/^[a-z][a-z0-9_]+$/", message = "a-zで始まるa-z0-9_で入力してください。")
+     *  @Assert\Regex("/^[a-z][a-z0-9_]+$/", message = "半角英字で始まる、半角英数字もしくはアンダースコア(_)で入力してください。")
      */
 
     private $name;
@@ -48,7 +48,7 @@ class Account
      *      maxMessage = "16文字以下にしてください。",
      *      minMessage = "8文字以上にしてください。"
      *  )
-     *  @Assert\Regex("/^[a-zA-Z0-9]{8,16}$/", message = "英数字で入力してください。")
+     *  @Assert\Regex("/^[a-zA-Z0-9]{8,16}$/", message = "全半角英字・半角数字で入力してください。")
      */
 
     private $password;

@@ -35,28 +35,15 @@ class AddAccountController extends Controller
         $account = new Account();
         $session = $request->getSession();
 
-        //確認画面から戻っていた時に、変更。
-        if ( $session->has('account_add') ) {
+        if ($session->has('account_add')) {
+            //2回目
             $acc_ss = $session->get('account_add');
-            $acc_value = array(
-                'name' => $acc_ss->getName(),
-                'password' => $acc_ss->getPassword(),
-                'memo' => $acc_ss->getMemo()
-            );
-        }else{
-            $acc_value = array(
-                'name' => '',
-                'password' => '',
-                'memo' => ''
-            );
-        }
-
-        $form = $this->createFormBuilder($account)
+            $form = $this->createFormBuilder($account)
             ->add('name', TextType::class,[
-                'attr' => ['value' => $acc_value['name']]
+                'attr' => ['value' => $acc_ss->getName()]
             ])
             ->add('password', PasswordType::class,[
-                'attr' => ['value' => $acc_value['password']],
+                'attr' => ['value' => $acc_ss->getPassword()],
                 'constraints' => [
                     new NotBlank(['message' => 'パスワードを入力してください。']),
                 ],
@@ -64,19 +51,34 @@ class AddAccountController extends Controller
             ])
             ->add('memo', TextareaType::class,[
                 'required' => false,
-                'data' => $acc_value['memo']
+                'data' => $acc_ss->getMemo()
             ])
             ->add('confirm', SubmitType::class)
             ->getForm();
+        } else {
+            //初めて開いた時
+            $form = $this->createFormBuilder($account)
+            ->add('name', TextType::class)
+            ->add('password', PasswordType::class,[
+                'constraints' => [
+                    new NotBlank(['message' => 'パスワードを入力してください。']),
+                ],
+                'always_empty' => false
+            ])
+            ->add('memo', TextareaType::class,[
+                'required' => false
+            ])
+            ->add('confirm', SubmitType::class)
+            ->getForm();
+        }
 
         //Form送信のハンドリング
         $form->handleRequest($request);
         
         //入力→確認
-        if ( $form->get('confirm')->isClicked() && $form->isValid() ) {
+        if ($form->get('confirm')->isClicked() && $form->isValid()) {
             //セッションに挿入
             $session->set('account_add', $account);
-
             //確認画面にリダイレクト
             return $this->redirectToRoute('account_add_confirm');
         }
@@ -105,11 +107,11 @@ class AddAccountController extends Controller
 
         //Form送信のハンドリング
         $form_finish->handleRequest($request);
-
+        //パスワードを伏字にする
         $secret_pass = str_repeat('●', mb_strlen($account->getPassword(), 'UTF8'));
 
         //確認→完了
-        if ( $form_finish->get('finish')->isClicked() ) {
+        if ($form_finish->get('finish')->isClicked()) {
             /** 完了画面にリダイレクト */
             return $this->redirectToRoute('account_add_thanks');
         }

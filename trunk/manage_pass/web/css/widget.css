@@ -1,5 +1,27 @@
 @charset "UTF-8";
 
+/* ######################################################################################
+
+　buttonBox
+
+###################################################################################### */
+@media print, screen and (min-width: 768px) {
+    .buttonBox{width: 320px; margin: 0 auto;}
+    .buttonBox:after{
+        content: "";
+        display: block;
+        clear: both;
+    }
+    .buttonBox li.submit{float: right;}
+    .buttonBox li.back{float: left;}
+    .buttonBox li button,
+    .buttonBox li a{width: 150px;}
+}
+@media screen and (max-width: 767px) {
+    .buttonBox li + li{margin-top: 0.5em;}
+    .buttonBox li button,
+    .buttonBox li a{display: block; width: 100%;}
+}
 
 /* ######################################################################################
 
@@ -24,6 +46,11 @@ textarea.form-control{height: 250px;}
 .form-group li{color: #f00;}
 .form-group .limit{margin-bottom: 0.25em; font-size: 15px;}
 
+@media screen and (max-width: 767px) {
+    .form-group .limit{font-size: 13px;}
+    .form-group input[type="text"],
+    .form-group input[type="password"]{height: 32px;}
+}
 
 /* ######################################################################################
 
@@ -36,6 +63,35 @@ textarea.form-control{height: 250px;}
 .navigation .previous{padding-left: 8px;}
 .navigation .first,
 .navigation .last{letter-spacing: -3px;}
+
+
+/* ######################################################################################
+
+　テーブル　table
+
+###################################################################################### */
+@media screen and (max-width: 767px) {
+    table,
+    table tbody,
+    table tr,
+    table th,
+    table td{display: block;}
+
+    table tr{border: 1px solid #dee2e6;}
+    
+    table th.pc{display: none;}
+
+    table td span{font-weight: bold;}
+    table td.memo span{display: block;}
+    table td .btn-toolbar{margin-top: 0.5em;}
+
+    table.list tr + tr{margin-top: 1em;}
+    table.list tr{border-top: none;}
+
+    table.form tr + tr{margin-top: 0.5em;}
+    table.form th{border-top: none;}
+    table.form td.form-group{margin-bottom: 0;}
+}
 
 
 /* ######################################################################################
@@ -53,8 +109,13 @@ textarea.form-control{height: 250px;}
 .table th .asc:after{content: "▲";}
 .table th .desc:after{content: "▼";}
 
-
-
+@media screen and (max-width: 767px) {
+    .table .sort{padding: 0;}
+    .table .sort a{
+        display: block;
+        padding: 0.75rem;
+    }
+}
 
 /* ######################################################################################
 
@@ -66,29 +127,26 @@ textarea.form-control{height: 250px;}
 　表示・非表示
 ==================================================== */
 @media print, screen and (min-width: 768px) {
-div.sp { display: none; }
-div.pc { display: block; }
-img.sp,
-span.sp,
-br.sp { display: none; }
-img.pc,
-span.pc,
-br.pc { display: inline; }
+    div.sp { display: none; }
+    div.pc { display: block; }
+    img.sp,
+    span.sp,
+    br.sp { display: none; }
+    img.pc,
+    span.pc,
+    br.pc { display: inline; }
+    }
+
+    @media screen and (max-width: 767px) {
+    div.sp { display: block; }
+    div.pc { display: none; }
+    img.sp,
+    span.sp,
+    br.sp { display: inline; }
+    img.pc,
+    span.pc,
+    br.pc { display: none; }
 }
-
-@media screen and (max-width: 767px) {
-div.sp { display: block; }
-div.pc { display: none; }
-img.sp,
-span.sp,
-br.sp { display: inline; }
-img.pc,
-span.pc,
-br.pc { display: none; }
-}
-
-
-
 
 /* ######################################################################################
 
@@ -108,7 +166,7 @@ br.pc { display: none; }
 @media screen and (max-width: 767px) {
     .wallBelt { padding: 30px 0; }
     .wallBelt.zero { padding: 0 0; }
-    .wallBelt.narrow { padding: 15px 0; }
+    .wallBelt.narrow { padding: 15px 0 30px; }
     .wallBelt.wide { padding: 40px 0; }
 }
 

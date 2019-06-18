@@ -8,15 +8,15 @@ imports:
 parameters:
     locale: en
     #一覧のアカウント数
-    page_per_account: 5
+    PAGE_PER_ACCOUNT: 5
     #.htpasswdへのパス
-    ht_path: /home/fujii/test/htdocs/.htpasswd
+    HT_PATH: /home/fujii/test/htdocs/.htpasswd
     #暗号・復号化のmethod
-    enc_method: AES-256-CBC
+    ENC_METHOD: AES-256-CBC
     #暗号・復号化のkey
-    enc_key: sunat
+    ENC_KEY: sunat
     #暗号化されたパスワードがないとき
-    emptyPass: NOTPASSWORD
+    DUMMY_PASS: NOTPASSWORD
 
 framework:
     #esi: ~

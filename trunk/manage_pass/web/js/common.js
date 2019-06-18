@@ -63,19 +63,27 @@
         });
     }
 
+
+
 });
 
+//////////////////////////////////////////////
+//
+//    パスワード作成
+//
+//////////////////////////////////////////////
 function create_pass(areaId){
-    //使用文字の定義
-    var str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    
-    //桁数の定義(8文字以上16文字)
-    var len = Math.floor(Math.random() * 8) + 8;
-
-    //ランダムな文字列の生成
-    var result = "";
-    for(var i=0;i<len;i++){
-        result += str.charAt(Math.floor(Math.random() * str.length));
-    }
-    document.getElementById(areaId).value = result;
+    $.ajax({
+        type: 'POST',
+        url: '/lib/ajax_getPass.php',
+    })
+    // Ajaxリクエストが成功した時発動
+    .done( (data) => {
+        $(areaId).attr('value', data);
+        document.getElementById(areaId).value = data;
+    })
+    // Ajaxリクエストが失敗した時発動
+    .fail( (data) => {
+        console.log(data);
+    })
 }

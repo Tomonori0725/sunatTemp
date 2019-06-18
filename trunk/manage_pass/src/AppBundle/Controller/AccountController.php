@@ -13,7 +13,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 
-
 class AccountController extends Controller
 {
     /**
@@ -26,16 +25,16 @@ class AccountController extends Controller
     {
         //セッションを削除する
         $session = $request->getSession();
-        if ( $session->has('account_add') ) {
+        if ($session->has('account_add')) {
             $session->remove('account_add');
         }
-        if ( $session->has('account_edit') ) {
+        if ($session->has('account_edit')) {
             $session->remove('account_edit');
         }
 
-        $limit = $this->container->getParameter('page_per_account');
+        $limit = $this->container->getParameter('PAGE_PER_ACCOUNT');
         $em = $this->get('doctrine.orm.entity_manager');
-        $dpl = "SELECT a FROM AppBundle:Account a";
+        $dpl = "SELECT a FROM AppBundle:Account a ORDER BY a.id ASC";
         $query = $em->createQuery($dpl);
 
         $paginator = $this->get('knp_paginator');

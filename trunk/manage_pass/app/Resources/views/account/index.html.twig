@@ -6,20 +6,21 @@
             <h1 class="pageTitle">パスワード管理</h1>
             <p><a href="{{ path('account_add') }}" class="btn btn-danger btn-sm">新規追加</a></p>
             
-            <table class="table">
+            <table class="table list">
                 <tr>
-                    <th>{{ knp_pagination_sortable(pagination, '名前', 'a.name') }}</th>
-                    <th>管理者メモ</th>
-                    <th>{{ knp_pagination_sortable(pagination, '更新日時表示', 'a.modified_date') }}</th>
-                    <th>操作</th>
+                    <th class="sort">{{ knp_pagination_sortable(pagination, '名前', 'a.name') }}</th>
+                    <th class="pc">管理者メモ</th>
+                    <th class="sort">{{ knp_pagination_sortable(pagination, '更新日時', 'a.modified_date') }}</th>
+                    <th class="pc">操作</th>
                 </tr>
                 
                 {% for account in pagination %}
                 <tr>
-                    <td>{{ account.name }}</td>
-                    <td>{{ account.memo }}</td>
-                    <td>{{ account.modifiedDate | date('Y-m-d H:i') }}</td>
+                    <td><span class="sp">名前：</span>{{ account.name }}</td>
+                    <td class="memo"><span class="sp">管理者メモ：</span>{{ account.memo }}</td>
+                    <td><span class="sp">更新日時：</span>{{ account.modifiedDate | date('Y-m-d H:i') }}</td>
                     <td>
+                        <span class="sp">操作：</span>
                         <div class="btn-toolbar">
                             <div class="btn-group mr-2">
                                 <a href="{{ path('account_edit', {'id': account.id}) }}" class="btn btn-outline-primary btn-sm">パスワード変更</a>
