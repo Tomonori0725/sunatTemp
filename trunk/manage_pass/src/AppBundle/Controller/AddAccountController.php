@@ -51,7 +51,8 @@ class AddAccountController extends Controller
             ])
             ->add('memo', TextareaType::class,[
                 'required' => false,
-                'data' => $acc_ss->getMemo()
+                'data' => $acc_ss->getMemo(),
+                'trim' => false
             ])
             ->add('confirm', SubmitType::class)
             ->getForm();

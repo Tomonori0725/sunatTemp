@@ -65,7 +65,8 @@ class EditAccountController extends Controller
                 'attr' => ['value' => $decode_pass]
             ])
             ->add('memo', TextareaType::class, [
-                'data' => $memo
+                'data' => $memo,
+                'trim' => false
             ])
             ->add('confirm', SubmitType::class);
 
@@ -142,15 +143,19 @@ class EditAccountController extends Controller
         $em = $this->getDoctrine()->getManager();
         $manageFunc = new ManageFunction($this->container, $em);
 
-        //パスワードを暗号化
+        
         $pass = $account_ss->getPassword();
+        //パスワードがあるかどうか
         if ($pass) {
+            //パスワードを暗号化
             $encPass = $manageFunc->encPassword($pass);
+            //パスワードをハッシュ化
+            $hashPass = $manageFunc->hashPassword($account_ss->getPassword());
         } else {
             $encPass = '';
+            $hashPass = $account_ss->getHashPass();
         }
-        //パスワードをハッシュ化
-        $hashPass = $manageFunc->hashPassword($account_ss->getPassword());
+        
 
         //DBに書き込む
         $account->setPassword($encPass);

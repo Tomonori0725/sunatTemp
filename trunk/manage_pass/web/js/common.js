@@ -1,5 +1,4 @@
-;jQuery(document).ready(function ($) {
-
+;jQuery(function ($) {
 
     //////////////////////////////////////////////
     //
@@ -14,26 +13,6 @@
             $(this).prev('input').attr('type', 'text');
         }else{
             $(this).prev('input').attr('type', 'password');
-        }
-    });
-
-    //////////////////////////////////////////////
-    //
-    //    「ページトップへ」の表示
-    //
-    //////////////////////////////////////////////
-    $('.pageTopFix').hide();
-    $(window).scroll(function () {
-        var scrollHeight = $(document).height();
-        var scrollPosition = $(window).height() + $(window).scrollTop();
-        var topSpan = 100;    //上端から○pxで表示
-        var bottomSpan = 100;    //下端から○pxで非表示
-
-        //「上端から○pxで表示」
-        if ($(this).scrollTop() > topSpan ) {
-            $('.pageTopFix').fadeIn();
-        } else {
-            $('.pageTopFix').fadeOut();
         }
     });
 
@@ -63,27 +42,24 @@
         });
     }
 
-
+    //////////////////////////////////////////////
+    //
+    //    パスワード作成
+    //
+    //////////////////////////////////////////////
+    function create_pass(areaId){
+        $.ajax({
+            type: 'POST',
+            url: '/lib/ajax_getPass.php',
+        })
+        .then(
+            function (date) {
+                $(areaId).attr('value', date);
+                document.getElementById(areaId).value = date;
+            },
+            function () {
+                console.log(date);
+        });
+    }
 
 });
-
-//////////////////////////////////////////////
-//
-//    パスワード作成
-//
-//////////////////////////////////////////////
-function create_pass(areaId){
-    $.ajax({
-        type: 'POST',
-        url: '/lib/ajax_getPass.php',
-    })
-    // Ajaxリクエストが成功した時発動
-    .done( (data) => {
-        $(areaId).attr('value', data);
-        document.getElementById(areaId).value = data;
-    })
-    // Ajaxリクエストが失敗した時発動
-    .fail( (data) => {
-        console.log(data);
-    })
-}

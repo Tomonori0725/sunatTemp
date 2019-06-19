@@ -70,6 +70,9 @@ textarea.form-control{height: 250px;}
 　テーブル　table
 
 ###################################################################################### */
+@media print, screen and (min-width: 768px) {
+    table.list td.memo{width: 470px;}
+}
 @media screen and (max-width: 767px) {
     table,
     table tbody,
