@@ -37,13 +37,13 @@ class AddAccountController extends Controller
 
         if ($session->has('account_add')) {
             //2回目
-            $acc_ss = $session->get('account_add');
+            $session_account = $session->get('account_add');
             $form = $this->createFormBuilder($account)
             ->add('name', TextType::class,[
-                'attr' => ['value' => $acc_ss->getName()]
+                'attr' => ['value' => $session_account->getName()]
             ])
             ->add('password', PasswordType::class,[
-                'attr' => ['value' => $acc_ss->getPassword()],
+                'attr' => ['value' => $session_account->getPassword()],
                 'constraints' => [
                     new NotBlank(['message' => 'パスワードを入力してください。']),
                 ],
@@ -51,7 +51,7 @@ class AddAccountController extends Controller
             ])
             ->add('memo', TextareaType::class,[
                 'required' => false,
-                'data' => $acc_ss->getMemo(),
+                'data' => $session_account->getMemo(),
                 'trim' => false
             ])
             ->add('confirm', SubmitType::class)
@@ -101,15 +101,15 @@ class AddAccountController extends Controller
     public function addConfirmAction(Request $request)
     {
         $session = $request->getSession();
-        $account = $session->get('account_add');
-        $form_finish = $this->createFormBuilder($account)
+        $session_account = $session->get('account_add');
+        $form_finish = $this->createFormBuilder($session_account)
             ->add('finish', SubmitType::class)
             ->getForm();
 
         //Form送信のハンドリング
         $form_finish->handleRequest($request);
         //パスワードを伏字にする
-        $secret_pass = str_repeat('●', mb_strlen($account->getPassword(), 'UTF8'));
+        $secret_password = str_repeat('●', mb_strlen($session_account->getPassword(), 'UTF8'));
 
         //確認→完了
         if ($form_finish->get('finish')->isClicked()) {
@@ -119,8 +119,8 @@ class AddAccountController extends Controller
 
         return $this->render('account/add/confirm.html.twig', [
             'form_finish' => $form_finish->createView(),
-            'account' => $account,
-            'secret_pass' => $secret_pass
+            'account' => $session_account,
+            'secret_password' => $secret_password
         ]);
     }
 
@@ -139,25 +139,25 @@ class AddAccountController extends Controller
         //セッションから内容を取り出し
         //Form送信のハンドリング
         $session = $request->getSession();
-        $account = $session->get('account_add');
+        $session_account = $session->get('account_add');
 
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        $manageFunc = new ManageFunction($this->container, $em);
+        /** @var EntityManager $entity_manager */
+        $entity_manager = $this->getDoctrine()->getManager();
+        $manage_function = $this->get('app.manage_function');
         
         //パスワード暗号化
-        $encPass = $manageFunc->encPassword($account->getPassword());
+        $encPass = $manage_function->encPassword($session_account->getPassword());
         //パスワードハッシュ化
-        $hashPass = $manageFunc->hashPassword($account->getPassword());
+        $hashPass = $manage_function->hashPassword($session_account->getPassword());
 
         //DBに書き込む
-        $account->setPassword($encPass);
-        $account->setHashPass($hashPass);
-        $em->persist($account);
-        $em->flush();
+        $session_account->setPassword($encPass);
+        $session_account->setHashPass($hashPass);
+        $entity_manager->persist($session_account);
+        $entity_manager->flush();
 
         //.htpasswdに書き込む
-        $manageFunc->writePassword();
+        $manage_function->writePassword();
 
         /** 記事一覧にリダイレクト */
         return $this->redirectToRoute('accountList');

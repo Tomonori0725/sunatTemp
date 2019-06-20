@@ -31,15 +31,14 @@ class AccountController extends Controller
         if ($session->has('account_edit')) {
             $session->remove('account_edit');
         }
-
+        
         $limit = $this->container->getParameter('PAGE_PER_ACCOUNT');
-        $em = $this->get('doctrine.orm.entity_manager');
-        $dpl = "SELECT a FROM AppBundle:Account a ORDER BY a.id ASC";
-        $query = $em->createQuery($dpl);
+        $repository = $this->getDoctrine()->getRepository(Account::class);
+        $accounts = $repository->findAll();
 
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-            $query,
+            $accounts,
             $request->query->getInt('page', 1),
             $limit
         );

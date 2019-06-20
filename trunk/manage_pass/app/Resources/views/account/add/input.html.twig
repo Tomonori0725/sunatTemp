@@ -28,6 +28,7 @@
                     <tr>
                         <th>管理者メモ</th>
                         <td class="form-group">
+                            {% form_theme form 'form/textarea_widget.twig' %}
                             {{ form_widget(form.memo, {'attr':{'class':'form-control memo'}}) }}
                             {{ form_errors(form.memo, {'attr':{'class':'error'}}) }}
                         </td>

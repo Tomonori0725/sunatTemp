@@ -52,13 +52,12 @@
             type: 'POST',
             url: '/lib/ajax_getPass.php',
         })
-        .then(
-            function (date) {
-                $(areaId).attr('value', date);
-                document.getElementById(areaId).value = date;
-            },
-            function () {
-                console.log(date);
+        .done(function(date) {
+            $(areaId).attr('value', date);
+            document.getElementById(areaId).value = date;
+        })
+        .fail(function() {
+            console.log(date);
         });
     }
 

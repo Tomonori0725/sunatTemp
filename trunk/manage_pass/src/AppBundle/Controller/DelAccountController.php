@@ -34,12 +34,12 @@ class DelAccountController extends Controller
             throw $this->createNotFoundException('No account found for id = ' .$id);
         }
         if ($this->isCsrfTokenValid('account', $request->get('_token'))) {
-            $em = $this->getDoctrine()->getManager();
-            $manageFunc = new ManageFunction($this->container, $em);
-            $em->remove($account);
-            $em->flush();
+            $entity_manager = $this->getDoctrine()->getManager();
+            $manage_function = $this->get('app.manage_function');
+            $entity_manager->remove($account);
+            $entity_manager->flush();
             //.htaccessに書き込む
-            $manageFunc->writePassword();
+            $manage_function->writePassword();
         }
 
         return $this->redirectToRoute('accountList');

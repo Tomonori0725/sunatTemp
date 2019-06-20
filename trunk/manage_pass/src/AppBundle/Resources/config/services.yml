@@ -1,0 +1,10 @@
+# Learn more about services, parameters and containers at
+# https://symfony.com/doc/current/service_container.html
+parameters:
+    #parameter_name: value
+
+services:
+    app.manage_function:
+        class: AppBundle\Service\ManageFunction
+        arguments: ["@service_container", "@doctrine.orm.default_entity_manager"]
+        

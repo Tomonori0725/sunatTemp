@@ -4,6 +4,7 @@ namespace AppBundle\Service;
 
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Doctrine\ORM\EntityManager;
+use AppBundle\Entity\Account;
 
 class ManageFunction
 {
@@ -65,13 +66,14 @@ class ManageFunction
     public function writePassword()
     {
         $htpasswd = '';
-        $query = $this->em->createQuery('SELECT a.name, a.hashPass FROM AppBundle:Account a');
-        $dates = $query->getResult();
+
+        $repository = $this->em->getRepository(Account::class);
+        $dates = $repository->findAll(array('id' => 'ASC'));
         $path = $this->container->getParameter('HT_PATH');
 
         //DBからアカウント情報を持ってくる
         foreach ($dates as $date) {
-            $htpasswd .= $date['name'] . ':' . $date['hashPass'] . "\n";
+            $htpasswd .= $date->getName() . ':' . $date->getHashPass() . "\n";
         }
         //.htpasswdに書き込み
         file_put_contents($path, $htpasswd, LOCK_EX);

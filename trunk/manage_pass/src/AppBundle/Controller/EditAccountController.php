@@ -38,15 +38,15 @@ class EditAccountController extends Controller
         }
 
         //サービスコンテナを読み込む
-        $em = $this->getDoctrine()->getManager();
-        $manageFunc = new ManageFunction($this->container, $em);
+        $entity_manager = $this->getDoctrine()->getManager();
+        $manageFunc = new ManageFunction($this->container, $entity_manager);
 
         //確認画面から戻ってきた時にフォームに値をいれる。
         $session = $request->getSession();
         if ($session->has('account_edit')) {
-            $acc_ss = $session->get('account_edit');
-            $decode_pass = $acc_ss->getPassword();
-            $memo = $acc_ss->getMemo();
+            $session_account = $session->get('account_edit');
+            $decode_pass = $session_account->getPassword();
+            $memo = $session_account->getMemo();
         } else {
             //パスワードを復号化
             $decode_pass = $manageFunc->decPassword($account->getPassword());
@@ -74,7 +74,7 @@ class EditAccountController extends Controller
 
         //入力→確認
         if ($form->get('confirm')->isClicked() && $form->isValid()) {
-            if (strcmp($decode_pass, $this->container->getParameter('DUMMY_PASS')) == 0 ) {
+            if (strcmp($decode_pass, $this->container->getParameter('DUMMY_PASS')) === 0 ) {
                 $account->setPassword('');
             }
             //セッションに挿入
@@ -101,8 +101,8 @@ class EditAccountController extends Controller
     public function editConfirmAction(Request $request, $id)
     {
         $session = $request->getSession();
-        $account = $session->get('account_edit');
-        $secret_pass = str_repeat('●', mb_strlen($account->getPassword(), 'UTF8'));
+        $session_account = $session->get('account_edit');
+        $secret_password = str_repeat('●', mb_strlen($session_account->getPassword(), 'UTF8'));
         $form_finish = $this->createFormBuilder()
         ->setMethod('PUT')
         ->add('finish', SubmitType::class)
@@ -117,8 +117,8 @@ class EditAccountController extends Controller
 
         return $this->render('account/edit/confirm.html.twig', [
             'form_finish' => $form_finish->createView(),
-            'account' => $account,
-            'secret_pass' => $secret_pass
+            'account' => $session_account,
+            'secret_password' => $secret_password
         ]);
     }
 
@@ -135,37 +135,37 @@ class EditAccountController extends Controller
     {
         //セッションから内容を取り出し
         $session = $request->getSession();
-        $account_ss = $session->get('account_edit');
+        $session_account = $session->get('account_edit');
         $repository = $this->getDoctrine()->getRepository(Account::class);
         $account = $repository->find($id);
 
         //サービスコンテナを読み込む
-        $em = $this->getDoctrine()->getManager();
-        $manageFunc = new ManageFunction($this->container, $em);
+        $entity_manager = $this->getDoctrine()->getManager();
+        $manage_function = $this->get('app.manage_function');
 
         
-        $pass = $account_ss->getPassword();
+        $password = $session_account->getPassword();
         //パスワードがあるかどうか
-        if ($pass) {
+        if ($password) {
             //パスワードを暗号化
-            $encPass = $manageFunc->encPassword($pass);
+            $encPassword = $manage_function->encPassword($password);
             //パスワードをハッシュ化
-            $hashPass = $manageFunc->hashPassword($account_ss->getPassword());
+            $hashPassword = $manage_function->hashPassword($session_account->getPassword());
         } else {
-            $encPass = '';
-            $hashPass = $account_ss->getHashPass();
+            $encPassword = '';
+            $hashPassword = $session_account->getHashPass();
         }
         
 
         //DBに書き込む
-        $account->setPassword($encPass);
-        $account->setHashPass($hashPass);
-        $account->setMemo($account_ss->getMemo());
+        $account->setPassword($encPassword);
+        $account->setHashPass($hashPassword);
+        $account->setMemo($session_account->getMemo());
 
-        $em->flush();
+        $entity_manager->flush();
 
         //.htpasswdに書き込む
-        $manageFunc->writePassword();
+        $manage_function->writePassword();
             
         //記事一覧にリダイレクト
         return $this->redirectToRoute('accountList');
