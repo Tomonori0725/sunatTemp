@@ -24,12 +24,7 @@
                     <tr>
                         <th>管理者メモ</th>
                         <td class="form-group">
-                            {% form_theme form _self %}                         
-                            {% block textarea_widget %}
-                                {{ block('app/Resources/views/form/textarea_widget.html.php') }}
-                            {% endblock %}
-
-                            {% form_theme form 'account/edit/input.html.twig' %}
+                            {% form_theme form 'form/textarea_widget.twig' %}
                             {{ form_widget(form.memo, {'attr':{'class':'form-control memo'}}) }}
                             {{ form_errors(form.memo, {'attr':{'class':'error'}}) }}
                         </td>

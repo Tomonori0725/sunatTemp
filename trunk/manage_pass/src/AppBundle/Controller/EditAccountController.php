@@ -38,8 +38,7 @@ class EditAccountController extends Controller
         }
 
         //サービスコンテナを読み込む
-        $entity_manager = $this->getDoctrine()->getManager();
-        $manageFunc = new ManageFunction($this->container, $entity_manager);
+        $manage_function = $this->get('app.manage_function');
 
         //確認画面から戻ってきた時にフォームに値をいれる。
         $session = $request->getSession();
@@ -49,7 +48,7 @@ class EditAccountController extends Controller
             $memo = $session_account->getMemo();
         } else {
             //パスワードを復号化
-            $decode_pass = $manageFunc->decPassword($account->getPassword());
+            $decode_pass = $manage_function->decPassword($account->getPassword());
             $memo = $account->getMemo();
         }
 
@@ -156,7 +155,6 @@ class EditAccountController extends Controller
             $hashPassword = $session_account->getHashPass();
         }
         
-
         //DBに書き込む
         $account->setPassword($encPassword);
         $account->setHashPass($hashPassword);

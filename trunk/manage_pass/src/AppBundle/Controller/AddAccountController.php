@@ -67,7 +67,8 @@ class AddAccountController extends Controller
                 'always_empty' => false
             ])
             ->add('memo', TextareaType::class,[
-                'required' => false
+                'required' => false,
+                'trim' => false
             ])
             ->add('confirm', SubmitType::class)
             ->getForm();
