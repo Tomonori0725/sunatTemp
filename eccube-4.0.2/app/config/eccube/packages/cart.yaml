@@ -1,0 +1,4 @@
+services:
+    Eccube\Service\Cart\CartItemComparator:
+      class: Eccube\Service\Cart\ProductClassAndOptionComparator
+      

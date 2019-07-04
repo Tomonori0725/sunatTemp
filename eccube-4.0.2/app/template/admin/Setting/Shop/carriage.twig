@@ -1,0 +1,193 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+
+http://www.lockon.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['setting', 'shop', 'shop_payment'] %}
+
+{% block title %}{{ 'admin.setting.shop.carriage.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'admin.setting.shop'|trans }}{% endblock %}
+
+{% block stylesheet %}
+    <style type="text/css">
+        .edit {
+            display: none;
+        }
+
+        .has-error .list {
+            display: none;
+        }
+
+        .has-error .edit {
+            display: block;
+        }
+    </style>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(function() {
+            $('.tax_rule_list_item td.action a.edit-button').click(function() {
+                var id = $(this).data('id');
+                var tr = $('#ex-tax_rule-' + id);
+                $(tr).find('.list').hide();
+                $(tr).find('.edit').show();
+            });
+
+            $('.tax_rule_list_item .cancel').click(function() {
+                var id = $(this).data('id');
+                var tr = $('#ex-tax_rule-' + id);
+                $(tr).find('.edit').hide();
+                $(tr).find('.list').show();
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block main %}
+<div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="card rounded border-0 mb-4">
+
+                    {#<div class="card-header">
+                        <div class="d-inline-block" data-tooltip="true" data-placement="top" title="{{ 'tooltip.setting.shop.tax_setting'|trans }}">
+                            <span>{{ 'admin.setting.shop.tax_setting'|trans }}</span>
+                            <i class="fa fa-question-circle fa-lg ml-1"></i>
+                        </div>
+                    </div>#}
+
+                    <div class="card-body p-0">
+                        <table class="table tabel-sm">
+                            <colgroup>
+                                <col width="20%">
+                                <col width="">
+                                <col width="">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th class="border-top-0 pt-2 pb-2 pl-3">{{ 'admin.setting.shop.carriage.rule_min'|trans }}</th>
+                                <th class="border-top-0 pt-2 pb-2 pl-3">{{ 'admin.setting.shop.carriage.charge'|trans }}</th>
+                                <th class="border-top-0 pt-2 pb-2 pl-3"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr id="tax_rule_item_new">
+                                <form name="form1" role="form" class="form-horizontal" id="form1" method="post" action="{{ url('admin_setting_shop_payment_carriage', {'id': payment_id}) }}">
+                                    {{ form_widget(form._token) }}
+                                    <td class="align-middle" style="width:230px;">
+                                        <div class="input-group">
+                                            {{ form_widget(form.rule_min, {attr: {class: 'col-auto text-right'}}) }}
+                                            {{ form_errors(form.rule_min) }}
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">
+                                        {{ form_widget(form.charge) }}
+                                        {{ form_errors(form.charge) }}
+                                    </td>
+                                    <td class="align-middle pr-5" colspan="2">
+                                        <div class="row justify-content-end">
+                                            <button class="btn btn-ec-regular px-4" type="submit">{{ 'admin.common.create__new'|trans }}</button>
+                                        </div>
+                                    </td>
+                                </form>
+                            </tr>
+
+                            {% for carriage in carriages %}
+                                <tr id="ex-tax_rule-{{ carriage.id }}" class="tax_rule_list_item {% if errors[carriage.id] %}has-error{% endif %}">
+                                    <form name="edit-form" id="edit-form_{{ carriage.id }}" method="post" action="{{ url('admin_setting_shop_payment_carriage', {'id': payment_id}) }}">
+                                        {{ form_widget(forms[carriage.id]._token) }}
+                                        <input type="hidden" value="{{ carriage.id }}" name="carriage_id">
+                                        <input type="hidden" value="edit_inline" name="mode">
+
+                                        <td class="align-middle text-right" style="width:230px;">
+                                            <div class="edit justify-content-end">
+                                                <div class="input-group">
+                                                    {{ form_widget(forms[carriage.id].rule_min, {attr: {class: 'col-auto text-right'}}) }}
+                                                    {{ form_errors(forms[carriage.id].rule_min) }}
+                                                </div>
+                                            </div>
+                                            <div class="list">
+                                                <span class="col-6 text-right pr-0">{{ carriage.rule_min|price }}</span><span class="col-6 pl-1"></span>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle text-right">
+                                            <div class="edit">
+                                                {{ form_widget(forms[carriage.id].charge) }}
+                                                {{ form_errors(forms[carriage.id].charge) }}
+                                            </div>
+                                            <div class="list">
+                                                <span class="col-6 text-right pr-0">{{ carriage.charge|price }}</span><span class="col-6 pl-1"></span>
+                                            </div>
+                                        </td>
+
+                                        <td class="align-middle">
+                                            <div class="edit">
+                                                <button type="submit" class="btn btn-ec-conversion">{{ 'admin.common.decision'|trans }}</button>
+                                                <button type="button" class="btn btn-ec-sub cancel" data-id="{{ carriage.id }}">{{ 'admin.common.cancel'|trans }}</button>
+                                            </div>
+                                        </td>
+
+                                        <td class="align-middle action">
+                                            <div class="col-12 col-sm-10 col-md-8 col-lg-6 pull-right">
+                                                <div class="row pr-2">
+                                                    <div class="col-6 text-center pr-0"><a class="btn btn-ec-actionIcon edit-button" data-tooltip="true" data-id="{{ carriage.id }}" data-placement="top" title="{{ 'admin.common.edit'|trans }}"><i class="fa fa-pencil fa-lg text-secondary" aria-hidden="true"></i></a></div>
+
+                                                    <div class="col-6 text-center">
+                                                        <div class="d-inline-block mr-3" data-tooltip="true" data-placement="top"
+                                                             title="{{ 'admin.common.delete'|trans }}">
+                                                            <a class="btn btn-ec-actionIcon" data-toggle="modal" data-target="#DeleteModal_{{ carriage.id }}">
+                                                                <i class="fa fa-close fa-lg text-secondary"></i>
+                                                            </a>
+                                                        </div>
+                                                        <!-- 削除モーダル -->
+                                                        <div class="modal fade" id="DeleteModal_{{ carriage.id }}" tabindex="-1" role="dialog"
+                                                             aria-labelledby="DeleteModal_{{ carriage.id }}" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                        <h5 class="modal-title font-weight-bold">
+                                                                            {{ 'admin.common.delete_modal__title'|trans }}
+                                                                        </h5>
+                                                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">×</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body text-left">
+                                                                        <p class="text-left modal-message">{{ 'admin.common.delete_modal__message'|trans({ "%name%" : carriage.id }) }}</p>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button class="btn btn-ec-sub" type="button" data-dismiss="modal">
+                                                                            {{ 'admin.common.cancel'|trans }}
+                                                                        </button>
+                                                                        <a class="btn btn-ec-delete" href="{{ url('admin_setting_shop_payment_carriage_delete', { id : carriage.id }) }}"
+                                                                            {{ csrf_token_for_anchor() }} data-method="delete" data-confirm="false">
+                                                                            {{ 'admin.common.delete'|trans }}
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </form>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
