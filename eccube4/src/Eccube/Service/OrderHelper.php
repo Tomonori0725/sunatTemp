@@ -259,7 +259,6 @@ class OrderHelper
     {
         // 購入処理中の受注情報を取得
         if ($Order = $this->getPurchaseProcessingOrder($Cart->getPreOrderId())) {
-            var_dump($Order);
             return $Order;
         }
 
