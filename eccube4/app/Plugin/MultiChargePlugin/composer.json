@@ -1,0 +1,12 @@
+{
+    "name": "ec-cube/ProductReview",
+    "version": "1.0.0",
+    "description": "お買い上げ商品金額によって手数料を変えるプラグイン",
+    "type": "eccube-plugin",
+    "require": {
+        "ec-cube/plugin-installer": "~0.0.6"
+    },
+    "extra": {
+        "code": "ProductReview"
+    }
+}
