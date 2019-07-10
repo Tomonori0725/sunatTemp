@@ -53,7 +53,7 @@ class CarriageRepository extends AbstractRepository
             ->getQuery();
         $count = $query->getResult();
 
-        return $count[0][1]!==0;
+        return $count[0][1]!=='0';
     }
 
     /**
@@ -64,6 +64,7 @@ class CarriageRepository extends AbstractRepository
     public function getCharge($id, $total)
     {
         $charges = $this->getList($id);
+        $charge = 0;
         foreach($charges as $data){
             if($total > $data['rule_min']){
                 $charge = $data['charge'];
