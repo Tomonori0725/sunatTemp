@@ -4,6 +4,8 @@ namespace Customize\Entity;
 
 use Eccube\Entity\AbstractEntity;
 use Eccube\Repository\AbstractRepository;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
     /**
@@ -14,6 +16,10 @@ use Doctrine\ORM\Mapping as ORM;
      * @ORM\DiscriminatorColumn(name="discriminator_type", type="string", length=255)
      * @ORM\HasLifecycleCallbacks()
      * @ORM\Entity(repositoryClass="Customize\Repository\CarriageRepository")
+     * @UniqueEntity(
+     *     fields={"rule_min", "payment_id"},
+     *     message="このお買い上げ金額は、既に設定されています。"
+     * )
      */
     class Carriage extends AbstractEntity
     {

@@ -69,7 +69,7 @@ class PaymentEditChargePreprocessor extends PaymentChargePreprocessor
                 if ($carriage_repository->isCarriage($itemHolder->getPayment()->getId())) {
                     //カスタマイズの手数料を使う
                     $id = $itemHolder->getPayment()->getId();
-                    $total = $itemHolder->getSubtotal() + $itemHolder->getDeliveryFeeTotal() + $itemHolder->getDiscount();
+                    $total = $itemHolder->getSubtotal() + $itemHolder->getDeliveryFeeTotal() - $itemHolder->getDiscount();
                     $item->setPrice($carriage_repository->getCharge($id, $total));
                 } else {
                     //デフォルトの手数料を使う

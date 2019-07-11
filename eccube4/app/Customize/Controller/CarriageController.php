@@ -56,7 +56,10 @@ class CarriageController extends AbstractController
 
         $form = $builder->getForm();
 
+        //新規か編集か判定
         $mode = $request->get('mode');
+
+        //新規代引き手数料追加
         if ($mode != 'edit_inline') {
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {

@@ -47,28 +47,6 @@ class CarriageType extends AbstractType
                     new Assert\Range(['min' => 0]),
                 ]
             ]);
-
-        #$builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-        #    /** @var TaxRule $TaxRule */
-        #    $TaxRule = $event->getData();
-        #    $qb = $this->taxRuleRepository->createQueryBuilder('t');
-        #    $qb
-        #        ->select('count(t.id)')
-        #        ->where('t.apply_date = :apply_date')
-        #        ->setParameter('apply_date', $TaxRule->getApplyDate());
-        #    
-        #    if ($TaxRule->getId()) {
-        #        $qb
-        #            ->andWhere('t.id <> :id')
-        #            ->setParameter('id', $TaxRule->getId());
-        #    }
-        #    $count = $qb->getQuery()
-        #        ->getSingleScalarResult();
-        #    if ($count > 0) {
-        #        $form = $event->getForm();
-        #        $form['apply_date']->addError(new FormError(trans('taxrule.text.error.date_not_available')));
-        #    }
-        #});
     }
 
     /**

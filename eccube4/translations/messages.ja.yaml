@@ -1,0 +1,8 @@
+#------------------------------------------------------------------------------------
+# 設定：代引き手数料
+#------------------------------------------------------------------------------------
+
+admin.setting.shop.carriage.title: 代引き手数料一覧
+admin.setting.shop.carriage.topics: 代引き手数料
+admin.setting.shop.carriage.rule_min: お買い上げ金額
+admin.setting.shop.carriage.charge: 手数料

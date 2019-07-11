@@ -90,10 +90,11 @@ file that was distributed with this source code.
                                         </div>
                                     </td>
                                     <td class="align-middle">
-                                        {{ form_widget(form.charge) }}
+                                        {{ form_widget(form.charge, {attr: {class: 'text-right'}}) }}
                                         {{ form_errors(form.charge) }}
                                     </td>
-                                    <td class="align-middle pr-5" colspan="2">
+                                    <td></td>
+                                    <td class="align-middle pr-5">
                                         <div class="row justify-content-end">
                                             <button class="btn btn-ec-regular px-4" type="submit">{{ 'admin.common.create__new'|trans }}</button>
                                         </div>
@@ -121,7 +122,7 @@ file that was distributed with this source code.
                                         </td>
                                         <td class="align-middle text-right">
                                             <div class="edit">
-                                                {{ form_widget(forms[carriage.id].charge) }}
+                                                {{ form_widget(forms[carriage.id].charge, {attr: {class: 'text-right'}}) }}
                                                 {{ form_errors(forms[carriage.id].charge) }}
                                             </div>
                                             <div class="list">
