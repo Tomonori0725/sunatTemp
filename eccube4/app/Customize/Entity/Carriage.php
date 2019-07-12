@@ -51,7 +51,7 @@ use Doctrine\ORM\Mapping as ORM;
         /**
          * @var string|null
          *
-         * @ORM\Column(name="charge", type="decimal", precision=12, scale=2, nullable=true, options={"unsigned":true,"default":0})
+         * @ORM\Column(name="charge", type="decimal", precision=12, scale=0, nullable=true, options={"unsigned":true,"default":0})
          */
         private $charge = 0;
 
@@ -59,7 +59,7 @@ use Doctrine\ORM\Mapping as ORM;
         /**
          * @var string|null
          *
-         * @ORM\Column(name="rule_min", type="decimal", precision=12, scale=2, nullable=true, options={"unsigned":true})
+         * @ORM\Column(name="rule_min", type="decimal", precision=12, scale=0, nullable=true, options={"unsigned":true})
          */
         private $rule_min;
 

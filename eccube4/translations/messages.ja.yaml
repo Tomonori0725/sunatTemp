@@ -1,8 +1,9 @@
 #------------------------------------------------------------------------------------
-# 設定：代引き手数料
+# 設定：複数手数料の設定
 #------------------------------------------------------------------------------------
 
-admin.setting.shop.carriage.title: 代引き手数料一覧
-admin.setting.shop.carriage.topics: 代引き手数料
+admin.setting.shop.carriage.title: 複数手数料の設定
+admin.setting.shop.carriage.topics: 複数手数料の設定
 admin.setting.shop.carriage.rule_min: お買い上げ金額
 admin.setting.shop.carriage.charge: 手数料
+admin.setting.shop.carriage.charge.delete_modal__message: 'この操作はあとから取り消すことができません。削除してよろしいですか？'

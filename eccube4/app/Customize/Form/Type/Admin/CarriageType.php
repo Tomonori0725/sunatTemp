@@ -38,6 +38,10 @@ class CarriageType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Range(['min' => 0]),
+                    new Assert\Length([
+                        'max' => 12,
+                        'maxMessage' => '12桁以下で入力してください。',
+                    ]),
                 ],
             ])
             ->add('rule_min', PriceType::class, [
@@ -45,6 +49,10 @@ class CarriageType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Range(['min' => 0]),
+                    new Assert\Length([
+                        'max' => 12,
+                        'maxMessage' => '12桁以下で入力してください。',
+                    ]),
                 ]
             ]);
     }
