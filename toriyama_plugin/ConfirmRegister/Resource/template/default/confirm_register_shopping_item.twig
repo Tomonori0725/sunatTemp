@@ -1,0 +1,70 @@
+{#
+ This file is part of the Coupon plugin
+
+ Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ http://www.ec-cube.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+{% if not is_granted('ROLE_USER') %}
+<script>
+    $(function () {
+        $('#shopping-form button[type="submit"]').click(function (e) {
+            var passowrd = $('#customer_password').val();
+            if (passowrd !== '') {
+                //デフォルトの処理をキャンセル
+                e.preventDefault();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path("regist_customer") }}',
+                    data: {
+                        'customer_name01': '{{ Order.name01 }}',
+                        'customer_name02': '{{ Order.name02 }}',
+                        'customer_kana01': '{{ Order.kana01 }}',
+                        'customer_kana02': '{{ Order.kana02 }}',
+                        'customer_company_name': '{{ Order.companyName }}',
+                        'customer_postal_code': '{{ Order.postal_code }}',
+                        'customer_pref': '{{ Order.pref }}',
+                        'customer_addr01': '{{ Order.addr01 }}',
+                        'customer_addr02': '{{ Order.addr02 }}',
+                        'customer_phone_number': '{{ Order.phone_number }}',
+                        'email': '{{ Order.email }}',
+                        'password': passowrd
+                    }
+                })
+                .done(function(data){
+                    var error = JSON.parse(data || 'null');
+                    if (!data) {
+                        $('#shopping-form').submit();
+                    } else {
+                        $('.bg-load-overlay').remove();
+                        $('#RegistConfirm #customer_detail_box .error').remove();
+                        $('#RegistConfirm #customer_detail_box').append(error);
+                    }
+                })
+                .fail(function(data){
+                    $('#RegistConfirm').text('fail');
+                    $('.bg-load-overlay').remove();
+                });
+                
+            }
+        });
+
+        // append to layout
+        $('.ec-orderRole__summary .ec-totalBox').last().after($('#RegistConfirm').detach());
+    });
+</script>
+
+<div id="RegistConfirm" class="ec-orderRegistConfirm">
+    <div class="ec-rectHeading">
+        <h2>会員登録</h2>
+    </div>
+    <div id="customer_detail_box" class="column">
+        <p>下記をご記入いただくだけで、注文完了と同時に会員登録ができます。<br>会員登録せずにご購入いただく場合は、下記に何も記入せずにお進みください。 </p>
+        パスワード　<input type="password" value="" id="customer_password" placeholder="半角英数記号8〜32文字">
+        <p id="Error"></p>
+    </div>
+</div>
+{% endif %}

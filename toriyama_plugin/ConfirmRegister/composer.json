@@ -1,0 +1,12 @@
+{
+  "name": "ec-cube/ConfirmRegister",
+  "version": "1.0.0",
+  "description": "注文フローで会員登録",
+  "type": "eccube-plugin",
+  "require": {
+    "ec-cube/plugin-installer": "~0.0.7"
+  },
+  "extra": {
+    "code": "ConfirmRegister"
+  }
+}
