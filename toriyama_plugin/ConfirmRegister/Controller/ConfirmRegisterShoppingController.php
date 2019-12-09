@@ -13,69 +13,36 @@
 
 namespace Plugin\ConfirmRegister\Controller;
 
-use Eccube\Entity\BaseInfo;
 use Eccube\Controller\AbstractController;
 use Eccube\Entity\Customer;
-use Eccube\Entity\Order;
 use Eccube\Entity\Master\Pref;
-use Eccube\Repository\BaseInfoRepository;
-use Eccube\Repository\DeliveryTimeRepository;
 use Eccube\Repository\CustomerRepository;
-use Eccube\Repository\Master\PrefRepository;
-use Eccube\Service\MailService;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Eccube\Service\CartService;
-use Eccube\Service\OrderHelper;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ConfirmRegisterShoppingController extends AbstractController
 {
-
-    /**
-     * @var BaseInfo
-     */
-    protected $BaseInfo;
     
-    /**
-     * @var CustomerRepository 
-     */
+    /** @var CustomerRepository */
     private $customerRepository;
 
-    /**
-     * @var EncoderFactoryInterface
-     */
+    /** @var EncoderFactoryInterface */
     private $encoderFactory;
-
-    /**
-     * @var MailService
-     */
-    protected $mailService;
-
 
     /**
      * ConfirmRegisterShoppingController constructor.
      * 
-     * @param BaseInfoRepository $baseInfoRepository
-     * @param MailService $mailService
-     * 
      */
     public function __construct(
-        BaseInfoRepository $baseInfoRepository,
         CustomerRepository $customerRepository,
-        MailService $mailService,
         EncoderFactoryInterface $encoderFactory,
         EntityManagerInterface $entityManager
     ) {
-        $this->mailService = $mailService;
-        $this->BaseInfo = $baseInfoRepository->get();
         $this->customerRepository = $customerRepository;
         $this->encoderFactory = $encoderFactory;
         $this->entityManager = $entityManager;
@@ -92,6 +59,7 @@ class ConfirmRegisterShoppingController extends AbstractController
      */
     public function registCustomerAction(Request $request)
     {
+
         // 会員情報を配列に挿入する
         $customer = array();
         foreach ($_POST as $key => $value) {
@@ -151,16 +119,6 @@ class ConfirmRegisterShoppingController extends AbstractController
         $this->entityManager->persist($new_customer);
         $this->entityManager->flush();
         log_info('値を返す');
-
-
-        $activateUrl = $this->generateUrl('entry_activate', ['secret_key' => $new_customer->getSecretKey()], UrlGeneratorInterface::ABSOLUTE_URL);
-        $activateFlg = $this->BaseInfo->isOptionCustomerActivate();
-        // 仮会員設定が有効な場合は、確認メールを送信し完了画面表示.
-        if ($activateFlg) {
-            // メール送信
-            $this->mailService->sendCustomerConfirmMail($new_customer, $activateUrl);
-            log_info('仮会員登録完了画面へリダイレクト');
-        }
 
         return new Response(null);
     }
