@@ -18,18 +18,8 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '{{ path("regist_customer") }}',
+                    url: '{{ path("check_customer") }}',
                     data: {
-                        'customer_name01': '{{ Order.name01 }}',
-                        'customer_name02': '{{ Order.name02 }}',
-                        'customer_kana01': '{{ Order.kana01 }}',
-                        'customer_kana02': '{{ Order.kana02 }}',
-                        'customer_company_name': '{{ Order.companyName }}',
-                        'customer_postal_code': '{{ Order.postal_code }}',
-                        'customer_pref': '{{ Order.pref }}',
-                        'customer_addr01': '{{ Order.addr01 }}',
-                        'customer_addr02': '{{ Order.addr02 }}',
-                        'customer_phone_number': '{{ Order.phone_number }}',
                         'email': '{{ Order.email }}',
                         'password': passowrd
                     }
