@@ -35,7 +35,7 @@ class ConfirmRegisterShoppingController extends AbstractController
     }
 
     /**
-     * バリデーションチェックをする.
+     * 会員登録する.
      *
      * @Route("/ajax", name="check_customer")
      * 

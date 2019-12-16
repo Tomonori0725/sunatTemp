@@ -99,6 +99,10 @@ class Event implements EventSubscriberInterface
      */
     public function onFrontShoppingCompleteInitialize(EventArgs $event)
     {
+        if (!array_key_exists('regist_password', $_SESSION)) {
+            return;
+        }
+
         // 仮会員がオフかどうか.
         $activateFlg = $this->BaseInfo->isOptionCustomerActivate();
 
@@ -143,11 +147,11 @@ class Event implements EventSubscriberInterface
             ->setSecretKey($secretKey)
             ->setPoint(0);
 
-        // 会員登録をする.
+        // DBに追加する.
         $this->entityManager->persist($new_customer);
         $this->entityManager->flush();
 
-        // 注文履歴に会員情報を紐づける.
+        // 注文履歴に会員履歴を紐づける.
         $order = $this->orderRepository->findOneById(array('id' => $_SESSION["_sf2_attributes"]["eccube.front.shopping.order.id"]));
         $order->setCustomer($new_customer);
         $this->entityManager->flush();
@@ -163,6 +167,9 @@ class Event implements EventSubscriberInterface
             // 会員登録完了メールを送信.
             $this->mailService->sendCustomerCompleteMail($new_customer, $activateUrl);
         }
+
+        // パスワードを削除
+        unset($_SESSION['regist_password']);
 
     }
 

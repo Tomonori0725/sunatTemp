@@ -13,9 +13,8 @@
         $('#shopping-form button[type="submit"]').click(function (e) {
             var passowrd = $('#customer_password').val();
             if (passowrd !== '') {
-                //デフォルトの処理をキャンセル
+                // デフォルトの処理をキャンセル.
                 e.preventDefault();
-
                 $.ajax({
                     type: 'POST',
                     url: '{{ path("check_customer") }}',
@@ -38,10 +37,8 @@
                     $('#RegistConfirm').text('fail');
                     $('.bg-load-overlay').remove();
                 });
-                
             }
         });
-
         // append to layout
         $('.ec-orderRole__summary .ec-totalBox').last().after($('#RegistConfirm').detach());
     });
