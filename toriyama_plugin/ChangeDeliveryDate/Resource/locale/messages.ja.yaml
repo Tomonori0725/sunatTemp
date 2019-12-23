@@ -1,0 +1,7 @@
+# register page
+delivery_date.admin.index.title: お届け最短日・不可日登録
+delivery_date.admin.index.shortest.title: お届け最短日登録
+delivery_date.admin.index.impossible.title: お届け不可日登録
+
+# register validate
+delivery_date.admin.validate.format: フォーマットが違う日付があります。(%data%)

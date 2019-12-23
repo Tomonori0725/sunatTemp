@@ -1,0 +1,69 @@
+{#
+ This file is part of the Coupon plugin
+
+ Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ http://www.ec-cube.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['product', 'delivery_date'] %}
+
+{% block title %}{{ 'delivery_date.admin.index.title'|trans }}{% endblock %}
+{% block sub_title %}{% endblock %}
+
+{% block main %}
+<form name="shortest_delivery" id="shortest_delivery" method="post" action="">
+    <div class="c-contentsArea__cols">
+
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+
+                {% for key, date in delivDate %}
+                {% set topics = 'delivery_date.admin.index.' ~ key ~ '.title' %}
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header"><span class="normal">{{ topics|trans }}</span></div>
+                    <div class="card-body">
+                        <textarea name="{{ key }}" style="width:100%; height:300px;">{{ date.date }}</textarea>
+                        {% if date.error is defined %}
+                            <ul>
+                            {% if date.error.format is defined %}
+                                {% for err in date.error.format %}
+                                <li>{{ err }}</li>
+                                {% endfor %}
+                            {% endif %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+
+
+            </div>
+        </div>
+
+        <div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary btn-block btn-lg ladda-button">登録する</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</form>
+{% endblock %}
