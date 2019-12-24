@@ -28,15 +28,33 @@
                     <div class="card-header"><span class="normal">{{ topics|trans }}</span></div>
                     <div class="card-body">
                         <textarea name="{{ key }}" style="width:100%; height:300px;">{{ date.date }}</textarea>
+
                         {% if date.error is defined %}
                             <ul>
+                            {# フォーマット #}
                             {% if date.error.format is defined %}
                                 {% for err in date.error.format %}
                                 <li>{{ err }}</li>
                                 {% endfor %}
                             {% endif %}
+
+                            {# 存在しない日付 #}
+                            {% if date.error.correct is defined %}
+                                {% for err in date.error.correct %}
+                                <li>{{ err }}</li>
+                                {% endfor %}
+                            {% endif %}
+
+                            {# 重複している日付 #}
+                            {% if date.error.duplicate is defined %}
+                                {% for err in date.error.duplicate %}
+                                <li>{{ err }}</li>
+                                {% endfor %}
+                            {% endif %}
+
                             </ul>
                         {% endif %}
+                        
                     </div>
                 </div>
                 {% endfor %}

@@ -26,31 +26,22 @@ class DeliveryDateRepository extends AbstractRepository
     /**
      * 最短お届け日・不可日を取得する.
      *
-     * @param $type お届け最短日 0 / お届け不可日 1
+     * @param $delivConfig お届け最短日 0 / お届け不可日 1
      *
      * @return $textList
      */
-    public function getDeliveryDate($type = 0)
+    public function getDeliveryDate($delivConfig)
     {
-
-        $query = $this->createQueryBuilder('dd')
-            ->where('dd.type = :type AND dd.date >= CURRENT_DATE()')
-            ->setParameter('type', $type)
-            ->getQuery();
-        $deliveryDate = $query->getResult();
-
-        // フォーマットをあわせる.
-        $textList = '';
-        foreach ($deliveryDate as $dateList) {
-            $textList .= $dateList->getDate()->format('Y/m/d');
-            if ($dateList->getDuration()) {
-                $textList .= ',';
-                $textList .= $dateList->getDuration();
-            }
-            $textList .= "\n";
+        foreach ($delivConfig as $name => $type) {
+            // DBから取得.
+            $query = $this->createQueryBuilder('dd')
+                ->where('dd.type = :type AND dd.date >= CURRENT_DATE()')
+                ->setParameter('type', $type)
+                ->getQuery();
+            $deliveryDate[$name] = $query->getResult();
         }
 
-        return $textList;
+        return $deliveryDate;
     }
 
     /**

@@ -85,30 +85,31 @@ class ChangeDeliveryDateController extends AbstractController
         );
 
         // アクセス日以降の登録データを取得する.
-        foreach ($delivConfig as $name => $type) {
-            $delivDate[$name]['date'] = $this->deliveryDateRepository->getDeliveryDate($type);
-        }
+        $delivDate = $this->deliveryDateRepository->getDeliveryDate($delivConfig);
+        $delivDate = $this->deliveryDateService->objectToArray($delivDate, $delivConfig);
 
         // 送信されたら...
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // 文字列を配列に変換.
             foreach ($delivConfig as $name => $type) {
-                // 日付を文字列から1行ごとの配列に変換する.
-                $delivDate[$name]['date'] = $this->deliveryDateService->StringToArray($request->get($name));
-                // バリデーション.
-                $delivDate[$name]['error'] = $this->deliveryDateService->validateData($delivDate[$name]['date'], $type);
-                if ($delivDate[$name]['error']) {
-                    $isError = true;
-                }
+                $delivInputDate[$name] = $this->deliveryDateService->stringToArray($request->get($name));
             }
 
+            // バリデーション.
+            $error = $this->deliveryDateService->validateData($delivInputDate, $delivConfig);
+            // エラーがあれば.
+            if ($error) {
+                $isError = true;
+            }
+            
             // エラーがなければDBに登録.
             if (!$isError) {
                 foreach ($delivConfig as $name => $type) {
                     // フォーマットに変換する.
-                    $delivDate[$name]['date'] = $this->deliveryDateService->formatData($delivDate[$name]['date'], $type);
-
+                    $delivInputDate[$name] = $this->deliveryDateService->formatData($delivInputDate[$name], $type);
+        
                     // DBに追加する.
-                    foreach ($delivDate[$name]['date'] as $list) {
+                    foreach ($delivInputDate[$name] as $list) {
                         $delivery_date = new DeliveryDate();
                         if ($list['duration']) {
                             $delivery_date->setDuration($list['duration']);
@@ -125,22 +126,25 @@ class ChangeDeliveryDateController extends AbstractController
                 // DBに反映.
                 $this->entityManager->flush();
 
-                foreach ($delivConfig as $name => $type) {
-                    // 改めて日付を取得.
-                    $delivDate[$name]['date'] = $this->deliveryDateRepository->getDeliveryDate($type);
-                }
+                // 改めて日付を取得.
+                $delivDate = $this->deliveryDateRepository->getDeliveryDate($delivConfig);
+                // 表示用に整形
+                $delivStringsDate = $this->deliveryDateService->arrayToString($delivDate, $delivConfig);
             } else {
+                // エラーあれば.
                 foreach ($delivConfig as $name => $type) {
-                    $delivDate[$name]['date'] = $request->get($name);
+                    // 文字列を配列にする.
+                    $delivStringsDate[$name]['date'] = $request->get($name);
+                    if (array_key_exists($name, $error)) {
+                        // エラー文を挿入.
+                        $delivStringsDate[$name]['error'] = $error[$name];
+                    }
                 }
             }
         }
+        
 
-        // var_dump($delivDate);
-
-        return [
-            'delivDate' => $delivDate
-        ];
+        return ['delivDate' => $delivStringsDate];
 
     }
 
