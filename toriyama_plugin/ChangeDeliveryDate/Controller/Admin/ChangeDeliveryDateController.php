@@ -84,10 +84,6 @@ class ChangeDeliveryDateController extends AbstractController
             'impossible' => 1
         );
 
-        // アクセス日以降の登録データを取得する.
-        $delivDate = $this->deliveryDateRepository->getDeliveryDate($delivConfig);
-        $delivDate = $this->deliveryDateService->objectToArray($delivDate, $delivConfig);
-
         // 送信されたら...
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // 文字列を配列に変換.
@@ -128,7 +124,7 @@ class ChangeDeliveryDateController extends AbstractController
 
                 // 改めて日付を取得.
                 $delivDate = $this->deliveryDateRepository->getDeliveryDate($delivConfig);
-                // 表示用に整形
+                // 表示用に整形.
                 $delivStringsDate = $this->deliveryDateService->arrayToString($delivDate, $delivConfig);
             } else {
                 // エラーあれば.
@@ -141,8 +137,12 @@ class ChangeDeliveryDateController extends AbstractController
                     }
                 }
             }
+        } else {
+            // アクセス日以降の登録データを取得する.
+            $delivDate = $this->deliveryDateRepository->getDeliveryDate($delivConfig);
+            // 表示用に整形.
+            $delivStringsDate = $this->deliveryDateService->arrayToString($delivDate, $delivConfig);
         }
-        
 
         return ['delivDate' => $delivStringsDate];
 

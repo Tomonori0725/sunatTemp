@@ -26,22 +26,77 @@ class DeliveryDateRepository extends AbstractRepository
     /**
      * 最短お届け日・不可日を取得する.
      *
-     * @param $delivConfig お届け最短日 0 / お届け不可日 1
+     * @param $delivConfig お届け最短日 0 / お届け不可日 1.
      *
      * @return $textList
      */
     public function getDeliveryDate($delivConfig)
     {
+        date_default_timezone_set('Asia/Tokyo');
         foreach ($delivConfig as $name => $type) {
             // DBから取得.
             $query = $this->createQueryBuilder('dd')
                 ->where('dd.type = :type AND dd.date >= CURRENT_DATE()')
+                ->orderBy('dd.date', 'ASC')
                 ->setParameter('type', $type)
                 ->getQuery();
             $deliveryDate[$name] = $query->getResult();
         }
 
         return $deliveryDate;
+    }
+
+    /**
+     * 最短お届け日を取得する.
+     *
+     * @return $dateList
+     */
+    public function getTodayDeliveryDate()
+    {
+        // 今日の日付を取得
+        $date_time = new \DateTime();
+        $date_time->setTime(23, 59, 59)->modify('+9 hours');
+
+        // DBから取得.
+        $query = $this->createQueryBuilder('dd')
+            ->where('dd.type = :type AND dd.date = :now')
+            ->setParameter('type', 0)
+            ->setParameter('now', $date_time)
+            ->getQuery();
+        $deliveryDate = $query->getResult();
+        
+        return $deliveryDate;
+    }
+
+
+    /**
+     * お届け不可日を取得する.
+     *
+     * @param $minDate 最短日までの日数
+     * @param $maxDate 最長日までの日数
+     *
+     * @return $dateList
+     */
+    public function getImpossibleDate($minDate, $maxDate)
+    {
+        // 日数を日付に変換
+        $minDelivDate = new \DateTime($minDate . ' day');
+        $maxDelivDate = new \DateTime($maxDate+1 . ' day');
+
+        // DBから取得.
+        $query = $this->createQueryBuilder('dd')
+            ->where('dd.type = :type AND dd.date BETWEEN :start AND :end')
+            ->setParameter('type', 1)
+            ->setParameter('start', $minDelivDate)
+            ->setParameter('end', $maxDelivDate)
+            ->getQuery();
+        $impossibleDate = $query->getResult();
+
+        $impossibleDate = array_map(function($date){
+            return $date->getDate()->modify('-9 hours')->format('Y/m/d');
+        }, $impossibleDate);
+        
+        return $impossibleDate;
     }
 
     /**

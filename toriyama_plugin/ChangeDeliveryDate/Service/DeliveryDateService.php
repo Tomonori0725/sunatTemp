@@ -123,7 +123,7 @@ class DeliveryDateService
         $delivDateStrings = array();
         foreach ($config as $name => $type) {
             $delivDateStrings[$name]['date'] = array_map(function($date){
-                $line = $date->getDate()->format('Y/m/d');
+                $line = $date->getDate()->modify('-9 hours')->format('Y/m/d');
                 if ($date->getDuration()) {
                     $line .= ',' . $date->getDuration();
                 }
@@ -165,7 +165,6 @@ class DeliveryDateService
             }
         }
 
-
         if ($error) {
             return $error;
         }
@@ -184,7 +183,7 @@ class DeliveryDateService
     private function checkFormat($delivDates, $type) {
         $error = array();
 
-        // フォーマット
+        // フォーマット.
         foreach ($delivDates as $data) {
             if (0 === $type) {
                 if (1 !== preg_match('/^\d{4}\/\d{1,2}\/\d{1,2}(,\d+)$/', $data)) {
@@ -217,7 +216,6 @@ class DeliveryDateService
     private function checkCorrect($delivDates) {
         $error = array();
 
-        // フォーマット
         foreach ($delivDates as $data) {
             $currentDate = $data;
             $data = explode(',', $data);
