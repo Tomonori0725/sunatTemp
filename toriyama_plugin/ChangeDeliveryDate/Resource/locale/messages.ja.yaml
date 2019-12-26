@@ -1,8 +1,11 @@
 # register page
 delivery_date.admin.index.title: お届け最短日・不可日登録
 delivery_date.admin.index.shortest.title: お届け最短日登録
+delivery_date.admin.index.shortest.description: 日付はスラッシュ( / )区切りで、お届け最短日数はカンマ( , )区切りで記入してください。( 2020/01/25,7 )<br>複数登録する場合は、日付毎に改行してください。
 delivery_date.admin.index.impossible.title: お届け不可日登録
-
+delivery_date.admin.index.impossible.description: 日付はスラッシュ( / )区切りで記入してください。( 2020/01/25 )<br>複数登録する場合は、日付毎に改行してください。
+delivery_date.admin.regist.success: 登録しました。
+delivery_date.admin.regist.error: 入力エラーがあります。
 # register validate
 delivery_date.admin.validate.format: フォーマットが違う日付があります。(%data%)
 delivery_date.admin.validate.correct: 存在しない日付です。(%data%)

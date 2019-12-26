@@ -65,8 +65,6 @@ class ChangeDeliveryDateController extends AbstractController
         $this->deliveryDateRepository = $deliveryDateRepository;
     }
 
-
-
     /**
      * @param Request $request
      *
@@ -88,7 +86,12 @@ class ChangeDeliveryDateController extends AbstractController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // 文字列を配列に変換.
             foreach ($delivConfig as $name => $type) {
+                // 文字列を配列に変換する.
                 $delivInputDate[$name] = $this->deliveryDateService->stringToArray($request->get($name));
+                // 入力された日付を整形する.
+                $delivInputDate[$name] = $this->deliveryDateService->formatDates($delivInputDate[$name]);
+                // 重複している日付を削除する.
+                $delivInputDate[$name] = array_unique($delivInputDate[$name], SORT_STRING);
             }
 
             // バリデーション.
@@ -126,6 +129,9 @@ class ChangeDeliveryDateController extends AbstractController
                 $delivDate = $this->deliveryDateRepository->getDeliveryDate($delivConfig);
                 // 表示用に整形.
                 $delivStringsDate = $this->deliveryDateService->arrayToString($delivDate, $delivConfig);
+                // 登録に成功した事を表示する.
+                $this->addSuccess('delivery_date.admin.regist.success', 'admin');
+
             } else {
                 // エラーあれば.
                 foreach ($delivConfig as $name => $type) {
@@ -136,6 +142,9 @@ class ChangeDeliveryDateController extends AbstractController
                         $delivStringsDate[$name]['error'] = $error[$name];
                     }
                 }
+                
+                // エラーを表示する.
+                $this->addError('delivery_date.admin.regist.error', 'admin');
             }
         } else {
             // アクセス日以降の登録データを取得する.
@@ -143,12 +152,8 @@ class ChangeDeliveryDateController extends AbstractController
             // 表示用に整形.
             $delivStringsDate = $this->deliveryDateService->arrayToString($delivDate, $delivConfig);
         }
-
+        
         return ['delivDate' => $delivStringsDate];
 
     }
-
-
-
-
 }

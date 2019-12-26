@@ -27,6 +27,8 @@
                 <div class="card rounded border-0 mb-4">
                     <div class="card-header"><span class="normal">{{ topics|trans }}</span></div>
                     <div class="card-body">
+                        {% set description = 'delivery_date.admin.index.' ~ key ~ '.description' %}
+                        <p>{{ description|trans|raw }}</p>
                         <textarea name="{{ key }}" style="width:100%; height:300px;">{{ date.date }}</textarea>
 
                         {% if date.error is defined %}
@@ -34,21 +36,21 @@
                             {# フォーマット #}
                             {% if date.error.format is defined %}
                                 {% for err in date.error.format %}
-                                <li>{{ err }}</li>
+                                <li class="text-danger">{{ err }}</li>
                                 {% endfor %}
                             {% endif %}
 
                             {# 存在しない日付 #}
                             {% if date.error.correct is defined %}
                                 {% for err in date.error.correct %}
-                                <li>{{ err }}</li>
+                                <li class="text-danger">{{ err }}</li>
                                 {% endfor %}
                             {% endif %}
 
                             {# 重複している日付 #}
                             {% if date.error.duplicate is defined %}
                                 {% for err in date.error.duplicate %}
-                                <li>{{ err }}</li>
+                                <li class="text-danger">{{ err }}</li>
                                 {% endfor %}
                             {% endif %}
 
@@ -58,8 +60,6 @@
                     </div>
                 </div>
                 {% endfor %}
-
-
             </div>
         </div>
 

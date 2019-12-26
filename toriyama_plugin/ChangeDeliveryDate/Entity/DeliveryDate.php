@@ -43,10 +43,7 @@ class DeliveryDate
      */
     private $type;
 
-
-
-
-
+    
     /**
      * @return int
      */

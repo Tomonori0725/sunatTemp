@@ -148,6 +148,7 @@ class ShippingTypeExtension extends AbstractTypeExtension
                     );
 
                     foreach ($period as $day) {
+                        // 不可日は削除する.
                         if (!array_key_exists($day->format('Y/m/d'), $impossibleDate)) {
                             $deliveryDurations[$day->format('Y/m/d')] = $day->format('Y/m/d').'('.$dateFormatter->format($day).')';
                         }

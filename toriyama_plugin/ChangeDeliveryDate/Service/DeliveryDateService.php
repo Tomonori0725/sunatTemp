@@ -13,11 +13,6 @@
 
 namespace Plugin\ChangeDeliveryDate\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Eccube\Common\Constant;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Plugin\ChangeDeliveryDate\Entity\DeliveryDate;
-use Plugin\ChangeDeliveryDate\Repository\DeliveryDateRepository;
 use Symfony\Component\Translation\Translator;
 
 /**
@@ -26,21 +21,6 @@ use Symfony\Component\Translation\Translator;
 class DeliveryDateService
 {
     /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
-     * @var DeliveryDateRepository
-     */
-    private $deliveryDateRepository;
-
-    /**
      * @var Translator
      */
     private $translated;
@@ -48,20 +28,9 @@ class DeliveryDateService
     /**
      * DeliveryDateService constructor.
      *
-     * @param ContainerInterface $container
-     * @param EntityManagerInterface $entityManager
-     * @param DeliveryDateRepository $deliveryDateRepository
      * @param Translator $translated
      */
-    public function __construct(
-        ContainerInterface $container,
-        EntityManagerInterface $entityManager,
-        DeliveryDateRepository $deliveryDateRepository,
-        Translator $translated
-    ) {
-        $this->container = $container;
-        $this->entityManager = $entityManager;
-        $this->deliveryDateRepository = $deliveryDateRepository;
+    public function __construct(Translator $translated) {
         $this->translated = $translated;
     }
 
@@ -138,6 +107,28 @@ class DeliveryDateService
     }
 
     /**
+     * 日付を文字列から配列にする.
+     *
+     * @param array $delivDate
+     *
+     * @return array
+     */
+    public function stringToArray($delivDate) {
+        $delivDateList = array();
+
+        // 各データをテキストから配列にする.
+        $delivDateList = explode("\n", $delivDate);
+        // 各行にtrimをかける.
+        $delivDateList = array_map('trim', $delivDateList);
+        // 空の配列を削除する.
+        $delivDateList = array_filter($delivDateList, 'strlen');
+        // キーの振り直し.
+        $delivDateList = array_values($delivDateList);
+
+        return $delivDateList;
+    }
+
+    /**
      * 日付のバリデーション.
      *
      * @param array $array_data
@@ -151,17 +142,18 @@ class DeliveryDateService
             // 入力フォーマットチェック.
             if ($this->checkFormat($delivDate[$name], $type)) {
                 $error[$name]['format'] = $this->checkFormat($delivDate[$name], $type);
-                return $error;
             }
 
-            // 正しい日付かをチェック.
-            if ($this->checkCorrect($delivDate[$name])) {
-                $error[$name]['correct'] = $this->checkCorrect($delivDate[$name]);
-            }
+            if (!array_key_exists($name, $error)) {
+                // 正しい日付かをチェック.
+                if ($this->checkCorrect($delivDate[$name])) {
+                    $error[$name]['correct'] = $this->checkCorrect($delivDate[$name]);
+                }
 
-            // 重複チェック.
-            if ($this->checkSingleDuplicate($delivDate[$name])) {
-                $error[$name]['duplicate'] = $this->checkSingleDuplicate($delivDate[$name]);
+                // 重複チェック.
+                if ($this->checkSingleDuplicate($delivDate[$name])) {
+                    $error[$name]['duplicate'] = $this->checkSingleDuplicate($delivDate[$name]);
+                }
             }
         }
 
@@ -170,6 +162,36 @@ class DeliveryDateService
         }
 
         return false;
+    }
+
+    /**
+     * 日付のフォーマットを整形する.
+     *
+     * @param array $array_data
+     *
+     * @return $error
+     */
+    public function formatDates($delivDate) {
+
+        $delivDate = array_map(function($date){
+            $date = explode(',', $date);
+            $date[0] = explode('/', $date[0]);
+            if (2 > strlen($date[0][1])) {
+                $date[0][1] = '0' . $date[0][1];
+            }
+            if (2 > strlen($date[0][2])) {
+                $date[0][2] = '0' . $date[0][2];
+            }
+            if (array_key_exists(1, $date)) {
+                $date[1] = ltrim($date[1], '0');
+            }
+            $date[0] = implode('/', $date[0]);
+            $date = implode(',', $date);
+
+            return $date;
+        }, $delivDate);
+
+        return $delivDate;
     }
 
 
@@ -257,56 +279,6 @@ class DeliveryDateService
         }
 
         return $error;
-    }
-
-
-    /**
-     * 日付を文字列から配列にする.
-     *
-     * @param array $delivDate
-     *
-     * @return array
-     */
-    public function stringToArray($delivDate) {
-        $delivDateList = array();
-
-        // 各データをテキストから配列にする.
-        $delivDateList = explode("\n", $delivDate);
-        // 各行にtrimをかける.
-        $delivDateList = array_map('trim', $delivDateList);
-        // 空の配列を削除する.
-        $delivDateList = array_filter($delivDateList, 'strlen');
-        // 日付と発送日目安が重複している.
-        $delivDateList = array_unique($delivDateList, SORT_STRING);
-        // キーの振り直し.
-        $delivDateList = array_values($delivDateList);
-
-        return $delivDateList;
-    }
-    
-    /**
-     * 日付をオブジェクトから配列にする.
-     *
-     * @param array $delivDate
-     *
-     * @return array
-     */
-    public function objectToArray($delivDate, $delivConfig) {
-        $delivList = array();
-
-        foreach ($delivConfig as $name => $type) {
-            $delivList[$name] = array_map(function($dateList){
-                $list['date'] = $dateList->getDate()->format('Y/m/d');
-                if ($dateList->getDuration()) {
-                    $list['duration'] =  $dateList->getDuration();
-                } else {
-                    $list['duration'] = null;
-                }
-                return $list;
-            }, $delivDate[$name]);
-        }
-
-        return $delivList;
     }
 
 }

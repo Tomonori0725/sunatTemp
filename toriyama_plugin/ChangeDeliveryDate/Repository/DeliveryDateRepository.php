@@ -49,7 +49,7 @@ class DeliveryDateRepository extends AbstractRepository
     /**
      * 最短お届け日を取得する.
      *
-     * @return $dateList
+     * @return $dateList.
      */
     public function getTodayDeliveryDate()
     {
@@ -68,18 +68,17 @@ class DeliveryDateRepository extends AbstractRepository
         return $deliveryDate;
     }
 
-
     /**
      * お届け不可日を取得する.
      *
-     * @param $minDate 最短日までの日数
-     * @param $maxDate 最長日までの日数
+     * @param $minDate 最短日までの日数.
+     * @param $maxDate 最長日までの日数.
      *
      * @return $dateList
      */
     public function getImpossibleDate($minDate, $maxDate)
     {
-        // 日数を日付に変換
+        // 日数を日付に変換.
         $minDelivDate = new \DateTime($minDate . ' day');
         $maxDelivDate = new \DateTime($maxDate+1 . ' day');
 
@@ -113,9 +112,4 @@ class DeliveryDateRepository extends AbstractRepository
 
         $em->flush();
     }
-    
-
-
-
-
 }
