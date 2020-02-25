@@ -1,0 +1,12 @@
+{
+  "name": "ec-cube/SelectGiftBox",
+  "version": "1.0.0",
+  "description": "贈答用箱",
+  "type": "eccube-plugin",
+  "require": {
+    "ec-cube/plugin-installer": "~0.0.7"
+  },
+  "extra": {
+    "code": "SelectGiftBox"
+  }
+}
