@@ -98,14 +98,19 @@ class Event implements EventSubscriberInterface
      */
     public function confirm(TemplateEvent $event)
     {
-        // 注文情報を取得.
+        // 注文・配送情報を取得.
         $order = $event->getParameter('Order');
-        $pluginConfig = $this->configRepository->get();
-        $parameters = $event->getParameters();
+        $shippings = $order->getShippings();
 
         // 箱代の合計.
         $boxTotal = 0;
-        
+
+        // 入力された値を整理する.
+        $orderGiftBox = array();
+        foreach ($_POST["_shopping_order"]["Shippings"] as $orderShipping) {
+            $orderGiftBox[$orderShipping['shipping_id']] = $orderShipping['gift_box'];
+        }
+
         // OrderItemに必要な情報を取得.
         $GiftBoxType = $this->entityManager
             ->find(OrderItemType::class, 100);
@@ -114,73 +119,72 @@ class Event implements EventSubscriberInterface
         $Taxation = $this->entityManager
             ->find(TaxType::class, TaxType::TAXATION);
 
-        foreach ($_POST["_shopping_order"]["Shippings"] as $orderShipping) {
-            // 配送情報と箱の種類をセッションに保存.
-            $_SESSION['select_gift_box'][$orderShipping["shipping_id"]] = $orderShipping["gift_box"];
+        // プラグインの設定を取得.
+        $pluginConfig = $this->configRepository->get();
+        $parameters = $event->getParameters();
 
-            // 配送情報を取得.
-            foreach ($order->getShippings() as $shipping) {                    
-                if ($shipping->getId() == $orderShipping["shipping_id"]) {
-                    $shippingData = $shipping;
-                    break;
-                }
+        // 配送情報(Shipping)に追加する.
+        foreach ($shippings as $shipping) {
+            $selectGiftBox = $this->selectGiftBoxTypeRepository->findBy(array('id' => $orderGiftBox[$shipping->getId()]));
+
+            if ($selectGiftBox) {
+                $shipping->setGiftBoxId($selectGiftBox[0]);
             }
-
-
-            // foreach ($order->getShippings() as $shipping) {
-            //     var_dump($shipping->getId());
-            //     var_dump($orderShipping["gift_box"]);
-            // }
-            // exit;
-            
 
             // 注文番号と配送番号から注文詳細を取得する.
             $orderItem = $this->orderItemRepository->findBy(
                 array(
                     'Order'         => $order,
-                    'Shipping'      => $shippingData,
+                    'Shipping'      => $shipping,
                     'OrderItemType' => $GiftBoxType
                 )
             );
+
             // 箱代を決める.
             $price = 0;
-            if ($orderShipping["gift_box"] != 1) {
+            if ($orderGiftBox[$shipping->getId()] != 1) {
                 if (!is_null($pluginConfig->getPrice())) {
                     $price = $pluginConfig->getPrice();
                 }
             }
 
-            // 箱代の合計を計算する.
-            $boxTotal += $price;
-
             if ($orderItem) {
-                // 更新.
+                // 更新の場合.
                 $orderItem[0]->setPrice($price);
             } else {
-                // 新規登録.
+                // 新規登録の場合.
                 $OrderItem = new OrderItem();
                 $OrderItem->setProductName('箱代')
                     ->setPrice($price)
                     ->setQuantity(1)
                     ->setOrderItemType($GiftBoxType)
-                    ->setShipping($shippingData)
+                    ->setShipping($shipping)
                     ->setOrder($order)
                     ->setTaxDisplayType($TaxInclude)
                     ->setTaxType($Taxation)
                     ->setProcessorName(Plugin\SelectGiftBox\Event::class);
                 $this->entityManager->persist($OrderItem);
             }
+            // 箱代の合計を計算する.
+            $boxTotal += $price;
+            // DBに反映.
             $this->entityManager->flush();
+        }
+
+        // テンプレートに反映する.
+        foreach ($_POST["_shopping_order"]["Shippings"] as $orderShipping) {
+            // 配送情報と箱の種類をセッションに保存.
+            $_SESSION['select_gift_box'][$orderShipping["shipping_id"]] = $orderShipping["gift_box"];
 
             // テンプレートに渡す.
             $giftBox = $this->selectGiftBoxTypeRepository->findBy(array('id' => $orderShipping["gift_box"]));
             $parameters['giftBox'][$orderShipping["shipping_id"]] = $giftBox[0]->getName();
         }
-
+        // 箱代合計をテンプレートに反映する.
         $parameters['giftBoxTotal'] = $boxTotal;
-
+        // テンプレートに反映.
         $event->setParameters($parameters);
-
+        // テンプレートを追加.
         $event->addSnippet('@SelectGiftBox/default/shipping_gift_box_radio_confirm.twig');
     }
 
@@ -222,9 +226,6 @@ class Event implements EventSubscriberInterface
             }
         }
 
-        // var_dump($_POST);
-        // exit;
-
         // パラメータに追加.
         $event->setParameters($parameters);
 
@@ -261,12 +262,18 @@ class Event implements EventSubscriberInterface
     public function orderMail(EventArgs $event)
     {
 
-        $message = $event->getArgument("message");
-        $Order = $event->getArgument("Order");
+        // $message = $event->getArgument("message");
+        // $Order = $event->getArgument("Order");
 
-        log_info('完了メールに箱代を挿入するイベントに入りました.', [$Order->getId()]);
+        // $Shippings = $Order->getShippings();
+        // foreach ($Shippings as $shipping) {
+        //     var_dump($shipping->getGiftBoxId());
+        // }
+        // exit;
 
-        $body = $message->getBody();
+        // log_info('完了メールに箱代を挿入するイベントに入りました.', [$Order->getId()]);
+
+        // $body = $message->getBody();
         // var_dump($body);
         // exit;
 
